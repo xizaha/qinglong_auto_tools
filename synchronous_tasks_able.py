@@ -1,6 +1,8 @@
 #作者仓库:https://github.com/spiritLHL/qinglong_auto_tools
 #觉得不错麻烦点个star谢谢
 
+#同步任务是否启用禁用，不存在于分容器的不会同步新增
+
 #ql raw 拉到script里，修改script里这个文件的配置，然后添加任务设置task synchronous_tasks.py，在你更改完主青龙后运行即可
 
 # 主青龙，需要修改任务的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
