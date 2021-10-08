@@ -1,5 +1,6 @@
 # qinglong_auto_tools
 
+
 目录结构：
 
 | 文件名字 | 用途 |
@@ -10,9 +11,24 @@
 | tgbot.py | 国外机子上部署的tg机器人，操作类似QQ机器人，国内机子无法使用|
 | tgts.py | tg私聊推送，配合tgbot.py文件使用，使用方式详见注释 |
 | qqts.py | qq私聊推送，配合bot.py文件使用，使用方式详见注释，别每日推送。。。很容易风控，亲身经历 |
-| cks_auto_select.py | ck本地去重小工具，用法看注释 |  
+| ck_auto_select.py | ck本地去重小工具，用法看注释 |  
 | cks_push_alql.py | ck分发工具，用法详见注释，仅支持云服务器部署的2.9.0以上的青龙 |
 | tasks_sync_able.py | 多容器同步任务启用禁用脚本，方便多容器管理，使用方法详见注释 |
+| tasks_sync_scripts_able.py | 多容器同步脚本文件脚本，方便多容器脚本更新管理，使用方法详见注释 |
+
+### 分容器相关脚本 
+
+| 文件名字 | 用途 |
+|  ----  | ----  |
+| cks_push_alql.py | ck分发工具，用法详见注释，仅支持云服务器部署的2.9.0以上的青龙 |
+| tasks_sync_able.py | 多容器同步任务启用禁用脚本，方便多容器管理，使用方法详见注释 |
+| tasks_sync_scripts_able.py | 多容器同步脚本文件脚本，方便多容器脚本更新管理，使用方法详见注释 |
+
+青龙拉取命令：
+
+```bash
+ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git "tasks_|cks_"
+```
 
 ### 适配火狐浏览器的青龙面板自动上传ck脚本
 
@@ -30,7 +46,8 @@ ps:批量上传ck的脚本不适配2.9！
 下载环境:
 
 cmd输入
-```python
+
+```bash
 pip install selenium
 ```
 
@@ -50,9 +67,9 @@ ck1&ck2&ck3
 
 ps:网速不好的加载不出来页面请自行调高操作间隔，我设置的都是0.几秒
 
-2021.10.4
+2021.10.8
 
-修改脚本说明
+更新多容器脚本同步的脚本，增加拉取链接说明
 
 转载起码保留作者名谢谢
 
