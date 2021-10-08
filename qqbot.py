@@ -1,4 +1,4 @@
-# bot.py
+# qqbot.py
 
 #作者仓库:https://github.com/spiritLHL/qinglong_auto_tools
 #觉得不错麻烦点个star谢谢

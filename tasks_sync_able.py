@@ -3,7 +3,8 @@
 
 #同步任务是否启用禁用，不存在于分容器的不会同步新增
 
-#ql raw 拉到script里，修改script里这个文件的配置，然后添加任务设置task synchronous_tasks.py，在你更改完主青龙后运行即可
+#ql raw 拉到script里，修改script里这个文件的配置，然后添加任务设置task 新增的文件名，在你更改完主青龙后运行即可
+
 
 # 主青龙，需要修改任务的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
 cilent_id1=""
@@ -22,8 +23,9 @@ import json
 
 
 
-requests.packages.urllib3.disable_warnings()
 
+requests.packages.urllib3.disable_warnings()
+script_name = "同步任务启用禁用"
 
 def gettimestamp():
     return str(int(time.time() * 1000))
