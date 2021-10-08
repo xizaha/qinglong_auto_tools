@@ -125,7 +125,7 @@ if __name__ == '__main__':
         print("=========== 副青龙{} 信息获取中 =============".format(t+1))
         print()
         a = requests.session()
-        login(a, urllist[t], cilent_ids[0], cilent_secrets[0])
+        login(a, urllist[t], cilent_ids[t], cilent_secrets[t])
         tasks = getcrons(a, urllist[t], "open")
 
         # 增加新任务
