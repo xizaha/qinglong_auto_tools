@@ -1,16 +1,14 @@
 #作者仓库:https://github.com/spiritLHL/qinglong_auto_tools
 #觉得不错麻烦点个star谢谢
 
-#根据主青龙的启用任务和对应脚本同步到副青龙中去，不存在于副青龙中的任务和对应脚本会自动新增，如果启用的任务对应的脚本内容有更新，也会同步更新
-
-#只同步更新主青龙中已经启用的任务和对应脚本
+#根据主青龙同步到副青龙中去，不存在于副青龙中的任务和对应脚本会自动新增，无脑同步所有
 
 '''
 cron: 1
-new Env('二叉树同步脚本文件');
+new Env('二叉树全同步');
 '''
 
-#在脚本管理里修改这个文件的配置，然后保存，然后禁用 二叉树同步脚本文件 这个任务，有需要再点运行
+#在脚本管理里修改这个文件的配置，然后保存，然后禁用 同步任务启用禁用 这个任务，有需要再点运行
 
 
 # 主青龙，需要修改任务的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
@@ -20,9 +18,9 @@ url1 = ""
 
 # 副青龙，被同步的任务容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
 #按照格式有几个写几个，没有的空的删除
-cilent_ids=['','','','']
-cilent_secrets=['','','','']
-urllist = ["http://xxxx:xxxx/","","",'']
+cilent_ids=['']
+cilent_secrets=['']
+urllist = [""]
 
 
 
@@ -91,23 +89,16 @@ if __name__ == '__main__':
     print("=========== 主青龙 信息获取中 =============")
     print()
     ztasks = getcrons(s , url1, "open")
-    zenable_list = []
-    zdisable_list = []
-    for i in ztasks:
-        if i['isDisabled'] == 0:
-            zenable_list.append(i)
-        else:
-            continue
     # enable_tlid = []
     zenable_tname = []
     zenable_tcommand = []
     zenable_tschedule = []
-    for j in zenable_list:
+    for j in ztasks:
         # enable_tlid.append(j['_id'])
         zenable_tname.append(j['name'])
         zenable_tcommand.append(j['command'])
         zenable_tschedule.append(j['schedule'])
-    print("主青龙任务数量：{}，启用任务{}".format(len(ztasks), len(zenable_tname)))
+    print("主青龙任务数量：{}".format(len(ztasks), len(zenable_tname)))
     print()
 
     #获取主青龙的脚本名
@@ -168,7 +159,7 @@ if __name__ == '__main__':
                 ct += 1
             count += 1
         xc = count - ct
-        print("新增启用任务数量：{}".format(xc))
+        print("新增任务数量：{}".format(xc))
         print()
 
         # 获取副青龙的脚本名
@@ -186,7 +177,7 @@ if __name__ == '__main__':
         # 筛选需要添加或更改的脚本名
         add_list = []
         change_list = []
-        for j in zscripts_enable:
+        for j in zscripts_list:
             if j not in scripts_list:
                 add_list.append(j)
             else:
@@ -207,7 +198,7 @@ if __name__ == '__main__':
         # 写入新增内容
         for i in data_script_list:
             pushscript(a, urllist[t], "open", i)
-        print("新增启用任务对应脚本文件数量：{}".format(xc))
+        print("新增任务对应脚本文件数量：{}".format(xc))
         print()
 
         print("同步脚本文件中")
@@ -246,7 +237,7 @@ if __name__ == '__main__':
                 break
         print()
 
-        print("同步脚本文件完毕")
+        print("同步所有脚本文件完毕")
 
     print('========= 副青龙{} 同步信息完毕 ============='.format(t+1))
     print()
