@@ -11,14 +11,14 @@ new Env('二叉树同步任务启用禁用');
 
 
 # 主青龙，需要修改任务的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
-cilent_id1=""
-cilent_secret1=""
+client_id1=""
+client_secret1=""
 url1 = "http://ip:端口/"
 
 # 副青龙，被同步的任务容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
 #按照格式有几个写几个，没有的空的删除
-cilent_ids=['','','','']
-cilent_secrets=['','','','']
+client_ids=['','','','']
+client_secrets=['','','','']
 urllist = ["http://xxxx:xxxx/","","",'']
 
 import requests
@@ -38,8 +38,8 @@ def gettoken(self,url_token):
     res = json.loads(r)["data"]["token"]
     self.headers.update({"Authorization": "Bearer "+res})
 
-def login(self, baseurl, cilent_id_temp, cilent_secret_temp):
-    url_token = baseurl+'open/auth/token?client_id='+cilent_id_temp+'&client_secret='+cilent_secret_temp
+def login(self, baseurl, client_id_temp, client_secret_temp):
+    url_token = baseurl+'open/auth/token?client_id='+client_id_temp+'&client_secret='+client_secret_temp
     gettoken(self, url_token)
 
 def getitem(self, baseurl, typ):
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     #主容器
     print("=========== 主容器任务状态获取中 =============")
     s = requests.session()
-    login(s, url1, cilent_id1, cilent_secret1)
+    login(s, url1, client_id1, client_secret1)
     ztasks = getitem(s, url1, "open")
     enable_list = []
     disable_list = []
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     for cc in urllist:
         print("======== 分容器{}同步状态中 ============".format(count+1))
         a = requests.session()
-        login(a, urllist[count], cilent_ids[count], cilent_secrets[count])
+        login(a, urllist[count], client_ids[count], client_secrets[count])
         ftasks = getitem(a, urllist[count], "open")
         tlid = []
         tname = []

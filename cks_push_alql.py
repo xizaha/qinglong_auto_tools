@@ -12,8 +12,8 @@ new Env('二叉树分发ck');
 
 # 主青龙，wskey容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
 # 本分发脚本不含转ck功能，只分发，默认分发的环境变量名为JD_COOKIE，其他变量名自己按照下面注释改
-cilent_id1=""
-cilent_secret1=""
+client_id1=""
+client_secret1=""
 url1 = "http://ip:端口/"
 
 #分发不含wskey的ck的分容器，事先需要在分容器里创建应用，给所有权限，然后重启容器，应用设置才会生效
@@ -45,8 +45,8 @@ def gettoken(self,url_token):
     res = json.loads(r)["data"]["token"]
     self.headers.update({"Authorization": "Bearer "+res})
 
-def login(self, baseurl, cilent_id_temp, cilent_secret_temp):
-    url_token = baseurl+'open/auth/token?client_id='+cilent_id_temp+'&client_secret='+cilent_secret_temp
+def login(self, baseurl, client_id_temp, client_secret_temp):
+    url_token = baseurl+'open/auth/token?client_id='+client_id_temp+'&client_secret='+client_secret_temp
     gettoken(self, url_token)
 
 def getitem(self, baseurl, key , typ):
@@ -96,7 +96,7 @@ def insert(self, baseurl, typ, text):
 
 if __name__ == '__main__':
     s = requests.session()
-    login(s, url1, cilent_id1, cilent_secret1)
+    login(s, url1, client_id1, client_secret1)
     wskeys = getitem(s, url1, "JD_COOKIE" , "open") #JD_COOKIE为默认转发的主青龙的环境变量名
     ck_list = []
     c_list = []
@@ -124,7 +124,6 @@ if __name__ == '__main__':
             a = requests.session()
             url_token = urllist[ucount]+'open/auth/token?client_id='+client_id[ucount]+'&client_secret='+client_secret[ucount]
             gettoken(a, url_token)
-            JDkey = getitem(a, urllist[ucount], "JD_COOKIE" , "open")
             co = 0
             for k in temp:
                 co += 1
@@ -148,7 +147,6 @@ if __name__ == '__main__':
     a = requests.session()
     url_token = urllist[-1]+'open/auth/token?client_id='+client_id[-1]+'&client_secret='+client_secret[-1]
     gettoken(a, url_token)
-    JDkey = getitem(a, urllist[-1], "JD_COOKIE" , "open")
     co = 0
     if temp != []:#剩余放到最后一个容器里
         for k in temp:
@@ -176,7 +174,6 @@ if __name__ == '__main__':
     b = requests.session()
     url_token = che+'open/auth/token?client_id='+client_id_che+'&client_secret='+client_secret_che
     gettoken(b, url_token)
-    JDkey = getitem(b, che, "JD_COOKIE" , "open")
     co = 0
     for chek in c_list:#备份ck
         co += 1
