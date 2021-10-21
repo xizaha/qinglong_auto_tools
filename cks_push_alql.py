@@ -18,8 +18,8 @@ url1 = "http://ip:端口/"
 
 #分发不含wskey的ck的分容器，事先需要在分容器里创建应用，给所有权限，然后重启容器，应用设置才会生效
 #按照格式有几个写几个，没有的空的删除
-client_id=['','','']
-client_secret=['','','']
+client_ids=['','','']
+client_secrets=['','','']
 urllist = ["http://xxxx:xxxx/","",""]
 
 #备份ck的容器，里面传入所有转换后的ck，，事先需要在备份容器里创建应用，给所有权限，然后重启容器，应用设置才会生效
@@ -122,7 +122,7 @@ if __name__ == '__main__':
         temp.append(j)
         if (count % 35) == 0:#分配35个
             a = requests.session()
-            url_token = urllist[ucount]+'open/auth/token?client_id='+client_id[ucount]+'&client_secret='+client_secret[ucount]
+            url_token = urllist[ucount]+'open/auth/token?client_id='+client_ids[ucount]+'&client_secret='+client_secrets[ucount]
             gettoken(a, url_token)
             co = 0
             for k in temp:
@@ -145,7 +145,7 @@ if __name__ == '__main__':
             ucount +=1
             print("第%s个容器更新成功" % ucount)
     a = requests.session()
-    url_token = urllist[-1]+'open/auth/token?client_id='+client_id[-1]+'&client_secret='+client_secret[-1]
+    url_token = urllist[-1]+'open/auth/token?client_id='+client_ids[-1]+'&client_secret='+client_secrets[-1]
     gettoken(a, url_token)
     co = 0
     if temp != []:#剩余放到最后一个容器里

@@ -13,7 +13,8 @@
 | qqts.py | qq私聊推送，配合qqbot.py文件使用，使用方式详见注释，别每日推送。。。很容易风控，亲身经历 |
 | trs_stream.py | 本地转换stream抓到的headers为json格式，使用方法详见注释 |
 | ck_auto_select.py | ck本地去重小工具，用法看注释 |  
-| cks_push_alql.py | ck分发工具，用法详见注释，仅支持云服务器部署的2.9.0以上的青龙 |
+| cks_push_alql.py | 多容器ck分发工具，方便多容器管理，用法详见注释 |
+| cks_merge_alql.py | 多容器ck合并工具，方便多容器管理，用法详见注释 |
 | cks_sync_able.py | 多容器同步环境变量启用禁用脚本，方便多容器管理，使用方法详见注释 |
 | tasks_sync_able.py | 多容器同步任务启用禁用脚本，方便多容器管理，使用方法详见注释 |
 | tasks_sync_scripts_able.py | 多容器同步已启用的脚本文件，方便多容器脚本更新管理，使用方法详见注释 |
@@ -25,7 +26,8 @@
 
 | 文件名字 | 用途 |
 |  ----  | ----  |
-| cks_push_alql.py | ck分发工具，用法详见注释 |
+| cks_push_alql.py | 多容器ck分发工具，方便多容器管理，用法详见注释 |
+| cks_merge_alql.py | 多容器ck合并工具，方便多容器管理，用法详见注释 |
 | cks_sync_able.py | 多容器同步环境变量启用禁用脚本，方便多容器管理，使用方法详见注释 |
 | tasks_sync_able.py | 多容器同步任务启用禁用脚本，方便多容器管理，使用方法详见注释 |
 | tasks_sync_scripts_able.py | 多容器同步已启用的脚本文件，方便多容器脚本更新管理，使用方法详见注释 |
@@ -74,11 +76,11 @@ ck1&ck2&ck3
 
 ps:网速不好的加载不出来页面请自行调高操作间隔，我设置的都是0.几秒
 
-2021.10.15
+2021.10.21
 
-更新trs_stream.py
+更新cks_merge_alql.py
 
-本地转换stream抓到的headers为json格式，使用方法详见注释
+多容器ck合并工具，方便多容器管理，用法详见注释
 
 有时间会研究一下在配置文件中配置脚本配置，暂时只能在脚本中配置脚本配置
 
