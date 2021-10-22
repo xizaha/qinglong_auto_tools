@@ -50,7 +50,7 @@ def getitem(self, baseurl, typ):
 
 def synchronous_tasks_enable(self, baseurl, typ, data):
     url = baseurl + typ + "/crons/enable?t=%s" % gettimestamp()
-    self.headers.update({"Content-Type": "application/json;charset=UTF-8"})
+    self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
     r = self.put(url, data=json.dumps(data))
     if json.loads(r.text)["code"] == 200:
         return True
@@ -60,7 +60,7 @@ def synchronous_tasks_enable(self, baseurl, typ, data):
 
 def synchronous_tasks_disable(self, baseurl, typ, data):
     url = baseurl + typ + "/crons/disable?t=%s" % gettimestamp()
-    self.headers.update({"Content-Type": "application/json;charset=UTF-8"})
+    self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
     r = self.put(url, data=json.dumps(data))
     if json.loads(r.text)["code"] == 200:
         return True

@@ -66,7 +66,7 @@ def getckitem(self, baseurl, key, typ):
 
 def update(self, baseurl, typ, text, qlid):
     url = baseurl + typ + "/envs?t=%s" % gettimestamp()
-    self.headers.update({"Content-Type": "application/json;charset=UTF-8"})
+    self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
     data = {
         "name": "JD_COOKIE",
         "value": text,
@@ -81,7 +81,7 @@ def update(self, baseurl, typ, text, qlid):
 
 def insert(self, baseurl, typ, text):
     url = baseurl + typ + "/envs?t=%s" % gettimestamp()
-    self.headers.update({"Content-Type": "application/json;charset=UTF-8"})
+    self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
     data = []
     data_json = {
         "value": text,

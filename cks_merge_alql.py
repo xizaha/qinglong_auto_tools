@@ -8,7 +8,6 @@ new Env('二叉树合并ck');
 '''
 
 #在脚本管理里修改这个文件的配置，然后保存，然后禁用 二叉树合并ck 这个任务，有需要再点运行
-#记得修改定时，定时在你的转换ck脚本运行完后分发即可
 
 # 主青龙，合并结果存储的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
 # 本脚本不含转ck功能，只合并ck，默认合并的环境变量名为JD_COOKIE，其他变量名自己按照下面注释改
@@ -61,7 +60,7 @@ def getckitem(self, baseurl, key, typ):
 
 def update(self, baseurl, typ, text, qlid):
     url = baseurl + typ + "/envs?t=%s" % gettimestamp()
-    self.headers.update({"Content-Type": "application/json;charset=UTF-8"})
+    self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
     data = {
         "name": "JD_COOKIE", # 更新ck的变量名为JD_COOKIE
         "value": text,
@@ -76,7 +75,7 @@ def update(self, baseurl, typ, text, qlid):
 
 def insert(self, baseurl, typ, text):
     url = baseurl + typ + "/envs?t=%s" % gettimestamp()
-    self.headers.update({"Content-Type": "application/json;charset=UTF-8"})
+    self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
     data = []
     data_json = {
         "value": text,

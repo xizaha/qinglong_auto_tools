@@ -68,7 +68,7 @@ def getenvitem(self, baseurl, value, typ, sm, tm):
 
 def update(self, baseurl, typ, text, qlid, name):
     url = baseurl + typ + "/envs?t=%s" % gettimestamp()
-    self.headers.update({"Content-Type": "application/json;charset=UTF-8"})
+    self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
     data = {
         "name": name,
         "value": text,
@@ -83,7 +83,7 @@ def update(self, baseurl, typ, text, qlid, name):
 
 def insert(self, baseurl, typ, text, nam):
     url = baseurl + typ + "/envs?t=%s" % gettimestamp()
-    self.headers.update({"Content-Type": "application/json;charset=UTF-8"})
+    self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
     data = []
     data_json = {
         "value": text,
@@ -99,7 +99,7 @@ def insert(self, baseurl, typ, text, nam):
 
 def enable(self, baseurl, typ, ids):
     url = baseurl + typ + "/envs/enable?t=%s" % gettimestamp()
-    self.headers.update({"Content-Type": "application/json;charset=UTF-8"})
+    self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
     r = self.put(url, data=json.dumps(ids))
     if json.loads(r.text)["code"] == 200:
         return True
@@ -108,7 +108,7 @@ def enable(self, baseurl, typ, ids):
 
 def disable(self, baseurl, typ, ids):
     url = baseurl + typ + "/envs/disable?t=%s" % gettimestamp()
-    self.headers.update({"Content-Type": "application/json;charset=UTF-8"})
+    self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
     r = self.put(url, data=json.dumps(ids))
     if json.loads(r.text)["code"] == 200:
         return True
