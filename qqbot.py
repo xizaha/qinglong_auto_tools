@@ -7,6 +7,7 @@ client_id=['']
 client_secret=['']
 urllist = ["http://青龙ip+端口/"]
 tgAPI='tg机器人的api，形式：xxxx:xxxxxxxxxx'
+
 from aiocqhttp import CQHttp, Event,Message, MessageSegment
 import requests,os
 import time,random

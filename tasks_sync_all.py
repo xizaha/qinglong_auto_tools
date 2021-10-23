@@ -28,6 +28,12 @@ import requests
 import time
 import json
 
+try:
+    import requests
+except Exception as e:
+    print(e, "\n缺少requests 模块，请执行命令安装：python3 -m pip install requests")
+    exit(3)
+
 
 
 requests.packages.urllib3.disable_warnings()
