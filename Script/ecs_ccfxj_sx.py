@@ -6,7 +6,7 @@
 原作者: Curtin
 修改者: spiritlhl
 
-说明：仅测试使用，目前只助力，需要手动领取提现。
+说明：二叉树修改自pkc的顺序执行版本
 
 修改者的仓库:https://github.com/spiritLHL/qinglong_auto_tools
 觉得不错麻烦点个star谢谢
@@ -21,25 +21,15 @@ cron: 0 0 * * *
 new Env('城城分现金助力-助力-二叉树修改.py');
 '''
 
-# 应用获取
-cilent_id1 = ''
-cilent_secret1 = ''
-url1 = "http://xxxx:xxxx/"
+# 互助码自己写，别留空，作者助力码祈求留个位置跑一次谢谢
 
-# 互助码填写
-share = [
-    'RtGKz733RAmgfNbMRdVg1M-xhDqLnmB3Yv0gq-pzIDUo8hszTw',
-    'RtGKzOijFQ2jfYPMRtU1grWdQ-KWslH2YoIZbPfLbIz_x5EyRQ',
-    ''
-]
-
-# 互助码获取自己查看下方注释取消
+share = ['RtGKz733RAmgfNbMRdVg1M-xhDqLnmB3Yv0gq-pzIDUo8hszTw','别留','别留']
 
 # UA 可自定义你的，注意格式: 【 jdapp;iPhone;10.0.4;14.2;9fb54498b32e17dfc5717744b5eaecda8366223c;network/wifi;ADID/2CF597D0-10D8-4DF8-C5A2-61FD79AC8035;model/iPhone11,1;addressid/7785283669;appBuild/167707;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/null;supportJDSHWK/1 】
 UserAgent = ''
 
 import os, re, sys
-import random, json, time
+import random, json, time, threading
 
 try:
     import requests
@@ -58,10 +48,7 @@ iPhone = ''.join(random.sample(["8", "9", "10", "11", "12", "13"], 1))
 ADID = ''.join(random.sample('0987654321ABCDEF', 8)) + '-' + ''.join(
     random.sample('0987654321ABCDEF', 4)) + '-' + ''.join(random.sample('0987654321ABCDEF', 4)) + '-' + ''.join(
     random.sample('0987654321ABCDEF', 4)) + '-' + ''.join(random.sample('0987654321ABCDEF', 12))
-
-
 ###
-
 
 def gettimestamp():
     return str(int(time.time() * 1000))
@@ -83,6 +70,16 @@ def getitem(self, baseurl, key, typ):
     r = self.get(url)
     item = json.loads(r.text)["data"]
     return item
+
+
+if "ccfxj_help" in os.environ:
+    if len(os.environ["ccfxj_help"]) > 1:
+        ccfxj_help = os.environ["ccfxj_help"]
+        if '&' in ccfxj_help:
+            ccfxj_help = ccfxj_help.split('&')
+        print("已获取并使用Env环境 ccfxj_help:", ccfxj_help)
+if not isinstance(ccfxj_help, list):
+    ccfxj_help = ccfxj_help.split(" ")
 
 
 def userAgent():
@@ -196,54 +193,52 @@ def zhuli(ck, inviteId, user):
         m = resp['data']['result']['toasts'][0]['msg']
         print(f"{user}--{m}")
     except:
-        # print(resp)
         print(f"{user}--助力失败")
 
 
 def start():
     scriptName = '### 城城分现金-助力 ###'
     print(scriptName)
+    ql_new = '/ql/config/env.sh'
+    ckfile = ql_new
+    if os.path.exists(ckfile):
+        with open(ckfile, "r", encoding="utf-8") as f:
+            ckss = f.read()
+            f.close()
+        cookies = re.findall(r"JD_COOKIE=\"(.*?)\"", ckss)[0]
+        cks = cookies.split("&")
+        if len(cks) > 0:
+            c_list = []
+            pin_list = []
+            for i in cks:
+                tp = i
+                ptpin = re.findall(r"pt_pin=(.*?);", tp)[0]
+                ptpin = "pt_pin=" + ptpin + ';'
+                pin_list.append(ptpin)
+                ptkey = re.findall(r"pt_key=(.*?);", tp)[0]
+                ptkey = "pt_key=" + ptkey + ';'
+                c = ptkey + ptpin
+                c_list.append(c)
+    else:
+        print("error")
 
-    # 获取ck
-    s = requests.session()
-    login(s, url1, cilent_id1, cilent_secret1)
-    cckeys = getitem(s, url1, "JD_COOKIE", "open")
-    c_list = []
-    pin_list = []
-    for i in cckeys:
-        tp = i['value']
-        ptpin = re.findall(r"pt_pin=(.*?);", tp)[0]
-        ptpin = "pt_pin=" + ptpin + ';'
-        pin_list.append(ptpin)
-        ptkey = re.findall(r"pt_key=(.*?);", tp)[0]
-        ptkey = "pt_key=" + ptkey + ';'
-        c = ptkey + ptpin
-        c_list.append(c)
+    global cookiesList, userNameList, pinNameList, ckNum
+    cookiesList = c_list
+    userNameList = pin_list
+    print("总助力人数{}\n".format(len(c_list)))
 
     #  查询互助码运行此程序，去掉下方注释
     # for ck,user in zip(cookiesList,userNameList):
     #   res = getInviteId(ck)
     #   print("{}的信息:{}".format(users,str(res)))
 
-    print()
-    # 下方运行互助
-    global cookiesList, userNameList, pinNameList, ckNum
-    cookiesList = c_list
-    userNameList = pin_list
-
-    print("总助力人数{}\n".format(len(c_list)))
-
-    print("\n助力：{}".format(share[0]))
-    for ck, user in zip(cookiesList, userNameList):
-        zhuli(ck, share[0], user)
-
-    print("\n助力：{}".format(share[1]))
-    for ck, user in zip(cookiesList, userNameList):
-        zhuli(ck, share[1], user)
-
-    print("\n助力：{}".format(share[2]))
-    for ck, user in zip(cookiesList, userNameList):
-        zhuli(ck, share[2], user)
+    temp = share.copy()
+    for i in range(len(share)):
+        wz = temp.pop(0)
+        print("\n助力：{}".format(wz))
+        for ck, user in zip(cookiesList, userNameList):
+            zhuli(ck, wz, user)
+        print()
 
     send(scriptName, msg_info)
 
