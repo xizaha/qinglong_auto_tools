@@ -72,16 +72,6 @@ def getitem(self, baseurl, key, typ):
     return item
 
 
-if "ccfxj_help" in os.environ:
-    if len(os.environ["ccfxj_help"]) > 1:
-        ccfxj_help = os.environ["ccfxj_help"]
-        if '&' in ccfxj_help:
-            ccfxj_help = ccfxj_help.split('&')
-        print("已获取并使用Env环境 ccfxj_help:", ccfxj_help)
-if not isinstance(ccfxj_help, list):
-    ccfxj_help = ccfxj_help.split(" ")
-
-
 def userAgent():
     """
     随机生成一个UA
