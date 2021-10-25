@@ -44,7 +44,7 @@ def getitem(self, baseurl, key, typ):
     r = self.get(url)
     item = json.loads(r.text)["data"]
     return item
-
+'''
 def ckup(wskey):
     #wskey=input("请输入wskey（样例：pin=xxxxxxx;wskey=xxxxx）：")
     ws=wskey
@@ -62,6 +62,16 @@ def ckup(wskey):
     for j in k:
         t = j.span()[1]
     pt_pin = 'pt_' + ws[0:t-7]+';'
+    ck = pt_pin+pt_key+wskey.split(';')[1]+';'
+    return ck
+'''
+def ckup(wskey):
+    pt_key = re.findall(r"wskey=(.*?);", wskey)[0]
+    pt_key = "pt_key=" + pt_key+";"
+    k = re.finditer("wskey=",wskey)
+    for j in k:
+        t = j.span()[1]
+    pt_pin = 'pt_' + wskey[0:t-7]+';'
     ck = pt_pin+pt_key+wskey.split(';')[1]+';'
     return ck
 
