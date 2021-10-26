@@ -1,0 +1,7 @@
+jdsign.cf
+code.chiang.fun
+nz.lu
+cdn.nz.lu
+share.turinglabs.net
+purge.jsdelivr.net
+cdn.jsdelivr.net

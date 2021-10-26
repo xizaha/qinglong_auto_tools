@@ -17,8 +17,11 @@
 | tasks_sync_able.py | 多容器同步任务启用禁用脚本，方便多容器管理，使用方法详见注释 |
 | tasks_sync_scripts_able.py | 多容器同步已启用的脚本文件，方便多容器脚本更新管理，使用方法详见注释 |
 | tasks_sync_all.py | 多容器无脑同步所有脚本文件和任务，方便多容器脚本迁移管理，使用方法详见注释 |
+| scripts_check_nets.py | 单容器查询自己脚本文件中的网络链接，查询脚本中含有的链接，使用方法详见注释 |
+| scripts_purge_keys.py | 单容器清除屏蔽词脚本，屏蔽脚本中含有的屏蔽词，使用方法详见注释 |
 
-### 分容器相关脚本 
+
+### 多容器相关脚本 
 
 仅支持云服务器部署的2.9.0以上的青龙
 
@@ -35,6 +38,21 @@
 
 ```bash
 ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git "tasks_|cks_"
+```
+
+### 单容器相关脚本
+
+仅支持云服务器部署的2.9.0以上的青龙
+
+| 文件名字 | 用途 |
+|  ----  | ----  |
+| scripts_check_nets.py | 单容器查询自己脚本文件中的网络链接，查询脚本中含有的链接，使用方法详见注释 |
+| scripts_purge_keys.py | 单容器清除屏蔽词脚本，屏蔽容器脚本中含有的屏蔽词，使用方法详见注释 |
+
+青龙拉取命令：
+
+```bash
+ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git "scripts_"
 ```
 
 ### 适配火狐浏览器的青龙面板自动上传ck脚本
@@ -74,9 +92,9 @@ ck1&ck2&ck3
 
 ps:网速不好的加载不出来页面请自行调高操作间隔，我设置的都是0.几秒
 
-2021.10.24
+2021.10.26
 
-更新仓库结构，更新机器人查询，更新自修改脚本
+更新单容器脚本
 
 转载起码保留作者名谢谢
 
