@@ -1,4 +1,3 @@
-jdsign.cf
 code.chiang.fun
 nz.lu
 cdn.nz.lu
