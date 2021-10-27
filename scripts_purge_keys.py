@@ -8,18 +8,80 @@ new Env('二叉树屏蔽关键词');
 '''
 
 
+# 主青龙，需要屏蔽关键词的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
+'''
+# ec_config.txt中填写如下设置
+
+# 二叉树清除屏蔽词
+scripts_purge_keys_cilent_id1="xxxxxxx"
+scripts_purge_keys_cilent_secret1="xxxxx"
+scripts_purge_keys_url1="http://xxxxxx:xxxx/"
+
+'''
+
+import re
+
+try:
+    with open("ec_config.txt", "r") as fp:
+        t = fp.readlines()
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"scripts_purge_keys_cilent_id1=\"(.*?)\"", i)[0]
+                cilent_id1 = temp
+                if cilent_id1 == "":
+                    print("scripts_purge_keys_cilent_id1 未填写")
+            except:
+                pass
+    except:
+        print("scripts_purge_keys_cilent_id1 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"scripts_purge_keys_cilent_secret1=\"(.*?)\"", i)[0]
+                cilent_secret1 = temp
+                if cilent_secret1 == "":
+                    print("scripts_purge_keys_cilent_secret1 未填写")
+            except:
+                pass
+    except:
+        print("scripts_purge_keys_cilent_secret1 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"scripts_purge_keys_url1=\"(.*?)\"", i)[0]
+                url1 = temp
+                if url1 == "":
+                    print("scripts_purge_keys_url1 未填写")
+            except:
+                pass
+    except:
+        print("scripts_purge_keys_url1 未创建")
+        exit(3)
+except:
+    print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
+
 
 # 主青龙，需要查找网络链接的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
-cilent_id1 = ""
-cilent_secret1 = ""
-url1 = ""
+#cilent_id1 = ""
+#cilent_secret1 = ""
+#url1 = ""
 
 # 屏蔽词
 keys = []
 
 # 屏蔽词也可在fake_keys.txt中按一行一行填写
-with open("fake_keys.txt", "r") as fp:
-    t = fp.readlines()
+try:
+    with open("fake_keys.txt", "r") as fp:
+        t = fp.readlines()
+    for j in t:
+        keys.append(j)
+except:
+    print("fake_keys.txt 未创建，有需要请按照注释进行操作")
 
 for i in t:
     keys.append(i)
@@ -29,12 +91,12 @@ keys = list(set(keys))
 # 屏蔽词替换成real_key的值
 real_key = "www.baidu.com"
 
-#fake_keys
-
-import requests
+try:
+    import requests
+except Exception as e:
+    print(e, "\n缺少requests 模块，请执行命令安装：pip3 install requests")
 import time
 import json
-import re
 
 requests.packages.urllib3.disable_warnings()
 
@@ -110,7 +172,7 @@ if __name__ == '__main__':
     try:
         zscripts.remove("fake_keys.txt")
     except:
-        print("fake_keys.txt 不在脚本列表里\n")
+        pass
     print("主青龙脚本文件数量：{}".format(len(zscripts_list)))
     print()
     print()
@@ -141,7 +203,6 @@ if __name__ == '__main__':
         for j in keys:
             if j in tpp:
                 tpp = tpp.replace(j, real_key, 30)
-                print("1")
         tp.append(tpp)
 
     # 构造请求内容
@@ -154,7 +215,6 @@ if __name__ == '__main__':
                 "content": k,
             }
             change_k.append(data_script)
-            print("2")
         else:
             change_k.append(change_script_list[count])
         count += 1

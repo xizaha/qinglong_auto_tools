@@ -7,38 +7,195 @@ cron: 1
 new Env('二叉树分发ck');
 '''
 
-#在脚本管理里修改这个文件的配置，然后保存，然后禁用 二叉树分发ck 这个任务，有需要再点运行
-#记得修改定时，定时在你的转换ck脚本运行完后分发即可
+# 在脚本管理里修改这个文件的配置，然后保存，然后禁用 二叉树分发ck 这个任务，有需要再点运行
+# 记得修改定时，定时在你的转换ck脚本运行完后分发即可
 
 # 主青龙，wskey容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
 # 本分发脚本不含转ck功能，只分发，默认分发的环境变量名为JD_COOKIE，其他变量名自己按照下面注释改
-client_id1=""
-client_secret1=""
-url1 = "http://ip:端口/"
+# 分发不含wskey的ck的分容器，事先需要在分容器里创建应用，给所有权限，然后重启容器，应用设置才会生效
+# 按照格式有几个写几个，没有的空的删除
+# 备份ck的容器，里面传入所有转换后的ck，，事先需要在备份容器里创建应用，给所有权限，然后重启容器，应用设置才会生效
+# ps:跑一些需要所有ck脚本的备份容器，你懂的
+'''
+# ec_config.txt中填写如下设置
 
-#分发不含wskey的ck的分容器，事先需要在分容器里创建应用，给所有权限，然后重启容器，应用设置才会生效
-#按照格式有几个写几个，没有的空的删除
-client_ids=['','','']
-client_secrets=['','','']
-urllist = ["http://xxxx:xxxx/","",""]
+# 二叉树分发ck
+### 主青龙
+cks_push_alql_cilent_id1="xxxxxxxx"
+cks_push_alql_cilent_secret1="xxxxxxxxxx"
+cks_push_alql_url1="http://xxxxxxxx:xxxx/"
+### 副青龙
+cks_push_alql_client_ids=["",""]
+cks_push_alql_client_secrets=["",""]
+cks_push_alql_urllist=["http://xxxxxxxxx:xxxx/",""]
+### 备份容器
+cks_push_alql_cilent_id_che="xxxxxxxx"
+cks_push_alql_cilent_secret_che="xxxxxxxxxx"
+cks_push_alql_che="http://xxxxxxxx:xxxx/"
 
-#备份ck的容器，里面传入所有转换后的ck，，事先需要在备份容器里创建应用，给所有权限，然后重启容器，应用设置才会生效
-#ps:跑一些需要所有ck脚本的备份容器，你懂的
-che = "http://xxxxx:xxx/"
-client_id_che=''
-client_secret_che=''
+'''
+#client_id1=""
+#client_secret1=""
+#url1 = "http://ip:端口/"
+#client_ids=['','','']
+#client_secrets=['','','']
+#urllist = ["http://xxxx:xxxx/","",""]
+#client_id_che=''
+#client_secret_che=''
+#che = "http://xxxxx:xxx/"
 
 
 import os
 import time
 import json
 import re
-
 try:
     import requests
 except Exception as e:
     print(e, "\n缺少requests 模块，请执行命令安装：python3 -m pip install requests")
     exit(3)
+
+
+try:
+    with open("ec_config.txt", "r", encoding="utf-8") as fp:
+        t = fp.readlines()
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"cks_push_alql_cilent_id1=\"(.*?)\"", i)[0]
+                client_id1 = temp
+                if client_id1 == "":
+                    print("cks_push_alql_cilent_id1 未填写")
+            except:
+                pass
+    except:
+        print("cks_push_alql_cilent_id1 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"cks_push_alql_cilent_secret1=\"(.*?)\"", i)[0]
+                client_secret1 = temp
+                if client_secret1 == "":
+                    print("cks_push_alql_cilent_secret1 未填写")
+            except:
+                pass
+    except:
+        print("cks_push_alql_cilent_secret1 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"cks_push_alql_url1=\"(.*?)\"", i)[0]
+                url1 = temp
+                if url1 == "":
+                    print("cks_push_alql_url1 未填写")
+            except:
+                pass
+    except:
+        print("cks_push_alql_url1 未创建")
+        exit(3)
+except:
+    print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
+
+
+try:
+    try:
+        for i in t:
+            try:
+                temp = "["+re.findall(r"cks_push_alql_client_ids=\[(.*?)\]", i)[0]+"]"
+                try:
+                    client_ids = json.loads(temp)
+                except:
+                    print("cks_push_alql_client_ids 填写有误")
+                if client_ids == []:
+                    print("cks_push_alql_client_ids 未填写")
+            except:
+                pass
+    except:
+        print("cks_push_alql_client_ids 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = "["+re.findall(r"cks_push_alql_client_secrets=\[(.*?)\]", i)[0]+"]"
+                try:
+                    client_secrets = json.loads(temp)
+                except:
+                    print("cks_push_alql_client_secrets 填写有误")
+                if client_secrets == []:
+                    print("cks_push_alql_client_secrets 未填写")
+            except:
+                pass
+    except:
+        print("cks_push_alql_client_secrets 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = "["+re.findall(r"cks_push_alql_urllist=\[(.*?)\]", i)[0]+"]"
+                try:
+                    urllist = json.loads(temp)
+                except:
+                    print("cks_push_alql_urllist 填写有误")
+                if urllist == []:
+                    print("cks_push_alql_urllist 未填写")
+            except:
+                pass
+    except:
+        print("cks_push_alql_urllist 未创建")
+        exit(3)
+except:
+    print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
+
+
+
+try:
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"cks_push_alql_cilent_id_che=\"(.*?)\"", i)[0]
+                client_id_che = temp
+                if client_id_che == "":
+                    print("cks_push_alql_cilent_id_che 未填写")
+            except:
+                pass
+    except:
+        print("cks_push_alql_cilent_id_che 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"cks_push_alql_cilent_secret_che=\"(.*?)\"", i)[0]
+                client_secret_che = temp
+                if client_secret_che == "":
+                    print("cks_push_alql_cilent_secret_che 未填写")
+            except:
+                pass
+    except:
+        print("cks_push_alql_cilent_secret_che 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"cks_push_alql_che=\"(.*?)\"", i)[0]
+                che = temp
+                if che == "":
+                    print("cks_push_alql_che 未填写")
+            except:
+                pass
+    except:
+        print("cks_push_alql_che 未创建")
+        exit(3)
+except:
+    print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
+
 
 requests.packages.urllib3.disable_warnings()
 

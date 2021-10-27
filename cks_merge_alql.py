@@ -11,29 +11,137 @@ new Env('二叉树合并ck');
 
 # 主青龙，合并结果存储的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
 # 本脚本不含转ck功能，只合并ck，默认合并的环境变量名为JD_COOKIE，其他变量名自己按照下面注释改
-
-merge_id = ""
-merge_secret = ""
-merge_url = ""
-
-
 # 被合并ck的分容器，事先需要在分容器里创建应用，给所有权限，然后重启容器，应用设置才会生效
 # 按照格式有几个写几个，没有的空的删除
-client_ids=['','','','']
-client_secrets=['','','','']
-urllist = ["http://xxxx:xxxx/","","",'']
+'''
+# ec_config.txt中填写如下设置
+
+# 二叉树合并ck
+### 主青龙
+cks_merge_alql_cilent_id1="xxxxxxxx"
+cks_merge_alql_cilent_secret1="xxxxxxxxxx"
+cks_merge_alql_url1="http://xxxxxxxx:xxxx/"
+
+### 副青龙
+cks_merge_alql_client_ids=["",""]
+cks_merge_alql_client_secrets=["",""]
+cks_merge_alql_urllist=["http://xxxxxxxxx:xxxx/",""]
+
+'''
+#merge_id = ""
+#merge_secret = ""
+#merge_url = ""
+#client_ids=['','','','']
+#client_secrets=['','','','']
+#urllist = ["http://xxxx:xxxx/","","",'']
 
 
 import time
 import json
 import re
-
-
 try:
     import requests
 except Exception as e:
     print(e, "\n缺少requests 模块，请执行命令安装：python3 -m pip install requests")
     exit(3)
+
+
+try:
+    with open("ec_config.txt", "r", encoding="utf-8") as fp:
+        t = fp.readlines()
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"cks_merge_alql_cilent_id1=\"(.*?)\"", i)[0]
+                merge_id = temp
+                if merge_id == "":
+                    print("cks_merge_alql_cilent_id1 未填写")
+            except:
+                pass
+    except:
+        print("cks_merge_alql_cilent_id1 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"cks_merge_alql_cilent_secret1=\"(.*?)\"", i)[0]
+                merge_secret = temp
+                if merge_secret == "":
+                    print("cks_merge_alql_cilent_secret1 未填写")
+            except:
+                pass
+    except:
+        print("cks_merge_alql_cilent_secret1 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"cks_merge_alql_url1=\"(.*?)\"", i)[0]
+                merge_url = temp
+                if merge_url == "":
+                    print("cks_merge_alql_url1 未填写")
+            except:
+                pass
+    except:
+        print("cks_merge_alql_url1 未创建")
+        exit(3)
+except:
+    print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
+
+
+try:
+    try:
+        for i in t:
+            try:
+                temp = "["+re.findall(r"cks_merge_alql_client_ids=\[(.*?)\]", i)[0]+"]"
+                try:
+                    client_ids = json.loads(temp)
+                except:
+                    print("cks_merge_alql_client_ids 填写有误")
+                if client_ids == []:
+                    print("cks_merge_alql_client_ids 未填写")
+            except:
+                pass
+    except:
+        print("cks_merge_alql_client_ids 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = "["+re.findall(r"cks_merge_alql_client_secrets=\[(.*?)\]", i)[0]+"]"
+                try:
+                    client_secrets = json.loads(temp)
+                except:
+                    print("cks_merge_alql_client_secrets 填写有误")
+                if client_secrets == []:
+                    print("cks_merge_alql_client_secrets 未填写")
+            except:
+                pass
+    except:
+        print("cks_merge_alql_client_secrets 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = "["+re.findall(r"cks_merge_alql_urllist=\[(.*?)\]", i)[0]+"]"
+                try:
+                    urllist = json.loads(temp)
+                except:
+                    print("cks_merge_alql_urllist 填写有误")
+                if urllist == []:
+                    print("cks_merge_alql_urllist 未填写")
+            except:
+                pass
+    except:
+        print("cks_merge_alql_urllist 未创建")
+        exit(3)
+except:
+    print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
+
 
 requests.packages.urllib3.disable_warnings()
 

@@ -14,24 +14,34 @@ new Env('二叉树环境变量状态同步');
 
 
 # 主青龙，需要修改环境变量的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
-client_id1=""
-client_secret1=""
-url1 = "http://ip:端口/"
-
-
 # 副青龙，被同步环境变量的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
 # 按照格式有几个写几个，没有的空的删除
-client_ids=['','','']
-client_secrets=['','','']
-urllist = ["http://xxxx:xxxx/","",""]
+'''
+# ec_config.txt中填写如下设置
 
+# 二叉树环境变量状态同步
+### 主青龙
+cks_sync_able_cilent_id1="xxxxxxxx"
+cks_sync_able_cilent_secret1="xxxxxxxxxx"
+cks_sync_able_url1="http://xxxxxxxx:xxxx/"
 
+### 副青龙
+cks_sync_able_client_ids=["",""]
+cks_sync_able_client_secrets=["",""]
+cks_sync_able_urllist=["http://xxxxxxxxx:xxxx/",""]
+
+'''
+# client_id1=""
+# client_secret1=""
+# url1 = "http://ip:端口/"
+# client_ids=['','','']
+# client_secrets=['','','']
+# urllist = ["http://xxxx:xxxx/","",""]
 
 
 import time
 import json
 import re
-
 try:
     import requests
 except Exception as e:
@@ -39,6 +49,101 @@ except Exception as e:
     exit(3)
 
 
+try:
+    with open("ec_config.txt", "r", encoding="utf-8") as fp:
+        t = fp.readlines()
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"cks_sync_able_cilent_id1=\"(.*?)\"", i)[0]
+                client_id1 = temp
+                if client_id1 == "":
+                    print("cks_sync_able_cilent_id1 未填写")
+            except:
+                pass
+    except:
+        print("cks_sync_able_cilent_id1 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"cks_sync_able_cilent_secret1=\"(.*?)\"", i)[0]
+                client_secret1 = temp
+                if client_secret1 == "":
+                    print("cks_sync_able_cilent_secret1 未填写")
+            except:
+                pass
+    except:
+        print("cks_sync_able_cilent_secret1 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"cks_sync_able_url1=\"(.*?)\"", i)[0]
+                url1 = temp
+                if url1 == "":
+                    print("cks_sync_able_url1 未填写")
+            except:
+                pass
+    except:
+        print("cks_sync_able_url1 未创建")
+        exit(3)
+except:
+    print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
+
+
+try:
+    try:
+        for i in t:
+            try:
+                temp = "["+re.findall(r"cks_sync_able_client_ids=\[(.*?)\]", i)[0]+"]"
+                try:
+                    client_ids = json.loads(temp)
+                except:
+                    print("cks_sync_able_client_ids 填写有误")
+                if client_ids == []:
+                    print("cks_sync_able_client_ids 未填写")
+            except:
+                pass
+    except:
+        print("cks_sync_able_client_ids 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = "["+re.findall(r"cks_sync_able_client_secrets=\[(.*?)\]", i)[0]+"]"
+                try:
+                    client_secrets = json.loads(temp)
+                except:
+                    print("cks_sync_able_client_secrets 填写有误")
+                if client_secrets == []:
+                    print("cks_sync_able_client_secrets 未填写")
+            except:
+                pass
+    except:
+        print("cks_sync_able_client_secrets 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = "["+re.findall(r"cks_sync_able_urllist=\[(.*?)\]", i)[0]+"]"
+                try:
+                    urllist = json.loads(temp)
+                except:
+                    print("cks_sync_able_urllist 填写有误")
+                if urllist == []:
+                    print("cks_sync_able_urllist 未填写")
+            except:
+                pass
+    except:
+        print("cks_sync_able_urllist 未创建")
+        exit(3)
+except:
+    print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
 
 requests.packages.urllib3.disable_warnings()
 

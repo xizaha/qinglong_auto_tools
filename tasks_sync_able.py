@@ -5,32 +5,139 @@
 cron: 1
 new Env('二叉树同步任务启用禁用');
 '''
-#同步任务是否启用禁用，不存在于分容器的不会同步新增
+# 同步任务是否启用禁用，不存在于分容器的不会同步新增
 
-#在脚本管理里修改这个文件的配置，然后保存，然后禁用 二叉树同步任务启用禁用 这个任务，有需要再点运行
+# 在脚本管理里修改这个文件的配置，然后保存，然后禁用 二叉树同步任务启用禁用 这个任务，有需要再点运行
 
 
 # 主青龙，需要修改任务的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
-client_id1=""
-client_secret1=""
-url1 = "http://ip:端口/"
-
 # 副青龙，被同步的任务容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
-#按照格式有几个写几个，没有的空的删除
-client_ids=['','','','']
-client_secrets=['','','','']
-urllist = ["http://xxxx:xxxx/","","",'']
+# 按照格式有几个写几个，没有的空的删除
+'''
+# ec_config.txt中填写如下设置
 
+# 二叉树同步任务启用禁用
+### 主青龙
+tasks_sync_able_cilent_id1="xxxxxxxx"
+tasks_sync_able_cilent_secret1="xxxxxxxxxx"
+tasks_sync_able_url1="http://xxxxxxxx:xxxx/"
 
+### 副青龙
+tasks_sync_able_client_ids=["",""]
+tasks_sync_able_client_secrets=["",""]
+tasks_sync_able_urllist=["http://xxxxxxxxx:xxxx/",""]
+
+'''
+#client_id1=""
+#client_secret1=""
+#url1 = "http://ip:端口/"
+#client_ids=['','','','']
+#client_secrets=['','','','']
+#urllist = ["http://xxxx:xxxx/","","",""]
+
+import re
 import time
 import json
-
-
 try:
     import requests
 except Exception as e:
     print(e, "\n缺少requests 模块，请执行命令安装：python3 -m pip install requests")
-    exit(3)
+
+try:
+    with open("ec_config.txt", "r", encoding="utf-8") as fp:
+        t = fp.readlines()
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"tasks_sync_able_cilent_id1=\"(.*?)\"", i)[0]
+                client_id1 = temp
+                if client_id1 == "":
+                    print("tasks_sync_able_cilent_id1 未填写")
+            except:
+                pass
+    except:
+        print("tasks_sync_able_cilent_id1 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"tasks_sync_able_cilent_secret1=\"(.*?)\"", i)[0]
+                client_secret1 = temp
+                if client_secret1 == "":
+                    print("tasks_sync_able_cilent_secret1 未填写")
+            except:
+                pass
+    except:
+        print("tasks_sync_able_cilent_secret1 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = re.findall(r"tasks_sync_able_url1=\"(.*?)\"", i)[0]
+                url1 = temp
+                if url1 == "":
+                    print("tasks_sync_able_url1 未填写")
+            except:
+                pass
+    except:
+        print("tasks_sync_able_url1 未创建")
+        exit(3)
+except:
+    print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
+
+
+try:
+    try:
+        for i in t:
+            try:
+                temp = "["+re.findall(r"tasks_sync_able_client_ids=\[(.*?)\]", i)[0]+"]"
+                try:
+                    client_ids = json.loads(temp)
+                except:
+                    print("tasks_sync_able_client_ids 填写有误")
+                if client_ids == []:
+                    print("tasks_sync_able_client_ids 未填写")
+            except:
+                pass
+    except:
+        print("tasks_sync_able_client_ids 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = "["+re.findall(r"tasks_sync_able_client_secrets=\[(.*?)\]", i)[0]+"]"
+                try:
+                    client_secrets = json.loads(temp)
+                except:
+                    print("tasks_sync_able_client_secrets 填写有误")
+                if client_secrets == []:
+                    print("tasks_sync_able_client_secrets 未填写")
+            except:
+                pass
+    except:
+        print("tasks_sync_able_client_secrets 未创建")
+        exit(3)
+
+    try:
+        for i in t:
+            try:
+                temp = "["+re.findall(r"tasks_sync_able_urllist=\[(.*?)\]", i)[0]+"]"
+                try:
+                    urllist = json.loads(temp)
+                except:
+                    print("tasks_sync_able_urllist 填写有误")
+                if urllist == []:
+                    print("tasks_sync_able_urllist 未填写")
+            except:
+                pass
+    except:
+        print("tasks_sync_able_urllist 未创建")
+        exit(3)
+except:
+    print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
 
 
 requests.packages.urllib3.disable_warnings()
