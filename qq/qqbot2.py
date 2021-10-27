@@ -5,8 +5,9 @@
 
 client_id = [""]
 client_secret = [""]
-urllist = ["http://xxxxxxxx:xxxx/"]
+urllist = ["http://xxxxx:xxxxxx6/"]
 zQQ = ""
+
 
 from aiocqhttp import CQHttp, Event, Message, MessageSegment
 import requests, os
@@ -44,27 +45,13 @@ def getitem(self, baseurl, key, typ):
     r = self.get(url)
     item = json.loads(r.text)["data"]
     return item
-'''
-def ckup(wskey):
-    #wskey=input("请输入wskey（样例：pin=xxxxxxx;wskey=xxxxx）：")
-    ws=wskey
-    headers = {
-            "Host": "signer.nz.lu",
-            "user-agent": "Mozilla/5.0 (Windows NT 6.3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"
-        }
-    url="http://cdn.xia.me/getck"
-    data={"wskey": ws ,"key":"xb3z4z2m3n847"}
-    data=json.dumps(data)
-    r=requests.post(url,headers=headers,data=data, verify=False)
-    i = str(r.text)
-    pt_key = i[0:90]+';'
-    k = re.finditer("wskey=",ws)
-    for j in k:
-        t = j.span()[1]
-    pt_pin = 'pt_' + ws[0:t-7]+';'
-    ck = pt_pin+pt_key+wskey.split(';')[1]+';'
-    return ck
-'''
+
+def gettaskitem(self, baseurl, typ):
+    url = baseurl + typ + "/crons?t=%s" % gettimestamp()
+    r = self.get(url)
+    item = json.loads(r.text)["data"]
+    return item
+
 def ckup(wskey):
     pt_key = re.findall(r"wskey=(.*?);", wskey)[0]
     pt_key = "pt_key=" + pt_key+";"
@@ -125,7 +112,7 @@ def push_QQ(userid, res_text, typ):
         'user_id': userid,
         'message': res_text
     }
-    requests.post('http://xxxxxx:xxxxx/' + typ, data)# go-cahttp部署的端口
+    requests.post('http://xxxxxxxxx:监听端口/' + typ, data)
 
 
 def pre_check(userid):
@@ -136,10 +123,12 @@ def pre_check(userid):
         tmpss.append(o.replace('\n', ''))
     Q_list = []
     p_list = []
+    #z_list = []
     for i in tmpss:
         qwe = i.split(',')
         Q_list.append(qwe[0])
         p_list.append(qwe[1])
+        #z_list.append(qwe[2])
     if str(userid) in Q_list:
         b = []
         for index, nums in enumerate(Q_list):
@@ -156,6 +145,7 @@ def pre_check(userid):
 def check(a, msg):
     userid = msg.split(',')[0]
     pin = msg.split(',')[1]
+    #name = msg.split(',')[2]
     push_type = 'send_private_msg'
 
 
@@ -163,6 +153,7 @@ def check(a, msg):
     url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_id[ucount] + '&client_secret=' + client_secret[
         ucount]
     gettoken(a, url_token)
+    #pin = "jd_7ac5332efb1c2"
     cks = getitem(a, urllist[0], "JD_COOKIE", "open")
     res = getitem(a, urllist[0], pin, "open")
     weizhi = cks.index(res[0]) + 1
@@ -174,8 +165,11 @@ def check(a, msg):
     # 创建任务
     res1 = addcron(a, urllist[0], "open", data)
     id = json.loads(res1)["data"]["_id"]
+    # print(res1)
+    # 执行任务
 
     res2 = runcron(a, urllist[0], "open", [id])
+    # print(res2)
 
     res3 = getstatus(a, urllist[0], "open", [id])
 
@@ -205,6 +199,7 @@ def check(a, msg):
     res_text = res_text.replace("收入", "入")
 
     push_QQ(userid, res_text, push_type)
+    #return res_text
 
 
 def select_(chat):
@@ -219,16 +214,21 @@ def select_(chat):
         tmpss.append(o.replace('\n', ''))
     Q_list = []
     p_list = []
+    #z_list = []
     for i in tmpss:
         qwe = i.split(',')
         Q_list.append(qwe[0])
         p_list.append(qwe[1])
+        #z_list.append(qwe[2])
     if cht[1] in p_list:
+        # index = p_list.index(cht[1])
+        # return '{},{},{}'.format(Q_list[index],p_list[index],z_list[index])
         return '该京东账号的pin已经被绑定了，请更换绑定账号'
     else:
         with open("data.txt", "a") as fe:
             fe.write("\n{},{}".format(cht[0], cht[1]))
         return '{},{}'.format(cht[0], cht[1])
+
 
 @bot.on_message
 async def handle_msg(event):
@@ -244,6 +244,210 @@ async def handle_msg(event):
             await bot.send(event, '账号增加完毕，查询资产请输入‘check’')
         else:
             await bot.send(event, response)
+    elif msg == 'common' and str(event['sender']['user_id']) == zQQ:
+        ucount = 0
+        url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_id[ucount] + '&client_secret=' + client_secret[ucount]
+        gettoken(a, url_token)
+        ztasks = gettaskitem(a, urllist[0], "open")
+        disable_list = []
+        for i in ztasks:
+            if i['isDisabled'] != 0:
+                disable_list.append(i)
+        disable_tlid = []
+        disable_tname = []
+        disable_tcommand = []
+        for j in disable_list:
+            disable_tlid.append(j['_id'])
+            disable_tname.append(j['name'])
+            disable_tcommand.append(j['command'])
+        count=0
+        for i in disable_tname:
+            if i == "通用开卡[普通]":
+                id = disable_tlid[count]
+        res2 = runcron(a, urllist[0], "open", [id])
+        res3 = getstatus(a, urllist[0], "open", [id])
+        ms = "还在运行中，请稍后"
+        push_QQ(zQQ,ms,'send_private_msg')
+        while True:
+            if json.loads(res3)["data"]["status"] == 0:
+                time.sleep(8)
+                res3 = getstatus(a, urllist[0], "open", [id])
+            else:
+                break
+        time.sleep(1)
+        res4 = getlogcron(a, urllist[0], "open", [id])
+        ms = json.loads(res4)["data"][-100:-40]
+        push_QQ(zQQ,ms,'send_private_msg')
+    elif msg == 'game' and str(event['sender']['user_id']) == zQQ:
+        ucount = 0
+        url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_id[ucount] + '&client_secret=' + client_secret[ucount]
+        gettoken(a, url_token)
+        ztasks = gettaskitem(a, urllist[0], "open")
+        disable_list = []
+        for i in ztasks:
+            if i['isDisabled'] != 0:
+                disable_list.append(i)
+        disable_tlid = []
+        disable_tname = []
+        disable_tcommand = []
+        for j in disable_list:
+            disable_tlid.append(j['_id'])
+            disable_tname.append(j['name'])
+            disable_tcommand.append(j['command'])
+        count=0
+        for i in disable_tname:
+            if i == "通用京东游戏":
+                id = disable_tlid[count]
+        res2 = runcron(a, urllist[0], "open", [id])
+        res3 = getstatus(a, urllist[0], "open", [id])
+        ms = "还在运行中，请稍后"
+        push_QQ(zQQ,ms,'send_private_msg')
+        while True:
+            if json.loads(res3)["data"]["status"] == 0:
+                time.sleep(8)
+                res3 = getstatus(a, urllist[0], "open", [id])
+            else:
+                break
+        time.sleep(1)
+        res4 = getlogcron(a, urllist[0], "open", [id])
+        ms = json.loads(res4)["data"][-100:-40]
+        push_QQ(zQQ,ms,'send_private_msg')
+    elif msg == 'collect' and str(event['sender']['user_id']) == zQQ:
+        ucount = 0
+        url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_id[ucount] + '&client_secret=' + client_secret[ucount]
+        gettoken(a, url_token)
+        ztasks = gettaskitem(a, urllist[0], "open")
+        disable_list = []
+        for i in ztasks:
+            if i['isDisabled'] != 0:
+                disable_list.append(i)
+        disable_tlid = []
+        disable_tname = []
+        disable_tcommand = []
+        for j in disable_list:
+            disable_tlid.append(j['_id'])
+            disable_tname.append(j['name'])
+            disable_tcommand.append(j['command'])
+        count=0
+        for i in disable_tname:
+            if i == "通用集卡":
+                id = disable_tlid[count]
+        res2 = runcron(a, urllist[0], "open", [id])
+        res3 = getstatus(a, urllist[0], "open", [id])
+        ms = "还在运行中，请稍后"
+        push_QQ(zQQ,ms,'send_private_msg')
+        while True:
+            if json.loads(res3)["data"]["status"] == 0:
+                time.sleep(8)
+                res3 = getstatus(a, urllist[0], "open", [id])
+            else:
+                break
+        time.sleep(1)
+        res4 = getlogcron(a, urllist[0], "open", [id])
+        ms = json.loads(res4)["data"][-100:-40]
+        push_QQ(zQQ,ms,'send_private_msg')
+    elif msg == '1600' and str(event['sender']['user_id']) == zQQ:
+        ucount = 0
+        url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_id[ucount] + '&client_secret=' + client_secret[ucount]
+        gettoken(a, url_token)
+        ztasks = gettaskitem(a, urllist[0], "open")
+        disable_list = []
+        for i in ztasks:
+            if i['isDisabled'] != 0:
+                disable_list.append(i)
+        disable_tlid = []
+        disable_tname = []
+        disable_tcommand = []
+        for j in disable_list:
+            disable_tlid.append(j['_id'])
+            disable_tname.append(j['name'])
+            disable_tcommand.append(j['command'])
+        count=0
+        for i in disable_tname:
+            if i == "通用开卡[1600]":
+                id = disable_tlid[count]
+        res2 = runcron(a, urllist[0], "open", [id])
+        res3 = getstatus(a, urllist[0], "open", [id])
+        ms = "还在运行中，请稍后"
+        push_QQ(zQQ,ms,'send_private_msg')
+        while True:
+            if json.loads(res3)["data"]["status"] == 0:
+                time.sleep(8)
+                res3 = getstatus(a, urllist[0], "open", [id])
+            else:
+                break
+        time.sleep(1)
+        res4 = getlogcron(a, urllist[0], "open", [id])
+        ms = json.loads(res4)["data"][-100:-40]
+        push_QQ(zQQ,ms,'send_private_msg')
+    elif msg == 'video' and str(event['sender']['user_id']) == zQQ:
+        ucount = 0
+        url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_id[ucount] + '&client_secret=' + client_secret[ucount]
+        gettoken(a, url_token)
+        ztasks = gettaskitem(a, urllist[0], "open")
+        disable_list = []
+        for i in ztasks:
+            if i['isDisabled'] != 0:
+                disable_list.append(i)
+        disable_tlid = []
+        disable_tname = []
+        disable_tcommand = []
+        for j in disable_list:
+            disable_tlid.append(j['_id'])
+            disable_tname.append(j['name'])
+            disable_tcommand.append(j['command'])
+        count=0
+        for i in disable_tname:
+            if i == "通用京东视频狂得京豆":
+                id = disable_tlid[count]
+        res2 = runcron(a, urllist[0], "open", [id])
+        res3 = getstatus(a, urllist[0], "open", [id])
+        ms = "还在运行中，请稍后"
+        push_QQ(zQQ,ms,'send_private_msg')
+        while True:
+            if json.loads(res3)["data"]["status"] == 0:
+                time.sleep(8)
+                res3 = getstatus(a, urllist[0], "open", [id])
+            else:
+                break
+        time.sleep(1)
+        res4 = getlogcron(a, urllist[0], "open", [id])
+        ms = json.loads(res4)["data"][-100:-40]
+        push_QQ(zQQ,ms,'send_private_msg')
+    elif msg == 'share' and str(event['sender']['user_id']) == zQQ:
+        ucount = 0
+        url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_id[ucount] + '&client_secret=' + client_secret[ucount]
+        gettoken(a, url_token)
+        ztasks = gettaskitem(a, urllist[0], "open")
+        disable_list = []
+        for i in ztasks:
+            if i['isDisabled'] != 0:
+                disable_list.append(i)
+        disable_tlid = []
+        disable_tname = []
+        disable_tcommand = []
+        for j in disable_list:
+            disable_tlid.append(j['_id'])
+            disable_tname.append(j['name'])
+            disable_tcommand.append(j['command'])
+        count=0
+        for i in disable_tname:
+            if i == "通用分享":
+                id = disable_tlid[count]
+        res2 = runcron(a, urllist[0], "open", [id])
+        res3 = getstatus(a, urllist[0], "open", [id])
+        ms = "还在运行中，请稍后"
+        push_QQ(zQQ,ms,'send_private_msg')
+        while True:
+            if json.loads(res3)["data"]["status"] == 0:
+                time.sleep(8)
+                res3 = getstatus(a, urllist[0], "open", [id])
+            else:
+                break
+        time.sleep(1)
+        res4 = getlogcron(a, urllist[0], "open", [id])
+        ms = json.loads(res4)["data"][-100:-40]
+        push_QQ(zQQ,ms,'send_private_msg')
     elif msg == 'check':
         await bot.send(event, '查询中')
         userid = event['sender']['user_id']
@@ -253,7 +457,8 @@ async def handle_msg(event):
         else:
             for i in response:
                 rest = check(a, i)
-    elif (msg[0] == 'p'):# 转换ck
+    elif (msg[0] == 'p'):
+        print('ck  ')
         ck = ckup(msg)
         push_QQ(zQQ,ck,'send_private_msg')
         print(ck)
@@ -263,3 +468,4 @@ async def handle_msg(event):
 
 
 bot.run(host='127.0.0.1', port=5701)  # go-cahttp监听的端口
+
