@@ -9,15 +9,19 @@ urllist = ["http://xxxxxxx:xxxx/"]
 zQQ = ""
 
 from aiocqhttp import CQHttp, Event, Message, MessageSegment
+from apscheduler.schedulers.background import BackgroundScheduler
 import requests, os
 import time, random
 import json
 import re
+import datetime
 
 bot = CQHttp(api_root='http://127.0.0.1:5700')  # go-cahttp部署的端口
 
 requests.packages.urllib3.disable_warnings()
 a = requests.session()
+scheduler = BackgroundScheduler()
+scheduler.start()
 
 
 def gettimestamp():
@@ -241,8 +245,7 @@ def command_t(name):
         count +=1
     res2 = runcron(a, urllist[0], "open", [id])
     res3 = getstatus(a, urllist[0], "open", [id])
-    ms = "还在运行中，请稍后"
-    push_QQ(zQQ,ms,'send_private_msg')
+    push_QQ(zQQ,"已添加到任务列表运行中，完成后返回日志",'send_private_msg')
     while True:
         if json.loads(res3)["data"]["status"] == 0:
             time.sleep(8)
@@ -252,7 +255,7 @@ def command_t(name):
     time.sleep(1)
     res4 = getlogcron(a, urllist[0], "open", [id])
     ms = json.loads(res4)["data"][-100:-40]
-    return ms
+    push_QQ(zQQ,ms,'send_private_msg')
 
 @bot.on_message
 async def handle_msg(event):
@@ -269,23 +272,17 @@ async def handle_msg(event):
         else:
             await bot.send(event, response)
     elif msg == 'common' and str(event['sender']['user_id']) == zQQ:
-        ms = command_t("通用开卡[普通]")
-        push_QQ(zQQ,ms,'send_private_msg')
+        scheduler.add_job(func=command_t, args=("通用开卡[普通]",), next_run_time=datetime.datetime.now())
     elif msg == 'game' and str(event['sender']['user_id']) == zQQ:
-        ms = command_t("通用京东游戏")
-        push_QQ(zQQ,ms,'send_private_msg')
+        scheduler.add_job(func=command_t, args=("通用京东游戏",), next_run_time=datetime.datetime.now())
     elif msg == 'collect' and str(event['sender']['user_id']) == zQQ:
-        ms = command_t("通用集卡")
-        push_QQ(zQQ,ms,'send_private_msg')
+        scheduler.add_job(func=command_t, args=("通用集卡",), next_run_time=datetime.datetime.now())
     elif msg == '1600' and str(event['sender']['user_id']) == zQQ:
-        ms = command_t("通用开卡[1600]")
-        push_QQ(zQQ,ms,'send_private_msg')
+        scheduler.add_job(func=command_t, args=("通用开卡[1600]",), next_run_time=datetime.datetime.now())
     elif msg == 'video' and str(event['sender']['user_id']) == zQQ:
-        ms = command_t("通用京东视频狂得京豆")
-        push_QQ(zQQ,ms,'send_private_msg')
+        scheduler.add_job(func=command_t, args=("通用京东视频狂得京豆",), next_run_time=datetime.datetime.now())
     elif msg == 'share' and str(event['sender']['user_id']) == zQQ:
-        ms = command_t("通用分享")
-        push_QQ(zQQ,ms,'send_private_msg')
+        scheduler.add_job(func=command_t, args=("通用分享",), next_run_time=datetime.datetime.now())
     elif msg == 'check':
         await bot.send(event, '查询中')
         userid = event['sender']['user_id']
