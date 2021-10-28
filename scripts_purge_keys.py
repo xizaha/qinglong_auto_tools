@@ -19,6 +19,23 @@ scripts_purge_keys_url1="http://xxxxxx:xxxx/"
 
 '''
 
+# 主青龙，需要查找网络链接的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
+#cilent_id1 = ""
+#cilent_secret1 = ""
+#url1 = ""
+
+# 屏蔽词
+keys = []
+
+# 屏蔽词也可在fake_keys.txt中按一行一行填写
+try:
+    with open("fake_keys.txt", "r") as fp:
+        t = fp.readlines()
+    for j in t:
+        keys.append(j)
+except:
+    print("fake_keys.txt 未创建，有需要请按照注释进行操作")
+
 import re
 
 try:
@@ -64,24 +81,6 @@ try:
         exit(3)
 except:
     print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
-
-
-# 主青龙，需要查找网络链接的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
-#cilent_id1 = ""
-#cilent_secret1 = ""
-#url1 = ""
-
-# 屏蔽词
-keys = []
-
-# 屏蔽词也可在fake_keys.txt中按一行一行填写
-try:
-    with open("fake_keys.txt", "r") as fp:
-        t = fp.readlines()
-    for j in t:
-        keys.append(j)
-except:
-    print("fake_keys.txt 未创建，有需要请按照注释进行操作")
 
 for i in t:
     keys.append(i)
@@ -170,9 +169,9 @@ if __name__ == '__main__':
     for i in zscripts:
         zscripts_list.append(i["key"])
     try:
-        zscripts.remove("fake_keys.txt")
+        zscripts_list.remove("fake_keys.txt")
     except:
-        pass
+        print("fake_keys.txt未创建，请按照注释创建")
     print("主青龙脚本文件数量：{}".format(len(zscripts_list)))
     print()
     print()
