@@ -3,9 +3,9 @@
 # 作者仓库:https://github.com/spiritLHL/qinglong_auto_tools
 # 觉得不错麻烦点个star谢谢
 
-client_id = [""]
-client_secret = [""]
-urllist = ["http://xxxxxxx:xxxx/"]
+client_id = ["",""]
+client_secret = ["",""]
+urllist = ["http://xxxxxxx:xxxx/",""]
 zQQ = ""
 
 from aiocqhttp import CQHttp, Event, Message, MessageSegment
@@ -222,11 +222,12 @@ def select_(chat):
             fe.write("\n{},{}".format(cht[0], cht[1]))
         return '{},{}'.format(cht[0], cht[1])
 
-def command_t(name):
+# 服务器1
+def command_s(name):
     ucount = 0
     url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_id[ucount] + '&client_secret=' +client_secret[ucount]
     gettoken(a, url_token)
-    ztasks = gettaskitem(a, urllist[0], "open")
+    ztasks = gettaskitem(a, urllist[ucount], "open")
     disable_list = []
     for i in ztasks:
         if i['isDisabled'] != 0:
@@ -243,18 +244,55 @@ def command_t(name):
         if i == name:
             id = disable_tlid[count]
         count +=1
-    res2 = runcron(a, urllist[0], "open", [id])
-    res3 = getstatus(a, urllist[0], "open", [id])
+    res2 = runcron(a, urllist[ucount], "open", [id])
+    res3 = getstatus(a, urllist[ucount], "open", [id])
     push_QQ(zQQ,"已添加到任务列表运行中，完成后返回日志",'send_private_msg')
     while True:
         if json.loads(res3)["data"]["status"] == 0:
             time.sleep(8)
-            res3 = getstatus(a, urllist[0], "open", [id])
+            res3 = getstatus(a, urllist[ucount], "open", [id])
         else:
             break
     time.sleep(1)
-    res4 = getlogcron(a, urllist[0], "open", [id])
-    ms = json.loads(res4)["data"][-100:-40]
+    res4 = getlogcron(a, urllist[ucount], "open", [id])
+    ms = json.loads(res4)["data"][-100:-40]+"\n来自上海服务器"
+    push_QQ(zQQ,ms,'send_private_msg')
+
+# 服务器2
+def command_x(name):
+    ucount = 1
+    x = requests.session()
+    url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_id[ucount] + '&client_secret=' +client_secret[ucount]
+    gettoken(x, url_token)
+    ztasks = gettaskitem(x, urllist[ucount], "open")
+    disable_list = []
+    for i in ztasks:
+        if i['isDisabled'] != 0:
+            disable_list.append(i)
+    disable_tlid = []
+    disable_tname = []
+    disable_tcommand = []
+    for j in disable_list:
+        disable_tlid.append(j['_id'])
+        disable_tname.append(j['name'])
+        disable_tcommand.append(j['command'])
+    count=0
+    for i in disable_tname:
+        if i == name:
+            id = disable_tlid[count]
+        count +=1
+    res2 = runcron(x, urllist[ucount], "open", [id])
+    res3 = getstatus(x, urllist[ucount], "open", [id])
+    push_QQ(zQQ,"已添加到任务列表运行中，完成后返回日志",'send_private_msg')
+    while True:
+        if json.loads(res3)["data"]["status"] == 0:
+            time.sleep(8)
+            res3 = getstatus(x, urllist[ucount], "open", [id])
+        else:
+            break
+    time.sleep(1)
+    res4 = getlogcron(x, urllist[ucount], "open", [id])
+    ms = json.loads(res4)["data"][-100:-40]+"\n来自香港服务器"
     push_QQ(zQQ,ms,'send_private_msg')
 
 @bot.on_message
@@ -271,18 +309,33 @@ async def handle_msg(event):
             await bot.send(event, '账号增加完毕，查询资产请输入‘check’')
         else:
             await bot.send(event, response)
-    elif msg == 'common' and str(event['sender']['user_id']) == zQQ:
-        scheduler.add_job(func=command_t, args=("通用开卡[普通]",), next_run_time=datetime.datetime.now())
-    elif msg == 'game' and str(event['sender']['user_id']) == zQQ:
-        scheduler.add_job(func=command_t, args=("通用京东游戏",), next_run_time=datetime.datetime.now())
-    elif msg == 'collect' and str(event['sender']['user_id']) == zQQ:
-        scheduler.add_job(func=command_t, args=("通用集卡",), next_run_time=datetime.datetime.now())
-    elif msg == '1600' and str(event['sender']['user_id']) == zQQ:
-        scheduler.add_job(func=command_t, args=("通用开卡[1600]",), next_run_time=datetime.datetime.now())
-    elif msg == 'video' and str(event['sender']['user_id']) == zQQ:
-        scheduler.add_job(func=command_t, args=("通用京东视频狂得京豆",), next_run_time=datetime.datetime.now())
-    elif msg == 'share' and str(event['sender']['user_id']) == zQQ:
-        scheduler.add_job(func=command_t, args=("通用分享",), next_run_time=datetime.datetime.now())
+        # 1
+    elif msg == 'common1' and str(event['sender']['user_id']) == zQQ:
+        scheduler.add_job(func=command_s, args=("通用开卡[普通]",), next_run_time=datetime.datetime.now())
+    elif msg == 'game1' and str(event['sender']['user_id']) == zQQ:
+        scheduler.add_job(func=command_s, args=("通用京东游戏",), next_run_time=datetime.datetime.now())
+    elif msg == 'collect1' and str(event['sender']['user_id']) == zQQ:
+        scheduler.add_job(func=command_s, args=("通用集卡",), next_run_time=datetime.datetime.now())
+    elif msg == '16001' and str(event['sender']['user_id']) == zQQ:
+        scheduler.add_job(func=command_s, args=("通用开卡[1600]",), next_run_time=datetime.datetime.now())
+    elif msg == 'video1' and str(event['sender']['user_id']) == zQQ:
+        scheduler.add_job(func=command_s, args=("通用京东视频狂得京豆",), next_run_time=datetime.datetime.now())
+    elif msg == 'share1' and str(event['sender']['user_id']) == zQQ:
+        scheduler.add_job(func=command_s, args=("通用分享",), next_run_time=datetime.datetime.now())
+        # 2
+    elif msg == 'common2' and str(event['sender']['user_id']) == zQQ:
+        scheduler.add_job(func=command_x, args=("通用开卡[普通]",), next_run_time=datetime.datetime.now())
+    elif msg == 'game2' and str(event['sender']['user_id']) == zQQ:
+        scheduler.add_job(func=command_x, args=("通用京东游戏",), next_run_time=datetime.datetime.now())
+    elif msg == 'collect2' and str(event['sender']['user_id']) == zQQ:
+        scheduler.add_job(func=command_x, args=("通用集卡",), next_run_time=datetime.datetime.now())
+    elif msg == '16002' and str(event['sender']['user_id']) == zQQ:
+        scheduler.add_job(func=command_x, args=("通用开卡[1600]",), next_run_time=datetime.datetime.now())
+    elif msg == 'video2' and str(event['sender']['user_id']) == zQQ:
+        scheduler.add_job(func=command_x, args=("通用京东视频狂得京豆",), next_run_time=datetime.datetime.now())
+    elif msg == 'share2' and str(event['sender']['user_id']) == zQQ:
+        scheduler.add_job(func=command_x, args=("通用分享",), next_run_time=datetime.datetime.now())
+        # 1
     elif msg == 'check':
         await bot.send(event, '查询中')
         userid = event['sender']['user_id']
@@ -300,6 +353,7 @@ async def handle_msg(event):
     else:
         await bot.send(event, '命令输入错误，请输入‘start’仔细查看命令指南')
     await bot.send(event, '上述命令执行完毕，休息中')
+
 
 
 bot.run(host='127.0.0.1', port=5701)  # go-cahttp监听的端口
