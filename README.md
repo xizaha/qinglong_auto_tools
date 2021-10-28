@@ -50,7 +50,9 @@ ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git
 |  ----  | ----  |
 | ec_config.txt | 多容器脚本和单容器脚本的配置文件，请按照脚本提示填写 |
 | scripts_check_nets.py | 单容器查询自己脚本文件中的网络链接，查询脚本中含有的链接，使用方法详见注释 |
-| scripts_purge_keys.py | 单容器清除屏蔽词脚本，屏蔽容器脚本中含有的屏蔽词，使用方法详见注释 |
+| b_scripts_purge_keys.py | 单容器清除屏蔽词脚本，屏蔽容器脚本中含有的屏蔽词，使用方法详见注释 |
+
+屏蔽脚本暂时有bug，别用
 
 青龙拉取命令：
 
@@ -98,6 +100,8 @@ ps:网速不好的加载不出来页面请自行调高操作间隔，我设置�
 2021.10.28
 
 更新 自用机器人
+
+屏蔽脚本有bug，别用
 
 转载起码保留作者名谢谢
 

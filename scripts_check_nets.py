@@ -22,7 +22,6 @@ scripts_check_nets_url1="http://xxxxxx:xxxx/"
 #cilent_secret1 = ""
 #url1 = ""
 
-expect_list = [url1, ""] # 屏蔽查询的链接
 
 
 
@@ -73,6 +72,9 @@ try:
 except:
     print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
 
+
+
+expect_list = [url1, ""] # 屏蔽查询的链接
 
 # 屏蔽词
 keys = []
