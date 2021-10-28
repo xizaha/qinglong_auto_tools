@@ -2,7 +2,4 @@ code.chiang.fun
 nz.lu
 cdn.nz.lu
 share.turinglabs.net
-Aaron-lv
-faker2
-yuannian1112
-shufflewzc
+/star267/share-code/

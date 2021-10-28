@@ -25,17 +25,7 @@ scripts_check_nets_url1="http://xxxxxx:xxxx/"
 expect_list = [url1, ""] # 屏蔽查询的链接
 
 
-# 屏蔽词
-keys = []
 
-# 屏蔽词也可在fake_keys.txt中按一行一行填写
-try:
-    with open("fake_keys.txt", "r") as fp:
-        t = fp.readlines()
-    for j in t:
-        keys.append(j)
-except:
-    print("fake_keys.txt 未创建，有需要请按照注释进行操作")
 
 import re
 
@@ -84,7 +74,17 @@ except:
     print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
 
 
+# 屏蔽词
+keys = []
 
+# 屏蔽词也可在fake_keys.txt中按一行一行填写
+try:
+    with open("fake_keys.txt", "r") as fp:
+        t = fp.readlines()
+    for j in t:
+        keys.append(j)
+except:
+    print("fake_keys.txt 未创建，有需要请按照注释进行操作")
 
 
 
