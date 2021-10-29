@@ -38,8 +38,16 @@
 
 青龙拉取命令：
 
+任务相关：
+
 ```bash
-ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git "tasks_|cks_"
+ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git "cks_"
+```
+
+环境变量相关：
+
+```bash
+ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git "tasks_"
 ```
 
 ### 单容器相关脚本
@@ -60,48 +68,35 @@ ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git
 ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git "scripts_"
 ```
 
-### 适配火狐浏览器的青龙面板自动上传ck脚本
+### 容器相关脚本使用说明(小白必看)
 
-2288文件夹内文件需在同一文件夹里才可正常使用
+多容器脚本使用：
 
-| 文件名字 | 用途 |
-|  ----  | ----  |
-| push28.py | 适配2.8版本的脚本 |  
-| push22.py | 适配2.2版本的脚本 |  
-| ck.txt | 一行一个ck的文件 |   
-| geckodriver.exe | 适配90.0.2 (64 位)火狐浏览器的driver |   
+1.先说环境变量相关，成功使用ql命令拉取后，在”青龙“里使用脚本管理右上角新建文本，命名"ec_config.txt"，然后在里面粘贴本仓库对应文件的内容，按照注释填写信息，然后保存。
 
-ps:批量上传ck的脚本不适配2.9！
+ps:别在服务器里创建并修改ec_config.txt文件，青龙识别不到没用的，一定要用青龙的“脚本管理”创建并填写信息！！！
 
-下载环境:
+2.脚本cks_push_alql.py，也就是任务 二叉树分发ck ，会从主青龙里取出不含wskey的ck，按顺序转发到副的容器(青龙)里，每个容器默认35个号，最后会整合所有不含wskey的ck，转发到备份容器(青龙)里，备份容器(青龙)就是主青龙没有wskey的副本。
 
-cmd输入
+该脚本分发不识别是否启用禁用ck！默认全转发(含禁用的)！如若其余的青龙(容器)没有对应pin值的ck，会自动添加到该容器(青龙)的环境变量最后！
 
-```bash
-pip install selenium
-```
+第一个副青龙(容器)里使用任务相关脚本，统合管理其余的副青龙(容器)，这个后面再说怎么配置。
 
-修改push28.py或push22.py的内容，填写用户名，密码，登陆地址(注意最后是以‘/’结束的)
+副青龙(容器)专门拿来跑不需要互助，或者互助人数少的脚本。备份容器(青龙)是单独的容器，专门拿来跑需要所有ck的脚本。
 
-ck形式，push28.py或push22.py默认使用形式一，有需要的自己注释掉形式一使用形式二
+第一次运行分发脚本运行后，转发到其他容器(青龙)后，其他容器(青龙)的ck位置可以手动调整，下次分发到其他容器(青龙)时，ck不会改变位置你调整的位置。这个规律也适用于备份容器(青龙)，第一次分发后再调整备份容器(青龙)的ck位置，后面再分发不会改变位置！
 
-形式一：
+3.脚本cks_sync_able.py，也就是 二叉树环境变量状态同步 ，会同步ck的状态，同步ck启用禁用情况，在 二叉树分发ck 后使用。
 
-ck.txt里放入ck，一行一个
+ps:该脚本暂时有bug，同时会更新环境变量的值(含wskey)，有时间我修补好了再使用吧，现在先禁用！！！
 
-形式二：
+暂时先写这么多，后面有时间再补充说明。
 
-ck1&ck2&ck3
+### 更新说明 
 
-在编辑器运行run一下就自动化操作了，当然也可以```python xxx.py```在命令行操作运行
+2021.10.29
 
-ps:网速不好的加载不出来页面请自行调高操作间隔，我设置的都是0.几秒
-
-2021.10.28
-
-更新 自用机器人
-
-屏蔽脚本有bug，别用
+更新 使用说明
 
 转载起码保留作者名谢谢
 
