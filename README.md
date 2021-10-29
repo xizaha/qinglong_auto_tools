@@ -38,13 +38,13 @@
 
 青龙拉取命令：
 
-任务相关：
+环境变量相关：
 
 ```bash
 ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git "cks_"
 ```
 
-环境变量相关：
+任务相关：
 
 ```bash
 ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git "tasks_"
