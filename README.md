@@ -1,4 +1,4 @@
-		# qinglong_auto_tools
+# qinglong_auto_tools
 
 自用工具，写的烂勿喷。
 
@@ -73,7 +73,7 @@ ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git
 
 脚本使用：
 
-### 1.先说环境变量相关
+#### 1.先说环境变量相关
 
 成功使用ql命令拉环境变量相关脚本取后，在”青龙“里使用脚本管理右上角新建文本，命名"ec_config.txt"，然后在里面粘贴本仓库对应文件的内容，按照注释填写信息，然后保存，注意对应变量！！！
 
@@ -132,6 +132,14 @@ tasks_sync_scripts_able.py 和 tasks_sync_able.py。它们分别是 二叉树同
 scripts_check_nets.py ，也就是 二叉树查网络链接 ，配置好后运行会查询仓库脚本的网络链接，还有其中含有屏蔽词的有几个，有需要可以试试。
 
 清除屏蔽词的另一个脚本暂时有bug，有时间我修好再用吧，现在你们应该拉不到，忽略它。
+
+最后贴个效果图吧。
+
+![](https://i.loli.net/2021/10/30/m4eHKVof2A1SqbT.png)
+
+![](https://i.loli.net/2021/10/30/gcsyT8Wa1QJmn2E.png)
+
+![](https://sm.ms/image/hn84ya7pHKqfDTF)
 
 暂时写到这，有时间再补充。
 
