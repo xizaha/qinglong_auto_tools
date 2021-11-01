@@ -314,15 +314,16 @@ if __name__ == '__main__':
                     else:
                         print("第%s个环境变量添加失败" % co)
             elif name == "JD_COOKIE":
-                ptpin = re.findall(r"pt_pin=(.*?);", k)[0]
-                ptpin = "pt_pin=" + ptpin
-                item = getenvitem(a, urllist[ucount], ptpin, "open", k, "value")
-                if item != []:
-                    qlid = item["_id"]
-                    if update(a, urllist[ucount], "open", k, qlid, name):
-                        continue
-                else:
-                    continue
+                #ptpin = re.findall(r"pt_pin=(.*?);", k)[0]
+                #ptpin = "pt_pin=" + ptpin
+                #item = getenvitem(a, urllist[ucount], ptpin, "open", k, "value")
+                #if item != []:
+                #    qlid = item["_id"]
+                #    if update(a, urllist[ucount], "open", k, qlid, name):
+                        #continue
+                continue
+                #else:
+                #    continue
 
             else:
                 print("无法识别{}".format(name))
@@ -344,9 +345,9 @@ if __name__ == '__main__':
             co += 1
             if name not in except_list and k in fenv_values:
                 item = getenvitem(a, urllist[ucount], k, "open", name, "value")
-            elif name == "JD_COOKIE" and k in fenv_values:
-                ptpin = re.findall(r"pt_pin=(.*?);", k)[0]  # 默认获取的变量里的pt_pin=xxx;里的xxx
-                item = getenvitem(a, urllist[ucount], ptpin, "open", k, "value")
+            #elif name == "JD_COOKIE" and k in fenv_values:
+            #    ptpin = re.findall(r"pt_pin=(.*?);", k)[0]  # 默认获取的变量里的pt_pin=xxx;里的xxx
+            #    item = getenvitem(a, urllist[ucount], ptpin, "open", k, "value")
             else:
                 continue
             enable_ids.append(item["_id"])
@@ -364,9 +365,9 @@ if __name__ == '__main__':
             co += 1
             if name not in except_list and k in fenv_values:
                 item = getenvitem(a, urllist[ucount], k, "open", name, "value")
-            elif name == "JD_COOKIE" and k in fenv_values:
-                ptpin = re.findall(r"pt_pin=(.*?);", k)[0]  # 默认获取的变量里的pt_pin=xxx;里的xxx
-                item = getenvitem(a, urllist[ucount], ptpin, "open", k, "value")
+            #elif name == "JD_COOKIE" and k in fenv_values:
+            #    ptpin = re.findall(r"pt_pin=(.*?);", k)[0]  # 默认获取的变量里的pt_pin=xxx;里的xxx
+            #    item = getenvitem(a, urllist[ucount], ptpin, "open", k, "value")
             else:
                 continue
             disable_ids.append(item["_id"])
