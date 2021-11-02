@@ -3,9 +3,9 @@
 # 作者仓库:https://github.com/spiritLHL/qinglong_auto_tools
 # 觉得不错麻烦点个star谢谢
 
-client_id = ["",""]
-client_secret = ["",""]
-urllist = ["http://xxxxxxx:xxxx/",""]
+client_id = ["", ""]
+client_secret = ["", ""]
+urllist = ["http://xxxxxx:xxxx/", "http://xxx:xxxx/"]
 zQQ = ""
 
 from aiocqhttp import CQHttp, Event, Message, MessageSegment
@@ -22,15 +22,18 @@ requests.packages.urllib3.disable_warnings()
 a = requests.session()
 scheduler = BackgroundScheduler()
 scheduler.start()
+status_c = 0
 
 
 def gettimestamp():
     return str(int(time.time() * 1000))
 
+
 def gettoken(self, url_token):
     r = requests.get(url_token).text
     res = json.loads(r)["data"]["token"]
     self.headers.update({"Authorization": "Bearer " + res})
+
 
 def getckitem(self, baseurl, key, typ):
     url = baseurl + typ + "/envs?searchValue=JD_COOKIE&t=%s" % gettimestamp()
@@ -40,11 +43,13 @@ def getckitem(self, baseurl, key, typ):
             return i
     return []
 
+
 def getitem(self, baseurl, key, typ):
     url = baseurl + typ + "/envs?searchValue=%s&t=%s" % (key, gettimestamp())
     r = self.get(url)
     item = json.loads(r.text)["data"]
     return item
+
 
 def gettaskitem(self, baseurl, typ):
     url = baseurl + typ + "/crons?t=%s" % gettimestamp()
@@ -52,24 +57,27 @@ def gettaskitem(self, baseurl, typ):
     item = json.loads(r.text)["data"]
     return item
 
+
 def ckup(wskey):
     pt_key = re.findall(r"wskey=(.*?);", wskey)[0]
-    pt_key = "pt_key=" + pt_key+";"
-    k = re.finditer("wskey=",wskey)
+    pt_key = "pt_key=" + pt_key + ";"
+    k = re.finditer("wskey=", wskey)
     for j in k:
         t = j.span()[1]
-    pt_pin = 'pt_' + wskey[0:t-7]+';'
-    ck = pt_pin+pt_key+wskey.split(';')[1]+';'
+    pt_pin = 'pt_' + wskey[0:t - 7] + ';'
+    ck = pt_pin + pt_key + wskey.split(';')[1] + ';'
     return ck
 
+
 def getstatus(self, baseurl, typ, data):
-    url = baseurl + typ + "/crons/"+data[0]+"?t=%s" % gettimestamp()
+    url = baseurl + typ + "/crons/" + data[0] + "?t=%s" % gettimestamp()
     self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
     r = self.get(url, data=json.dumps(data))
     if json.loads(r.text)["code"] == 200:
         return r.text
     else:
         return r.text
+
 
 def addcron(self, baseurl, typ, data):
     url = baseurl + typ + "/crons?t=%s" % gettimestamp()
@@ -80,6 +88,7 @@ def addcron(self, baseurl, typ, data):
     else:
         return r.text
 
+
 def runcron(self, baseurl, typ, data):
     url = baseurl + typ + "/crons/run?t=%s" % gettimestamp()
     self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
@@ -88,6 +97,7 @@ def runcron(self, baseurl, typ, data):
         return r.text
     else:
         return r.text
+
 
 def deletecron(self, baseurl, typ, data):
     url = baseurl + typ + "/crons?t=%s" % gettimestamp()
@@ -98,8 +108,9 @@ def deletecron(self, baseurl, typ, data):
     else:
         return r.text
 
+
 def getlogcron(self, baseurl, typ, data):
-    url = baseurl + typ + "/crons/"+data[0]+"/log?t=%s" % gettimestamp()
+    url = baseurl + typ + "/crons/" + data[0] + "/log?t=%s" % gettimestamp()
     self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
     r = self.get(url, data=json.dumps(data))
     if json.loads(r.text)["code"] == 200:
@@ -107,12 +118,13 @@ def getlogcron(self, baseurl, typ, data):
     else:
         return r.text
 
+
 def push_QQ(userid, res_text, typ):
     data = {
         'user_id': userid,
         'message': res_text
     }
-    requests.post('http://xxxx:xxxxx/' + typ, data)
+    requests.post('http://xxxxx:xxxx/' + typ, data)
 
 
 def pre_check(userid):
@@ -141,22 +153,27 @@ def pre_check(userid):
 
 
 def check(a, msg):
-    userid = msg.split(',')[0]
-    pin = msg.split(',')[1]
-    #name = msg.split(',')[2]
+    userid = msg[0]
+    pin = msg[1:]
+    # name = msg.split(',')[2]
     push_type = 'send_private_msg'
-
 
     ucount = 0
     url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_id[ucount] + '&client_secret=' + client_secret[
         ucount]
     gettoken(a, url_token)
-    #pin = "jd_7ac5332efb1c2"
-    cks = getitem(a, urllist[0], "JD_COOKIE", "open")
-    res = getitem(a, urllist[0], pin, "open")
-    weizhi = cks.index(res[0]) + 1
+    weiz = []
+    for k in pin:
+        cks = getitem(a, urllist[0], "JD_COOKIE", "open")
+        res = getitem(a, urllist[0], k, "open")
+        weizhi = cks.index(res[0]) + 1
+        weiz.append(weizhi)
+
+    wzz = ""
+    for kk in weiz:
+        wzz = wzz+" " + str(kk)
     data = {
-        "command": "task ccwav_QLScript_jd_bean_change.js conc JD_COOKIE " + str(weizhi),
+        "command": "task ccwav_QLScript_jd_bean_change.js conc JD_COOKIE" + str(wzz),
         "schedule": "1",
         "name": "查询"
     }
@@ -171,11 +188,11 @@ def check(a, msg):
 
     res3 = getstatus(a, urllist[0], "open", [id])
 
+    msg1 = "还在查询中,请耐心等待,16秒刷新一次状态,运行中不再返回查询状态"
+    push_QQ(userid, msg1, push_type)
     while True:
         if json.loads(res3)["data"]["status"] == 0:
-            msg1 = "还在查询中,请耐心等待,8秒刷新一次状态"
-            push_QQ(userid, msg1, push_type)
-            time.sleep(8)
+            time.sleep(16)
             res3 = getstatus(a, urllist[0], "open", [id])
         else:
             break
@@ -222,10 +239,12 @@ def select_(chat):
             fe.write("\n{},{}".format(cht[0], cht[1]))
         return '{},{}'.format(cht[0], cht[1])
 
+
 # 服务器1
 def command_s(name):
     ucount = 0
-    url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_id[ucount] + '&client_secret=' +client_secret[ucount]
+    url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_id[ucount] + '&client_secret=' + client_secret[
+        ucount]
     gettoken(a, url_token)
     ztasks = gettaskitem(a, urllist[ucount], "open")
     disable_list = []
@@ -239,14 +258,14 @@ def command_s(name):
         disable_tlid.append(j['_id'])
         disable_tname.append(j['name'])
         disable_tcommand.append(j['command'])
-    count=0
+    count = 0
     for i in disable_tname:
         if i == name:
             id = disable_tlid[count]
-        count +=1
+        count += 1
     res2 = runcron(a, urllist[ucount], "open", [id])
     res3 = getstatus(a, urllist[ucount], "open", [id])
-    push_QQ(zQQ,"已添加到任务列表运行中，完成后返回日志",'send_private_msg')
+    push_QQ(zQQ, "已添加到任务列表运行中，完成后返回日志", 'send_private_msg')
     while True:
         if json.loads(res3)["data"]["status"] == 0:
             time.sleep(8)
@@ -255,14 +274,16 @@ def command_s(name):
             break
     time.sleep(1)
     res4 = getlogcron(a, urllist[ucount], "open", [id])
-    ms = json.loads(res4)["data"][-100:-40]+"\n来自上海服务器"
-    push_QQ(zQQ,ms,'send_private_msg')
+    ms = json.loads(res4)["data"][-100:-40] + "\n来自上海服务器"
+    push_QQ(zQQ, ms, 'send_private_msg')
+
 
 # 服务器2
 def command_x(name):
     ucount = 1
     x = requests.session()
-    url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_id[ucount] + '&client_secret=' +client_secret[ucount]
+    url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_id[ucount] + '&client_secret=' + client_secret[
+        ucount]
     gettoken(x, url_token)
     ztasks = gettaskitem(x, urllist[ucount], "open")
     disable_list = []
@@ -276,14 +297,14 @@ def command_x(name):
         disable_tlid.append(j['_id'])
         disable_tname.append(j['name'])
         disable_tcommand.append(j['command'])
-    count=0
+    count = 0
     for i in disable_tname:
         if i == name:
             id = disable_tlid[count]
-        count +=1
+        count += 1
     res2 = runcron(x, urllist[ucount], "open", [id])
     res3 = getstatus(x, urllist[ucount], "open", [id])
-    push_QQ(zQQ,"已添加到任务列表运行中，完成后返回日志",'send_private_msg')
+    push_QQ(zQQ, "已添加到任务列表运行中，完成后返回日志", 'send_private_msg')
     while True:
         if json.loads(res3)["data"]["status"] == 0:
             time.sleep(8)
@@ -292,15 +313,17 @@ def command_x(name):
             break
     time.sleep(1)
     res4 = getlogcron(x, urllist[ucount], "open", [id])
-    ms = json.loads(res4)["data"][-100:-40]+"\n来自香港服务器"
-    push_QQ(zQQ,ms,'send_private_msg')
+    ms = json.loads(res4)["data"][-100:-40] + "\n来自香港服务器"
+    push_QQ(zQQ, ms, 'send_private_msg')
+
 
 @bot.on_message
 async def handle_msg(event):
     ms = Message(event.message)
     msg = str(ms)
+    global status_c
     if msg == 'start':
-        sm = '请按照提示操作\n增加QQ绑定   请以‘英文输入法’输入：\nQQ账号,京东的pin值\n格式例子：\n111111111,jd_xxxxxxx\n查询   请输入‘check’\n查询结果显示api错误不用管，只是查不到过期京豆而已'
+        sm = '请按照提示操作\n增加QQ绑定   请以‘英文输入法’输入：\nQQ账号,京东的pin值\n格式例子：\n111111111,jd_xxxxxxx\n查询   请输入‘check’\n查询结果显示api错误不用管，只是查不到过期京豆而已\n如果有用户正在查询，会占用查询导致你check没有回应，这是正常现象，见谅'
         await bot.send(event, sm)
     elif len(msg.split(',')) == 2:
         await bot.send(event, 'QQ绑定的账号增加中')
@@ -337,23 +360,25 @@ async def handle_msg(event):
         scheduler.add_job(func=command_x, args=("通用分享",), next_run_time=datetime.datetime.now())
         # 1
     elif msg == 'check':
-        await bot.send(event, '查询中')
         userid = event['sender']['user_id']
         response = pre_check(userid)
         if response == 'error':
             await bot.send(event, '查询失败')
         else:
+            idss = []
+            idss.append(response[0].split(",")[0])
             for i in response:
-                rest = check(a, i)
+                idss.append(i.split(",")[1])
+            scheduler.add_job(func=check, args=(a, idss), next_run_time=datetime.datetime.now())
+            await bot.send(event, '正在后台查询中,请勿重复输入命令')
     elif (msg[0] == 'p'):
         print('ck  ')
         ck = ckup(msg)
-        push_QQ(zQQ,ck,'send_private_msg')
+        push_QQ(zQQ, ck, 'send_private_msg')
         print(ck)
     else:
         await bot.send(event, '命令输入错误，请输入‘start’仔细查看命令指南')
     await bot.send(event, '上述命令执行完毕，休息中')
-
 
 
 bot.run(host='127.0.0.1', port=5701)  # go-cahttp监听的端口
