@@ -178,8 +178,11 @@ def pushscript(self, baseurl, typ, data):
     url = baseurl + typ + "/scripts?t=%s" % gettimestamp()
     self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
     r = self.put(url, data=json.dumps(data))
-    #response = json.loads(r.text)["data"]
-    return r
+    response = json.loads(r.text)["code"]
+    if response == 500:
+        data["path"] = ""
+    r = self.put(url, data=json.dumps(data))
+    return r.text
 
 def getcrons(self, baseurl, typ):
     url = baseurl + typ + "/crons?t=%s" % gettimestamp()

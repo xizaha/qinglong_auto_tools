@@ -175,6 +175,11 @@ def getenvitem(self, baseurl, value, typ, sm, tm):
             return i
     return []
 
+def getenvstatus(self, baseurl, typ, sm):
+    url = baseurl + typ + "/envs?searchValue=%s&t=%s" % (sm ,gettimestamp())
+    r = self.get(url)
+    for i in json.loads(r.text)["data"]:
+        return i["_id"]
 
 def update(self, baseurl, typ, text, qlid, name):
     url = baseurl + typ + "/envs?t=%s" % gettimestamp()
@@ -246,10 +251,18 @@ if __name__ == '__main__':
     env_names = []
     for i in env_data:
         if i['status'] == 1:
-            disable_values.append(i['value'])
+            if i["name"] == "JD_COOKIE":
+                ptpin = re.findall(r"pt_pin=(.*?);", i["value"])[0]
+                disable_values.append(ptpin)
+            else:
+                disable_values.append(i['value'])
             disable_names.append(i['name'])
         else:
-            enable_values.append(i["value"])
+            if i["name"] == "JD_COOKIE":
+                ptpin = re.findall(r"pt_pin=(.*?);", i["value"])[0]
+                enable_values.append(ptpin)
+            else:
+                enable_values.append(i["value"])
             enable_names.append(i['name'])
         env_values.append(i["value"])
         env_names.append(i['name'])
@@ -282,11 +295,20 @@ if __name__ == '__main__':
         fdisable_names = []
         for i in fenv_data:
             if i['status'] == 1:
-                fdisable_values.append(i['value'])
+                if i["name"] == "JD_COOKIE":
+                    ptpin = re.findall(r"pt_pin=(.*?);", i["value"])[0]
+                    fdisable_values.append(ptpin)
+                else:
+                    fdisable_values.append(i['value'])
                 fdisable_names.append(i['name'])
             else:
-                fenable_values.append(i["value"])
+                if i["name"] == "JD_COOKIE":
+                    ptpin = re.findall(r"pt_pin=(.*?);", i["value"])[0]
+                    fenable_values.append(ptpin)
+                else:
+                    fenable_values.append(i["value"])
                 fenable_names.append(i['name'])
+
             fenv_values.append(i['value'])
 
         print("环境变量启用：{}  禁用：{}".format(len(fenable_values), len(fdisable_values)))
@@ -297,6 +319,7 @@ if __name__ == '__main__':
         print("更新环境变量值中")
         print()
         co = 0
+        fpin = []
         for k in env_values:
             name = env_names[co]
             co += 1
@@ -314,16 +337,7 @@ if __name__ == '__main__':
                     else:
                         print("第%s个环境变量添加失败" % co)
             elif name == "JD_COOKIE":
-                #ptpin = re.findall(r"pt_pin=(.*?);", k)[0]
-                #ptpin = "pt_pin=" + ptpin
-                #item = getenvitem(a, urllist[ucount], ptpin, "open", k, "value")
-                #if item != []:
-                #    qlid = item["_id"]
-                #    if update(a, urllist[ucount], "open", k, qlid, name):
-                        #continue
                 continue
-                #else:
-                #    continue
 
             else:
                 print("无法识别{}".format(name))
@@ -333,7 +347,7 @@ if __name__ == '__main__':
 
 
 
-        print("环境变量值更新完毕")
+        print("环境变量值更新完毕（不含JD_COOKIE的值更新）")
         print()
 
 
@@ -345,12 +359,15 @@ if __name__ == '__main__':
             co += 1
             if name not in except_list and k in fenv_values:
                 item = getenvitem(a, urllist[ucount], k, "open", name, "value")
-            #elif name == "JD_COOKIE" and k in fenv_values:
-            #    ptpin = re.findall(r"pt_pin=(.*?);", k)[0]  # 默认获取的变量里的pt_pin=xxx;里的xxx
-            #    item = getenvitem(a, urllist[ucount], ptpin, "open", k, "value")
+                enable_ids.append(item["_id"])
+            elif name == "JD_COOKIE" and k in fdisable_values:
+                ptpin = "pt_pin="+k+";"
+                print("{}启用成功".format(k))
+                item = getenvstatus(a, urllist[ucount], "open", ptpin)
+                enable_ids.append(item)
             else:
                 continue
-            enable_ids.append(item["_id"])
+
         enable(a, urllist[ucount], "open", enable_ids)
         print("环境变量状态更新启用完毕")
         print()
@@ -365,12 +382,14 @@ if __name__ == '__main__':
             co += 1
             if name not in except_list and k in fenv_values:
                 item = getenvitem(a, urllist[ucount], k, "open", name, "value")
-            #elif name == "JD_COOKIE" and k in fenv_values:
-            #    ptpin = re.findall(r"pt_pin=(.*?);", k)[0]  # 默认获取的变量里的pt_pin=xxx;里的xxx
-            #    item = getenvitem(a, urllist[ucount], ptpin, "open", k, "value")
+                enable_ids.append(item["_id"])
+            elif name == "JD_COOKIE" and k in fenable_values:
+                ptpin = "pt_pin="+k+";"
+                print("{}禁用成功".format(k))
+                item = getenvstatus(a, urllist[ucount], "open", ptpin)
+                disable_ids.append(item)
             else:
                 continue
-            disable_ids.append(item["_id"])
         disable(a, urllist[ucount], "open", disable_ids)
 
         print("环境变量状态更新禁用完毕")

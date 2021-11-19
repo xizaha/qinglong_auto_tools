@@ -1,9 +1,9 @@
-#作者仓库:https://github.com/spiritLHL/qinglong_auto_tools
-#觉得不错麻烦点个star谢谢
+# 作者仓库:https://github.com/spiritLHL/qinglong_auto_tools
+# 觉得不错麻烦点个star谢谢
 
-#根据主青龙的启用任务和对应脚本同步到副青龙中去，不存在于副青龙中的任务和对应脚本会自动新增，如果启用的任务对应的脚本内容有更新，也会同步更新
+# 根据主青龙的启用任务和对应脚本同步到副青龙中去，不存在于副青龙中的任务和对应脚本会自动新增，如果启用的任务对应的脚本内容有更新，也会同步更新
 
-#只同步更新主青龙中已经启用的任务和对应脚本
+# 只同步更新主青龙中已经启用的任务和对应脚本
 
 '''
 cron: 1
@@ -29,22 +29,22 @@ tasks_sync_scripts_able_client_secrets=["",""]
 tasks_sync_scripts_able_urllist=["http://xxxxxxxxx:xxxx/",""]
 
 '''
-#client_id1=""
-#client_secret1=""
-#url1 = ""
-#client_ids=['','','','']
-#client_secrets=['','','','']
-#urllist = ["http://xxxx:xxxx/","","",'']
+# client_id1=""
+# client_secret1=""
+# url1 = ""
+# client_ids=['','','','']
+# client_secrets=['','','','']
+# urllist = ["http://xxxx:xxxx/","","",'']
 
 import re
 import time
 import json
+
 try:
     import requests
 except Exception as e:
     print(e, "\n缺少requests 模块，请执行命令安装：python3 -m pip install requests")
     exit(3)
-
 
 try:
     with open("ec_config.txt", "r", encoding="utf-8") as fp:
@@ -90,12 +90,11 @@ try:
 except:
     print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
 
-
 try:
     try:
         for i in t:
             try:
-                temp = "["+re.findall(r"tasks_sync_scripts_able_client_ids=\[(.*?)\]", i)[0]+"]"
+                temp = "[" + re.findall(r"tasks_sync_scripts_able_client_ids=\[(.*?)\]", i)[0] + "]"
                 try:
                     client_ids = json.loads(temp)
                 except:
@@ -111,7 +110,7 @@ try:
     try:
         for i in t:
             try:
-                temp = "["+re.findall(r"tasks_sync_scripts_able_client_secrets=\[(.*?)\]", i)[0]+"]"
+                temp = "[" + re.findall(r"tasks_sync_scripts_able_client_secrets=\[(.*?)\]", i)[0] + "]"
                 try:
                     client_secrets = json.loads(temp)
                 except:
@@ -127,7 +126,7 @@ try:
     try:
         for i in t:
             try:
-                temp = "["+re.findall(r"tasks_sync_scripts_able_urllist=\[(.*?)\]", i)[0]+"]"
+                temp = "[" + re.findall(r"tasks_sync_scripts_able_urllist=\[(.*?)\]", i)[0] + "]"
                 try:
                     urllist = json.loads(temp)
                 except:
@@ -142,22 +141,23 @@ try:
 except:
     print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
 
-
-
 requests.packages.urllib3.disable_warnings()
 
 
 def gettimestamp():
     return str(int(time.time() * 1500))
 
-def gettoken(self,url_token):
+
+def gettoken(self, url_token):
     r = requests.get(url_token).text
     res = json.loads(r)["data"]["token"]
-    self.headers.update({"Authorization": "Bearer "+res})
+    self.headers.update({"Authorization": "Bearer " + res})
+
 
 def login(self, baseurl, client_id_temp, client_secret_temp):
-    url_token = baseurl+'open/auth/token?client_id='+client_id_temp+'&client_secret='+client_secret_temp
+    url_token = baseurl + 'open/auth/token?client_id=' + client_id_temp + '&client_secret=' + client_secret_temp
     gettoken(self, url_token)
+
 
 def getitem(self, baseurl, typ):
     url = baseurl + typ + "/scripts/files?t=%s" % gettimestamp()
@@ -165,24 +165,31 @@ def getitem(self, baseurl, typ):
     item = json.loads(r.text)["data"]
     return item
 
+
 def getscript(self, baseurl, typ, filename):
-    url = baseurl + typ + "/scripts/"+filename+"?t=%s" % gettimestamp()
+    url = baseurl + typ + "/scripts/" + filename + "?t=%s" % gettimestamp()
     r = self.get(url)
     script = json.loads(r.text)["data"]
     return script
+
 
 def pushscript(self, baseurl, typ, data):
     url = baseurl + typ + "/scripts?t=%s" % gettimestamp()
     self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
     r = self.put(url, data=json.dumps(data))
-    #response = json.loads(r.text)["data"]
-    return r
+    response = json.loads(r.text)["code"]
+    if response == 500:
+        data["path"] = ""
+    r = self.put(url, data=json.dumps(data))
+    return r.text
+
 
 def getcrons(self, baseurl, typ):
     url = baseurl + typ + "/crons?t=%s" % gettimestamp()
     r = self.get(url)
     item = json.loads(r.text)["data"]
     return item
+
 
 def addcron(self, baseurl, typ, data):
     url = baseurl + typ + "/crons?t=%s" % gettimestamp()
@@ -195,14 +202,14 @@ def addcron(self, baseurl, typ, data):
 
 
 if __name__ == '__main__':
-    #主容器
+    # 主容器
     s = requests.session()
     login(s, url1, client_id1, client_secret1)
 
-    #获取主青龙任务
+    # 获取主青龙任务
     print("=========== 主青龙 信息获取中 =============")
     print()
-    ztasks = getcrons(s , url1, "open")
+    ztasks = getcrons(s, url1, "open")
     zenable_list = []
     zdisable_list = []
     for i in ztasks:
@@ -222,7 +229,7 @@ if __name__ == '__main__':
     print("主青龙任务数量：{}，启用任务{}".format(len(ztasks), len(zenable_tname)))
     print()
 
-    #获取主青龙的脚本名
+    # 获取主青龙的脚本名
     zscripts = getitem(s, url1, "open")
     zscripts_list = []
     for i in zscripts:
@@ -234,10 +241,11 @@ if __name__ == '__main__':
     t = 0
     for k in urllist:
         # 分容器
-        print("=========== 副青龙{} 信息获取中 =============".format(t+1))
+        print("=========== 副青龙{} 信息获取中 =============".format(t + 1))
         print()
         a = requests.session()
         login(a, urllist[t], client_ids[t], client_secrets[t])
+
         tasks = getcrons(a, urllist[t], "open")
 
         # 增加新任务
