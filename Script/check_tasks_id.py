@@ -88,10 +88,18 @@ if __name__ == '__main__':
     ztasks = getcrons(s, url1, "open")
     for i in ztasks:
         if i["name"] == "通用开卡[普通]":
+            print("通用开卡[普通]ID")
             print(i["_id"])
+            print()
         elif i["name"] == "通用分享":
+            print("通用分享ID")
             print(i["_id"])
+            print()
         elif i["name"] == "通用集卡":
+            print("通用集卡ID")
             print(i["_id"])
+            print()
         elif i["name"] == "通用京东视频狂得京豆":
+            print("通用京东视频狂得京豆ID")
             print(i["_id"])
+            print()
