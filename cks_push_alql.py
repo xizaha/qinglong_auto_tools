@@ -283,7 +283,7 @@ if __name__ == '__main__':
     for j in c_list:
         count +=1
         temp.append(j)
-        if (count % 35) == 0:#分配35个
+        if (count % 40) == 0:#分配40个
             a = requests.session()
             url_token = urllist[ucount]+'open/auth/token?client_id='+client_ids[ucount]+'&client_secret='+client_secrets[ucount]
             gettoken(a, url_token)
