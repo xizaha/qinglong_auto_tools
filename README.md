@@ -182,3 +182,8 @@ scripts_check_nets.py ，也就是 二叉树查网络链接 ，配置好后运�
 
 * 代码仅供学习
 * 不可用于商业以及非法目的,使用本代码产生的一切后果, 作者不承担任何责任.
+
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/spiritLHL/qinglong_auto_tools.svg)](https://starchart.cc/spiritLHL/qinglong_auto_tools/)
