@@ -175,6 +175,11 @@ def getenvitem(self, baseurl, value, typ, sm, tm):
             return i
     return []
 
+def getsingleenv(self, baseurl, value, typ):
+    url = baseurl + typ + "/envs?searchValue=%s&t=%s" % (value ,gettimestamp())
+    r = self.get(url)
+    return r.json()
+
 def getenvstatus(self, baseurl, typ, sm):
     url = baseurl + typ + "/envs?searchValue=%s&t=%s" % (sm ,gettimestamp())
     r = self.get(url)
@@ -210,6 +215,12 @@ def insert(self, baseurl, typ, text, nam):
         return True
     else:
         return False
+
+def remark(self, baseurl, typ, data):
+    url = baseurl + typ + "/envs?t=%s" % gettimestamp()
+    self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
+    r = self.put(url, data=json.dumps(data))
+    return r.text
 
 
 def enable(self, baseurl, typ, ids):
@@ -249,6 +260,7 @@ if __name__ == '__main__':
     disable_names = []
     env_values = []
     env_names = []
+    remarks_list = []
     for i in env_data:
         if i['status'] == 1:
             if i["name"] == "JD_COOKIE":
@@ -264,8 +276,23 @@ if __name__ == '__main__':
             else:
                 enable_values.append(i["value"])
             enable_names.append(i['name'])
+
+        try:
+            i["remarks"]
+            print(i["remarks"])
+            remarks_list.append(i)
+        except:
+            pass
         env_values.append(i["value"])
         env_names.append(i['name'])
+
+    remarks_pin_or_name = []
+    for k in remarks_list:
+        try:
+            ptpin = re.findall(r"pt_pin=(.*?);", k["value"])[0]
+            remarks_pin_or_name.append(ptpin)
+        except:
+            remarks_pin_or_name.append(k["name"])
 
     print("环境变量启用：{}  禁用：{}".format(len(enable_values), len(disable_values)))
     print("=========== 主青龙环境变量获取完毕 =============")
@@ -328,6 +355,20 @@ if __name__ == '__main__':
                 if item != []:
                     qlid = item["_id"]
                     if update(a, urllist[ucount], "open", k, qlid, name):
+
+                        # 更新备注
+                        if name in remarks_pin_or_name:
+                            for k in remarks_list:
+                                if name == k["name"]:
+                                    data = {
+                                        "value": k["value"],
+                                        "name": k["name"],
+                                        "remarks": k["remarks"],
+                                        "_id": qlid
+                                    }
+                                    print("更新备注 {}".format(k["remarks"]))
+                                    remark(a, urllist[ucount], "open", data)
+
                         print("第%s个环境变量更新成功" % (co))
                     else:
                         print("第%s个环境变量更新失败" % (co))
@@ -350,6 +391,8 @@ if __name__ == '__main__':
         print("环境变量值更新完毕（不含JD_COOKIE的值更新）")
         print()
 
+        print("环境变量同步备注和启用禁用中")
+        print()
 
         # 同步启用环境变量
         co = 0
@@ -365,8 +408,34 @@ if __name__ == '__main__':
                 print("{}启用成功".format(k))
                 item = getenvstatus(a, urllist[ucount], "open", ptpin)
                 enable_ids.append(item)
+
             else:
-                continue
+                pass
+
+            if name == "JD_COOKIE":
+                ptpin = "pt_pin=" + k + ";"
+                item = getenvstatus(a, urllist[ucount], "open", ptpin)
+                # 修改备注
+                if k in remarks_pin_or_name:
+                    for c in remarks_list:
+                        try:
+                            if re.findall(r"pt_pin=(.*?);", c["value"])[0] == k:
+                                try:
+                                    data = {
+                                        "value": getsingleenv(a, urllist[ucount], ptpin, "open")["data"][0]["value"],
+                                        "name": c["name"],
+                                        "remarks": c["remarks"],
+                                        "_id": item
+                                    }
+                                    print("更新备注 {}".format(c["remarks"]))
+                                    remark(a, urllist[ucount], "open", data)
+                                except:
+                                    pass
+                        except:
+                            pass
+
+
+
 
         enable(a, urllist[ucount], "open", enable_ids)
         print("环境变量状态更新启用完毕")
@@ -389,10 +458,37 @@ if __name__ == '__main__':
                 item = getenvstatus(a, urllist[ucount], "open", ptpin)
                 disable_ids.append(item)
             else:
-                continue
+                pass
+
+            if name == "JD_COOKIE":
+                ptpin = "pt_pin=" + k + ";"
+                item = getenvstatus(a, urllist[ucount], "open", ptpin)
+                # 修改备注
+                if k in remarks_pin_or_name:
+
+                    for c in remarks_list:
+                        try:
+                            if re.findall(r"pt_pin=(.*?);", c["value"])[0] == k:
+                                try:
+                                    data = {
+                                        "value": getsingleenv(a, urllist[ucount], k, "open")["data"][0]["value"],
+                                        "name": c["name"],
+                                        "remarks": c["remarks"],
+                                        "_id": item
+                                    }
+                                    print("更新备注 {}".format(c["remarks"]))
+                                    remark(a, urllist[ucount], "open", data)
+                                except:
+                                    pass
+                        except:
+                            pass
+
         disable(a, urllist[ucount], "open", disable_ids)
 
         print("环境变量状态更新禁用完毕")
+        print()
+
+        print("环境变量备注同步完毕")
         print()
 
         ucount += 1

@@ -25,6 +25,7 @@ cks_push_alql_cilent_id1="xxxxxxxx"
 cks_push_alql_cilent_secret1="xxxxxxxxxx"
 cks_push_alql_url1="http://xxxxxxxx:xxxx/"
 ### 副青龙
+cks_push_alql_N_c=""
 cks_push_alql_client_ids=["",""]
 cks_push_alql_client_secrets=["",""]
 cks_push_alql_urllist=["http://xxxxxxxxx:xxxx/",""]
@@ -44,6 +45,8 @@ cks_push_alql_che="http://xxxxxxxx:xxxx/"
 #client_secret_che=''
 #che = "http://xxxxx:xxx/"
 
+#分容器默认配置，如果在配置ec_config.txt中填写有该配置，则会覆盖下面默认40
+N_c=40
 
 import os
 import time
@@ -148,6 +151,25 @@ try:
                 pass
     except:
         print("cks_push_alql_urllist 未创建")
+        exit(3)
+except:
+    print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
+
+try:
+    try:
+        for i in t:
+            try:
+                temp = +re.findall(r"cks_push_alql_N_c=\"(.*?)\"", i)[0]
+                try:
+                    N_c = int(temp)
+                except:
+                    print("cks_push_alql_N_c 填写有误")
+                if temp == "40":
+                    print("cks_push_alql_N_c 未在ec_config.txt配置中更改，使用默认配置分发40")
+            except:
+                pass
+    except:
+        print("cks_push_alql_N_c 未创建")
         exit(3)
 except:
     print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
@@ -283,7 +305,7 @@ if __name__ == '__main__':
     for j in c_list:
         count +=1
         temp.append(j)
-        if (count % 40) == 0:#分配40个
+        if (count % N_c) == 0:#分配40个
             a = requests.session()
             url_token = urllist[ucount]+'open/auth/token?client_id='+client_ids[ucount]+'&client_secret='+client_secrets[ucount]
             gettoken(a, url_token)
