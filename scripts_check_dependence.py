@@ -15,9 +15,9 @@ import os,requests
 # 只修复依赖文件（jdCookie.js那种）！！不修复环境依赖（pip install aiohttp）！！
 # 默认不做任何操作只查询依赖脚本存在与否，有需求请在配置文件中配置对应变量进行操作，更新不会增加缺失文件
 # 如果你有发现更多的脚本依赖文件没有新增，欢迎提交issues到https://github.com/spiritLHL/dependence_scripts/issues
-# 增加缺失依赖文件
+# 增加缺失依赖文件(推荐)
 # export ec_fix_dep="true"
-# 更新老旧依赖文件
+# 更新老旧依赖文件(慎填，默认的依赖我使用的魔改版本，非必要别选)
 # export ec_ref_dep="true"
 
 try:
