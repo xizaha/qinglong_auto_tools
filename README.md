@@ -14,12 +14,13 @@
 | ck_auto_select.py | ck本地去重小工具，用法看注释 |  
 | cks_push_alql.py | 多容器ck分发工具，方便多容器管理，用法详见注释 |
 | cks_merge_alql.py | 多容器ck合并工具，方便多容器管理，用法详见注释 |
-| cks_sync_able.py | 多容器同步环境变量启用禁用脚本，方便多容器管理，使用方法详见注释 |
+| cks_sync_able.py | 多容器同步环境变量状态及备注，方便多容器管理，使用方法详见注释 |
 | tasks_sync_able.py | 多容器同步任务启用禁用脚本，方便多容器管理，使用方法详见注释 |
 | tasks_sync_scripts_able.py | 多容器同步已启用的脚本文件，方便多容器脚本更新管理，使用方法详见注释 |
 | tasks_sync_all.py | 多容器无脑同步所有脚本文件和任务，方便多容器脚本迁移管理，使用方法详见注释 |
 | scripts_check_nets.py | 单容器查询自己脚本文件中的网络链接，查询脚本中含有的链接，使用方法详见注释 |
 | scripts_purge_keys.py | 单容器清除屏蔽词脚本，屏蔽脚本中含有的屏蔽词，使用方法详见注释 |
+| scripts_check_dependence.py | 单容器依赖文件修复脚本，使用方法详见注释 |
 | ec_config.txt | 多容器脚本和单容器脚本的配置文件，请按照脚本提示填写 |
 
 
@@ -59,7 +60,8 @@ ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git
 |  ----  | ----  |
 | ec_config.txt | 多容器脚本和单容器脚本的配置文件，请按照脚本提示填写 |
 | scripts_check_nets.py | 单容器查询自己脚本文件中的网络链接，查询脚本中含有的链接，使用方法详见注释 |
-| b_scripts_purge_keys.py | 单容器清除屏蔽词脚本，屏蔽容器脚本中含有的屏蔽词，使用方法详见注释 |
+| scripts_check_dependence.py | 单容器依赖文件修复脚本，使用方法详见注释 |
+| b_script_purge_keys.py | 单容器清除屏蔽词脚本，屏蔽容器脚本中含有的屏蔽词，使用方法详见注释 |
 
 屏蔽脚本暂时有bug，别用
 
@@ -169,9 +171,7 @@ scripts_check_nets.py ，也就是 二叉树查网络链接 ，配置好后运�
 
 2021.11.22
 
-多容器分发脚本增加默认的分发量在配置中配置，不配置默认分发40。
-
-多容器环境变量同步脚本增加备注同步功能，运行时间增加。 
+新增单容器依赖文件修复脚本，使用方法详见注释，配置在配置文件中配置
 
 转载起码保留作者名谢谢
 
