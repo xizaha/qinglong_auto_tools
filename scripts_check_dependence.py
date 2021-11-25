@@ -127,12 +127,12 @@ try:
         for i in dependence_scripts_utils:
             if i != "utils":
                 with open("./utils/"+i, "r", encoding="utf-8") as f:
-                    r = requests.get("https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/utils/"+j).text
+                    r = requests.get("https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/utils/"+i).text
                     d = f.read()
                     if r == d:
-                        print("已存在文件 {}".format(j))
+                        print("已存在文件 {}".format(i))
                     else:
-                        print("缺失文件 {}".format(j))
+                        print("缺失文件 {}".format(i))
                         with open("./utils/txtx"+i, "w", encoding="utf-8") as fe:
                             fe.write(r)
 except:
