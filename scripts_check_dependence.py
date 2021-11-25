@@ -11,7 +11,7 @@ new Env('二叉树修复脚本依赖文件');
 import os,requests
 # from os import popen
 
-
+# 版本号 2.10.9 ，其他环境自测
 # 只修复依赖文件（jdCookie.js那种）！！不修复环境依赖（pip install aiohttp）！！
 # 默认不做任何操作只查询依赖脚本存在与否，有需求请在配置文件中配置对应变量进行操作，更新不会增加缺失文件
 # 如果你有发现更多的脚本依赖文件没有新增，欢迎提交issues到https://github.com/spiritLHL/dependence_scripts/issues
