@@ -52,7 +52,7 @@ dir_list = os.listdir("./")
 
 # 查询
 for i in dependence_scripts_name:
-    if i not in dir_list and i != "utils":
+    if i not in dir_list and i != "utils" and i != "function":
         print("缺失文件 {}".format(i))
         # 修补
         try:
@@ -74,7 +74,7 @@ except:
 try:
     if ref == 1:
         for i in dependence_scripts_name:
-            if i != "utils":
+            if i != "utils" and i != "function":
                 with open(i, "r", encoding="utf-8") as f:
                     r = requests.get("https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/"+i).text
                     d = f.read()
@@ -88,6 +88,8 @@ except:
     print("未配置ec_ref_dep，默认不更新依赖文件")
 
 
+
+#########################################################################################################
 
 # utils
 
@@ -104,13 +106,13 @@ except:
 
 # 查询
 for i in dependence_scripts_utils:
-    if i not in utils_list and i != "utils":
-        print("缺失文件 {}".format(i))
+    if i not in utils_list and i != "utils" and i != "function":
+        print("缺失文件 utils/{}".format(i))
         # 修补
         try:
             if fix == 1:
-                print("增加文件 {}".format(i))
-                r = requests.get("https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/"+i).text
+                print("增加文件 utils/{}".format(i))
+                r = requests.get("https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/utils/"+i).text
                 with open("./utils/"+i, "w", encoding="utf-8") as fe:
                     fe.write(r)
         except:
@@ -126,15 +128,71 @@ except:
 try:
     if ref == 1:
         for i in dependence_scripts_utils:
-            if i != "utils":
+            if i != "utils" and i != "function":
                 with open("./utils/"+i, "r", encoding="utf-8") as f:
                     r = requests.get("https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/utils/"+i).text
                     d = f.read()
                     if r == d:
-                        print("已存在文件 {}".format(i))
+                        print("已存在文件 utils/{}".format(i))
                     else:
-                        print("缺失文件 {}".format(i))
+                        print("更新文件 utils/{}".format(i))
                         with open("./utils/txtx"+i, "w", encoding="utf-8") as fe:
+                            fe.write(r)
+except:
+    print("未配置ec_ref_dep，默认不更新依赖文件")
+
+
+
+####################################################################################################
+
+
+
+# function
+
+res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+dependence_scripts_function = []
+for i in res:
+    dependence_scripts_function.append(i["name"])
+
+try:
+    function_list = os.listdir("./function")
+except:
+    os.makedirs("function")
+    function_list = os.listdir("./function")
+
+# 查询
+for i in dependence_scripts_function:
+    if i not in function_list and i != "utils" and i != "function":
+        print("缺失文件 function/{}".format(i))
+        # 修补
+        try:
+            if fix == 1:
+                print("增加文件 function/{}".format(i))
+                r = requests.get("https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/function/"+i).text
+                with open("./function/"+i, "w", encoding="utf-8") as fe:
+                    fe.write(r)
+        except:
+            temp = 1
+
+try:
+    if temp == 1:
+        print("未配置ec_fix_dep，默认不修复增加缺失的依赖文件")
+except:
+    pass
+
+# 更新
+try:
+    if ref == 1:
+        for i in dependence_scripts_function:
+            if i != "utils" and i != "function":
+                with open("./function/"+i, "r", encoding="utf-8") as f:
+                    r = requests.get("https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/function/"+i).text
+                    d = f.read()
+                    if r == d:
+                        print("已存在文件 function/{}".format(i))
+                    else:
+                        print("更新文件 function/{}".format(i))
+                        with open("./function/txtx"+i, "w", encoding="utf-8") as fe:
                             fe.write(r)
 except:
     print("未配置ec_ref_dep，默认不更新依赖文件")
