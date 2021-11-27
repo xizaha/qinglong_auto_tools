@@ -77,7 +77,7 @@ def check_dependence(file_path):
                 if fix == 1:
                     print("增加文件 {}{}".format(file_path,i))
                     r = requests.get(
-                        "https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/" + i).text
+                        "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/" + i).text
                     with open(file_path+i, "w", encoding="utf-8") as fe:
                         fe.write(r)
             except:
@@ -96,7 +96,7 @@ def check_dependence(file_path):
                 if i != "utils" and i != "function":
                     with open(i, "r", encoding="utf-8") as f:
                         r = requests.get(
-                            "https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/" + i).text
+                            "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/" + i).text
                         d = f.read()
                         if r == d:
                             print("无需修改 {}".format(i))
@@ -131,7 +131,7 @@ def check_dependence(file_path):
                 if fix == 1:
                     print("增加文件 {}utils/{}".format(file_path,i))
                     r = requests.get(
-                        "https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/utils/" + i).text
+                        "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/utils/" + i).text
                     with open(file_path+"utils/" + i, "w", encoding="utf-8") as fe:
                         fe.write(r)
             except:
@@ -150,7 +150,7 @@ def check_dependence(file_path):
                 if i != "utils" and i != "function":
                     with open(file_path+"utils/" + i, "r", encoding="utf-8") as f:
                         r = requests.get(
-                            "https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/utils/" + i).text
+                            "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/utils/" + i).text
                         d = f.read()
                         if r == d:
                             print("已存在文件 {}utils/{}".format(file_path,i))
@@ -185,7 +185,7 @@ def check_dependence(file_path):
                 if fix == 1:
                     print("增加文件 {}function/{}".format(file_path,i))
                     r = requests.get(
-                        "https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/function/" + i).text
+                        "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/function/" + i).text
                     with open(file_path+"function/" + i, "w", encoding="utf-8") as fe:
                         fe.write(r)
             except:
@@ -204,7 +204,7 @@ def check_dependence(file_path):
                 if i != "utils" and i != "function":
                     with open(file_path+"function/" + i, "r", encoding="utf-8") as f:
                         r = requests.get(
-                            "https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/function/" + i).text
+                            "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/function/" + i).text
                         d = f.read()
                         if r == d:
                             print("已存在文件 {}function/{}".format(file_path,i))
@@ -233,7 +233,7 @@ def check_root():
                 if fix == 1:
                     print("增加文件 {}".format(i))
                     r = requests.get(
-                        "https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/" + i).text
+                        "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/" + i).text
                     with open(i, "w", encoding="utf-8") as fe:
                         fe.write(r)
             except:
@@ -252,7 +252,7 @@ def check_root():
                 if i != "utils" and i != "function":
                     with open(i, "r", encoding="utf-8") as f:
                         r = requests.get(
-                            "https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/" + i).text
+                            "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/" + i).text
                         d = f.read()
                         if r == d:
                             print("无需修改 {}".format(i))
@@ -287,7 +287,7 @@ def check_root():
                 if fix == 1:
                     print("增加文件 utils/{}".format(i))
                     r = requests.get(
-                        "https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/utils/" + i).text
+                        "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/utils/" + i).text
                     with open("./utils/" + i, "w", encoding="utf-8") as fe:
                         fe.write(r)
             except:
@@ -306,7 +306,7 @@ def check_root():
                 if i != "utils" and i != "function":
                     with open("./utils/" + i, "r", encoding="utf-8") as f:
                         r = requests.get(
-                            "https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/utils/" + i).text
+                            "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/utils/" + i).text
                         d = f.read()
                         if r == d:
                             print("已存在文件 utils/{}".format(i))
@@ -341,7 +341,7 @@ def check_root():
                 if fix == 1:
                     print("增加文件 function/{}".format(i))
                     r = requests.get(
-                        "https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/function/" + i).text
+                        "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/function/" + i).text
                     with open("./function/" + i, "w", encoding="utf-8") as fe:
                         fe.write(r)
             except:
@@ -360,7 +360,7 @@ def check_root():
                 if i != "utils" and i != "function":
                     with open("./function/" + i, "r", encoding="utf-8") as f:
                         r = requests.get(
-                            "https://ghproxy.com/https://raw.githubusercontent.com/spiritLHL/dependence_scripts/master/function/" + i).text
+                            "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/function/" + i).text
                         d = f.read()
                         if r == d:
                             print("已存在文件 function/{}".format(i))
@@ -382,8 +382,8 @@ if __name__ == '__main__':
 
     dirs_ls = traversalDir_FirstDir("./")
 
-    # script根目录默认存在的文件夹，放入其中的名字不再检索依赖完整性
-    or_list = ['node_modules', '__pycache__', 'utils', '.pnpm-store', 'function']
+    # script根目录默认存在的文件夹，放入其中的文件夹不再检索其内依赖完整性
+    or_list = ['node_modules', '__pycache__', 'utils', '.pnpm-store', 'function', 'tools']
 
     print()
     for i in dirs_ls:
