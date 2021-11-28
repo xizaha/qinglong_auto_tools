@@ -383,7 +383,7 @@ if __name__ == '__main__':
     dirs_ls = traversalDir_FirstDir("./")
 
     # script根目录默认存在的文件夹，放入其中的文件夹不再检索其内依赖完整性
-    or_list = ['node_modules', '__pycache__', 'utils', '.pnpm-store', 'function', 'tools']
+    or_list = ['node_modules', '__pycache__', 'utils', '.pnpm-store', 'function', 'tools', 'backUp']
 
     print()
     for i in dirs_ls:
