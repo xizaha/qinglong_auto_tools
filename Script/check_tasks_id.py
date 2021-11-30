@@ -86,7 +86,7 @@ if __name__ == '__main__':
     print("=========== 主青龙 信息获取中 =============")
     print()
     ztasks = getcrons(s, url1, "open")
-    for i in ztasks:
+    for i in ztasks: #根据青龙任务的名字查询对应ID
         if i["name"] == "通用开卡[普通]":
             print("通用开卡[普通]ID")
             print(i["_id"])
@@ -101,5 +101,9 @@ if __name__ == '__main__':
             print()
         elif i["name"] == "通用京东视频狂得京豆":
             print("通用京东视频狂得京豆ID")
+            print(i["_id"])
+            print()
+        elif i["name"] == "通用关注有礼":
+            print("通用关注有礼ID")
             print(i["_id"])
             print()

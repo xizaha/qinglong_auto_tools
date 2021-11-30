@@ -73,7 +73,7 @@ ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git
 
 脚本使用：
 
-首先，事先声明，你的应用ID和secretkey就相当于你的登陆用户名和密码，请勿随意泄露，如果是他人帮你搭建的，请及时删除再创建新的应用，避免他人盗取数据。
+**首先，事先声明，你的qinglong应用ID和secretkey就相当于你的登陆用户名和密码，请勿随意泄露，如果是他人帮你搭建的，请及时删除已有的应用再创建新的应用，避免他人盗取数据。**
 
 先看一张图，了解大概
 
@@ -177,15 +177,11 @@ scripts_check_dependence.py，也就是二叉树修复依赖文件脚本，拉�
 
 ### 更新说明 
 
-2021.11.28
+2021.11.30
 
 更新部分说明
 
 转载起码保留作者名谢谢
-
-### 欢迎请作者喝一杯咖啡
-
-[感谢点击](https://i.loli.net/2021/07/15/UPk5VbzAIC6OM7y.jpg)
 
 # 免责声明
 
