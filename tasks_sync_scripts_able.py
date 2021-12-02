@@ -1,6 +1,6 @@
 # 作者仓库:https://github.com/spiritLHL/qinglong_auto_tools
 # 觉得不错麻烦点个star谢谢
-
+# 频道：https://t.me/qinglong_auto_tools
 # 根据主青龙的启用任务和对应脚本同步到副青龙中去，不存在于副青龙中的任务和对应脚本会自动新增，如果启用的任务对应的脚本内容有更新，也会同步更新
 
 # 只同步更新主青龙中已经启用的任务和对应脚本

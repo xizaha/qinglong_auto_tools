@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*
-
+# 频道：https://t.me/qinglong_auto_tools
 # 自用查任务ID
 client_id1=""
 client_secret1=""

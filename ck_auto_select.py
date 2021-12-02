@@ -3,7 +3,7 @@
 
 #作者仓库:https://github.com/spiritLHL/qinglong_auto_tools
 #觉得不错麻烦点个star谢谢
- 
+# 频道：https://t.me/qinglong_auto_tools
 #代码
 import re
  

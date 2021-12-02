@@ -6,7 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="ebbc197c-7613-45cd-b576-b893f634eb4e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Script/check_tasks_id.py" beforeDir="false" afterPath="$PROJECT_DIR$/Script/check_tasks_id.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/b_script_purge_keys.py" beforeDir="false" afterPath="$PROJECT_DIR$/b_script_purge_keys.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ck_auto_select.py" beforeDir="false" afterPath="$PROJECT_DIR$/ck_auto_select.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cks_merge_alql.py" beforeDir="false" afterPath="$PROJECT_DIR$/cks_merge_alql.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cks_push_alql.py" beforeDir="false" afterPath="$PROJECT_DIR$/cks_push_alql.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cks_sync_able.py" beforeDir="false" afterPath="$PROJECT_DIR$/cks_sync_able.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts_check_dependence.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts_check_dependence.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts_check_nets.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts_check_nets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tasks_sync_able.py" beforeDir="false" afterPath="$PROJECT_DIR$/tasks_sync_able.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tasks_sync_all.py" beforeDir="false" afterPath="$PROJECT_DIR$/tasks_sync_all.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tasks_sync_scripts_able.py" beforeDir="false" afterPath="$PROJECT_DIR$/tasks_sync_scripts_able.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trs_stream.py" beforeDir="false" afterPath="$PROJECT_DIR$/trs_stream.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +57,7 @@
       <workItem from="1635598040039" duration="9000" />
       <workItem from="1638272111898" duration="47000" />
       <workItem from="1638272170541" duration="597000" />
+      <workItem from="1638422926698" duration="120000" />
     </task>
     <servers />
   </component>

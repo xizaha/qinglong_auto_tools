@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 #作者仓库:https://github.com/spiritLHL/qinglong_auto_tools
 #觉得不错麻烦点个star谢谢
+# 频道：https://t.me/qinglong_auto_tools
 '''
 cron: 1
 new Env('二叉树同步任务启用禁用');

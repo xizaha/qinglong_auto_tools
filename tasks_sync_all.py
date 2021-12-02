@@ -1,6 +1,6 @@
 #作者仓库:https://github.com/spiritLHL/qinglong_auto_tools
 #觉得不错麻烦点个star谢谢
-
+# 频道：https://t.me/qinglong_auto_tools
 #根据主青龙同步到副青龙中去，不存在于副青龙中的任务和对应脚本会自动新增，无脑同步所有
 
 # 这是给空容器脚本迁移用的，日常请使用 tasks_sync_all 和 tasks_sync_scripts_able ,一个同步任务状态，一个同步启用的任务的对应脚本

@@ -1,6 +1,6 @@
 # 作者仓库:https://github.com/spiritLHL/qinglong_auto_tools
 # 觉得不错麻烦点个star谢谢
-
+# 频道：https://t.me/qinglong_auto_tools
 # 根据主青龙同步到副青龙中去，脚本默认同步更新副青龙环境变量的状态和值
 # 如果有环境变量在副青龙不存在需要新增，若是JD_COOKIE，请使用二叉树ck分发脚本，
 # 若是其他名字的变量，本脚本第一次运行自动在副青龙新增，但需要运行第二次才能同步新增变量的启用禁用状态
