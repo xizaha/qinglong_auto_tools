@@ -11,6 +11,7 @@ new Env('二叉树修复脚本依赖文件');
 
 import os,requests
 import os.path
+import time
 # from os import popen
 
 # 版本号 2.10.9 ，其他环境自测
@@ -52,7 +53,6 @@ except:
 
 
 def traversalDir_FirstDir(path):
-
     list = []
     if (os.path.exists(path)):
         files = os.listdir(path)
@@ -66,7 +66,18 @@ def traversalDir_FirstDir(path):
         return list
 
 def check_dependence(file_path):
-    res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+    try:
+        res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+    except:
+        print("网络波动，稍后尝试")
+        time.sleep(5)
+        try:
+            res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+        except:
+            print("网络问题无法获取仓库文件列表，终止检索")
+            return
+
+
     dependence_scripts_name = []
     for i in res:
         dependence_scripts_name.append(i["name"])
@@ -116,7 +127,17 @@ def check_dependence(file_path):
 
     # utils
 
-    res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+    try:
+        res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+    except:
+        print("网络波动，稍后尝试")
+        time.sleep(5)
+        try:
+            res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+        except:
+            print("网络问题无法获取仓库文件列表，终止检索")
+            return
+
     dependence_scripts_utils = []
     for i in res:
         dependence_scripts_utils.append(i["name"])
@@ -170,7 +191,17 @@ def check_dependence(file_path):
 
     # function
 
-    res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+    try:
+        res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+    except:
+        print("网络波动，稍后尝试")
+        time.sleep(5)
+        try:
+            res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+        except:
+            print("网络问题无法获取仓库文件列表，终止检索")
+            return
+
     dependence_scripts_function = []
     for i in res:
         dependence_scripts_function.append(i["name"])
@@ -222,7 +253,18 @@ def check_dependence(file_path):
 
 
 def check_root():
-    res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+    try:
+        res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+    except:
+        print("网络波动，稍后尝试")
+        time.sleep(5)
+        try:
+            res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+        except:
+            print("网络问题无法获取仓库文件列表，终止检索")
+            return
+
+
     dependence_scripts_name = []
     for i in res:
         dependence_scripts_name.append(i["name"])
@@ -272,7 +314,17 @@ def check_root():
 
     # utils
 
-    res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+    try:
+        res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+    except:
+        print("网络波动，稍后尝试")
+        time.sleep(5)
+        try:
+            res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+        except:
+            print("网络问题无法获取仓库文件列表，终止检索")
+            return
+
     dependence_scripts_utils = []
     for i in res:
         dependence_scripts_utils.append(i["name"])
@@ -326,7 +378,19 @@ def check_root():
 
     # function
 
-    res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+    try:
+        res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+    except:
+        print("网络波动，稍后尝试")
+        time.sleep(5)
+        try:
+            res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+        except:
+            print("网络问题无法获取仓库文件列表，终止检索")
+            return
+
+
+
     dependence_scripts_function = []
     for i in res:
         dependence_scripts_function.append(i["name"])
@@ -406,6 +470,12 @@ if __name__ == '__main__':
 
 
     print("检测完毕")
+
+    if fix == 1:
+        print("修复完毕后脚本无法运行，显示缺依赖文件，大概率库里没有或者依赖文件同名但内容不一样，请另寻他法\n")
+        print("修复完毕后缺依赖环境导致的脚本无法运行，这种无法修复，请自行在依赖管理中添加\n")
+        print("前者缺文件(如 Error: Cannot find module './utils/magic')，后者缺依赖(如： Error: Cannot find module 'date-fns' )，本脚本只修复前一种")
+
 
 
 
