@@ -169,8 +169,12 @@ def getitem(self, baseurl, typ):
     return item
 
 def getscript(self, baseurl, typ, filename):
-    url = baseurl + typ + "/scripts/"+filename+"?t=%s" % gettimestamp()
+    url = baseurl + typ + "/scripts/" + filename + "?t=%s" % gettimestamp()
     r = self.get(url)
+    response = json.loads(r.text)["code"]
+    if response == 500:
+        url = baseurl + typ + "/scripts/" + filename + "?path="
+        r = self.get(url)
     script = json.loads(r.text)["data"]
     return script
 
@@ -181,7 +185,7 @@ def pushscript(self, baseurl, typ, data):
     response = json.loads(r.text)["code"]
     if response == 500:
         data["path"] = ""
-    r = self.put(url, data=json.dumps(data))
+        r = self.put(url, data=json.dumps(data))
     return r.text
 
 def getcrons(self, baseurl, typ):
