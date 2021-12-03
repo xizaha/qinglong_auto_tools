@@ -160,30 +160,30 @@ def login(self, baseurl, client_id_temp, client_secret_temp):
 
 
 def getitem(self, baseurl, typ):
-    url = baseurl + typ + "/scripts/files?t=%s" % gettimestamp()
+    url = baseurl + typ + "/scripts/files?t={}".format(gettimestamp())
     r = self.get(url)
     item = json.loads(r.text)["data"]
     return item
 
 
-def getscript(self, baseurl, typ, filename):
+def getscript(self, baseurl, typ, filename, path):
     url = baseurl + typ + "/scripts/" + filename + "?t=%s" % gettimestamp()
     r = self.get(url)
     response = json.loads(r.text)["code"]
     if response == 500:
-        url = baseurl + typ + "/scripts/" + filename + "?path="
+        url = baseurl + typ + "/scripts/" + filename + "?path=" + path
         r = self.get(url)
     script = json.loads(r.text)["data"]
     return script
 
 
-def pushscript(self, baseurl, typ, data):
+def pushscript(self, baseurl, typ, data, path):
     url = baseurl + typ + "/scripts?t=%s" % gettimestamp()
     self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
     r = self.put(url, data=json.dumps(data))
     response = json.loads(r.text)["code"]
     if response == 500:
-        data["path"] = ""
+        data["path"] = path
         r = self.put(url, data=json.dumps(data))
     return r.text
 
@@ -234,13 +234,44 @@ if __name__ == '__main__':
     print()
 
     # 获取主青龙的脚本名
+    ## 根目录
     zscripts = getitem(s, url1, "open")
     zscripts_list = []
     for i in zscripts:
         zscripts_list.append(i["key"])
-    print("主青龙脚本文件数量：{}".format(len(zscripts_list)))
+
+    # script根目录默认存在的文件夹，放入其中的文件夹不再检索
+    or_list = ['node_modules', '__pycache__', 'utils', '.pnpm-store', 'function', 'tools', 'backUp', '.git', '.idea']
+    zpath_list = []
+    zpath_scripts_list = []
+    for i in zscripts:
+        try:
+            i["children"]
+            if i["title"] not in or_list:
+                zpath_list.append(i["title"])
+                zpath_scripts_list.append(i["children"])
+        except:
+            pass
+
+    print("主青龙根目录脚本文件数量：{}，".format(len(zscripts_list)))
+    print("主青龙任务拉取的仓库对应目录文件夹数量：{}，".format(len(zpath_list)))
     print()
     print()
+
+    # 创建对应文件夹字典
+    dict_z = {}
+    for i in zpath_list:
+        dict_z[i] = []
+
+    # 主青龙启用的任务对应的脚本
+    zscripts_enable = []
+    for i in zenable_tcommand:
+        if i[-2:] == "js" or i[-2:] == "py":
+            ti = i.replace("task ", "").split("/")
+            if len(ti) == 1:
+                zscripts_enable.append(ti[0])
+            elif len(ti) == 2:
+                dict_z[ti[0]].append(ti[1])
 
     t = 0
     for k in urllist:
@@ -279,9 +310,7 @@ if __name__ == '__main__':
         ct = 0
 
         for i in zenable_tname:
-            if zenable_tname[count] not in enable_tname and zenable_tcommand[count] not in enable_tcommand and \
-                    zenable_tschedule[
-                        count] not in enable_tschedule:
+            if zenable_tname[count] not in enable_tname and zenable_tcommand[count] not in enable_tcommand:
                 data_cron = {
                     "command": zenable_tcommand[count],
                     "schedule": zenable_tschedule[count],
@@ -295,19 +324,23 @@ if __name__ == '__main__':
         print("新增启用任务数量：{}".format(xc))
         print()
 
-        # 获取副青龙的脚本名
+        # 获取副青龙根目录脚本名
         scripts = getitem(a, urllist[t], "open")
         scripts_list = []
         for i in scripts:
             scripts_list.append(i["key"])
 
-        # 主青龙启用的任务对应的脚本
-        zscripts_enable = []
-        for i in zenable_tcommand:
-            if i[-2:] == "js" or i[-2:] == "py":
-                zscripts_enable.append(i.replace("task ", ""))
+        # 获取副青龙仓库目录脚本名字典
+        dict_cs_name = {}
+        for i in zpath_list:
+            dict_cs_name[i] = []
+            for j in scripts:
+                if j["key"] == i:
+                    for k in j["children"]:
+                        dict_cs_name[i].append(k["value"])
 
         # 筛选需要添加或更改的脚本名
+        ## 根目录
         add_list = []
         change_list = []
         for j in zscripts_enable:
@@ -315,10 +348,27 @@ if __name__ == '__main__':
                 add_list.append(j)
             else:
                 change_list.append(j)
+
+        ## 仓库目录
+        dict_add_f = {}
+        dict_change_f = {}
+        for j in dict_z:
+            dict_add_f[j] = []
+            dict_change_f[j] = []
+            for k in dict_z[j]:  # 在主青龙
+                if k not in dict_cs_name[j]:  # 不在副青龙的文件
+                    dict_add_f[j].append(k)
+                else:
+                    dict_change_f[j].append(k)
+
+        print(dict_add_f)
+        print(dict_change_f)
+
         print("同步脚本文件中")
         print()
 
         # 查询新增脚本内容
+        ## 根目录
         data_script_list = []
         for i in add_list:
             content = getscript(s, url1, "open", i)
@@ -328,19 +378,43 @@ if __name__ == '__main__':
             }
             data_script_list.append(data_script)
 
+        ## 仓库文件夹
+        data_script_add_dict = {}
+        for i in dict_add_f:
+            data_script_add_dict[i] = []
+            for j in dict_add_f[i]:  # j是文件名，i 是文件夹名
+                content = getscript(s, url1, "open", j, i)
+                data_script = {
+                    "filename": j,
+                    "content": content,
+                    "path": i
+                }
+                data_script_add_dict[i].append(data_script)
+
         # 写入新增内容
+        ## 根目录更新
         for i in data_script_list:
-            pushscript(a, urllist[t], "open", i)
+            pushscript(a, urllist[t], "open", i, "")
+
+        ## 仓库文件夹更新
+        cotu = 0
+        for i in data_script_add_dict:
+            for j in data_script_add_dict[i]:
+                rc = pushscript(a, urllist[t], "open", j, j["path"])
+                print(rc)
+                cotu += 1
         print("新增启用任务对应脚本文件数量：{}".format(xc))
+        print("新增启用任务对应仓库文件脚本数量：{}".format(cotu))
         print()
 
         print("同步脚本文件中")
         print()
 
         # 查询需要更改的脚本内容
+        ## 根目录
         change_script_list = []
         for i in change_list:
-            content = getscript(s, url1, "open", i)
+            content = getscript(s, url1, "open", i, "")
             data_script = {
                 "filename": i,
                 "content": content,
@@ -349,25 +423,59 @@ if __name__ == '__main__':
 
         origin_script_list = []
         for i in change_list:
-            content = getscript(a, urllist[t], "open", i)
+            content = getscript(a, urllist[t], "open", i, "")
             data_script = {
                 "filename": i,
                 "content": content,
             }
             origin_script_list.append(data_script)
 
+        ## 仓库文件字典
+        change_script_dict = {}
+        for i in dict_change_f:
+            change_script_dict[i] = []
+            for j in dict_change_f[i]:  # j是文件名，i 是文件夹名
+                content = getscript(s, url1, "open", j, i)
+                data_script = {
+                    "filename": j,
+                    "content": content,
+                    "path": i
+                }
+                change_script_dict[i].append(data_script)
+
+        origin_script_dict = {}
+        for i in dict_change_f:
+            origin_script_dict[i] = []
+            for j in dict_change_f[i]:  # j是文件名，i 是文件夹名
+                content = getscript(a, urllist[t], "open", j, i)
+                data_script = {
+                    "filename": j,
+                    "content": content,
+                    "path": i
+                }
+                origin_script_dict[i].append(data_script)
+
+        # 比较后更新
+        ## 根目录
         count = 0
         ct = 0
         while True:
             if count <= (len(change_script_list) - 1):
                 if change_script_list[count] != origin_script_list[count]:
-                    pushscript(a, urllist[t], "open", change_script_list[count])
+                    pushscript(a, urllist[t], "open", change_script_list[count], "")
                     print("更新脚本文件  {}".format(change_script_list[count]["filename"]))
                 else:
                     ct += 1
                 count += 1
             else:
                 break
+        ## 仓库文件
+        for i, k in zip(change_script_dict, origin_script_dict):
+            for j, l in zip(change_script_dict[i], origin_script_dict[k]):
+                if j != l:
+                    pushscript(a, urllist[t], "open", j, j["path"])
+                    print("更新脚本文件  {}".format(j["filename"]))
+
         print()
 
         print("同步脚本文件完毕")
@@ -375,8 +483,6 @@ if __name__ == '__main__':
 
         print('========= 副青龙{} 同步信息完毕 ============='.format(t))
         print()
-
-
 
 
 
