@@ -7,74 +7,12 @@ cron: 1
 new Env('二叉树查脚本网络链接');
 '''
 
+expect_list = ["http://xxxx.xxxx.xxx/", ""]  # 屏蔽查询的链接
 
-# 主青龙，需要查找网络链接的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
-'''
-# ec_config.txt中填写如下设置
-
-# 二叉树查网络链接
-scripts_check_nets_cilent_id1="xxxxxxx"
-scripts_check_nets_cilent_secret1="xxxxx"
-scripts_check_nets_url1="http://xxxxxx:xxxx/"
-
-'''
-#cilent_id1 = ""
-#cilent_secret1 = ""
-#url1 = ""
-
-
-
-
-
+import time
+import json
 import re
-
-try:
-    with open("ec_config.txt", "r") as fp:
-        t = fp.readlines()
-    try:
-        for i in t:
-            try:
-                temp = re.findall(r"scripts_check_nets_cilent_id1=\"(.*?)\"", i)[0]
-                cilent_id1 = temp
-                if cilent_id1 == "":
-                    print("scripts_check_nets_cilent_id1 未填写")
-            except:
-                pass
-    except:
-        print("scripts_check_nets_cilent_id1 未创建")
-        exit(3)
-
-    try:
-        for i in t:
-            try:
-                temp = re.findall(r"scripts_check_nets_cilent_secret1=\"(.*?)\"", i)[0]
-                cilent_secret1 = temp
-                if cilent_secret1 == "":
-                    print("scripts_check_nets_cilent_secret1 未填写")
-            except:
-                pass
-    except:
-        print("scripts_check_nets_cilent_secret1 未创建")
-        exit(3)
-
-    try:
-        for i in t:
-            try:
-                temp = re.findall(r"scripts_check_nets_url1=\"(.*?)\"", i)[0]
-                url1 = temp
-                if url1 == "":
-                    print("scripts_check_nets_url1 未填写")
-            except:
-                pass
-    except:
-        print("scripts_check_nets_url1 未创建")
-        exit(3)
-except:
-    print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
-
-
-
-expect_list = [url1, ""] # 屏蔽查询的链接
+import os
 
 # 屏蔽词
 keys = []
@@ -88,155 +26,209 @@ try:
 except:
     print("fake_keys.txt 未创建，有需要请按照注释进行操作")
 
-
-
-
 keys = list(set(keys))
 
 try:
     import requests
 except Exception as e:
     print(e, "\n缺少requests 模块，请执行命令安装：pip3 install requests")
-import time
-import json
-
 
 requests.packages.urllib3.disable_warnings()
 
 
-def gettimestamp():
-    return str(int(time.time() * 1500))
+def traversalDir_FirstDir(path):
+    list = []
+    if (os.path.exists(path)):
+        files = os.listdir(path)
+        for file in files:
+            m = os.path.join(path, file)
+            if (os.path.isdir(m)):
+                h = os.path.split(m)
+                list.append(h[1])
+        return list
 
 
-def gettoken(self, url_token):
-    r = requests.get(url_token).text
-    res = json.loads(r)["data"]["token"]
-    self.headers.update({"Authorization": "Bearer " + res})
+def read_ex(or_list):
+    # 加载远程依赖剔除依赖文件的检索
+    try:
+        res1 = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+        time.sleep(5)
+        res2 = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+        time.sleep(4)
+        res3 = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+        try:
+            res1["documentation_url"]
+            return
+        except:
+            try:
+                res2["documentation_url"]
+                return
+            except:
+                try:
+                    res3["documentation_url"]
+                    return
+                except:
+                    pass
 
 
-def login(self, baseurl, cilent_id_temp, cilent_secret_temp):
-    url_token = baseurl + 'open/auth/token?client_id=' + cilent_id_temp + '&client_secret=' + cilent_secret_temp
-    gettoken(self, url_token)
+    except:
+        print("网络波动，稍后尝试")
+        time.sleep(5)
+        try:
+            res1 = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+            time.sleep(5)
+            res2 = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+            time.sleep(4)
+            res3 = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+            try:
+                res1["documentation_url"]
+                return
+            except:
+                try:
+                    res2["documentation_url"]
+                    return
+                except:
+                    try:
+                        res3["documentation_url"]
+                        return
+                    except:
+                        pass
+        except:
+            print("网络问题无法获取仓库文件列表，停止加载远程文件剔除依赖文件，直接本地检索")
 
-
-def getitem(self, baseurl, typ):
-    url = baseurl + typ + "/scripts/files?t=%s" % gettimestamp()
-    r = self.get(url)
-    item = json.loads(r.text)["data"]
-    return item
-
-
-def getscript(self, baseurl, typ, filename):
-    url = baseurl + typ + "/scripts/" + filename + "?t=%s" % gettimestamp()
-    r = self.get(url)
-    script = json.loads(r.text)["data"]
-    return script
-
-
-def pushscript(self, baseurl, typ, data):
-    url = baseurl + typ + "/scripts?t=%s" % gettimestamp()
-    self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
-    r = self.put(url, data=json.dumps(data))
-    # response = json.loads(r.text)["data"]
-    return r
-
-
-def getcrons(self, baseurl, typ):
-    url = baseurl + typ + "/crons?t=%s" % gettimestamp()
-    r = self.get(url)
-    item = json.loads(r.text)["data"]
-    return item
-
-
-def addcron(self, baseurl, typ, data):
-    url = baseurl + typ + "/crons?t=%s" % gettimestamp()
-    self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
-    r = self.post(url, data=json.dumps(data))
-    if json.loads(r.text)["code"] == 200:
-        return True
-    else:
-        return r.text
+    for i in res1:
+        or_list.append(i["name"])
+    for i in res2:
+        or_list.append(i["name"])
+    for i in res3:
+        or_list.append(i["name"])
+    or_list = list(set(or_list))
+    return or_list
 
 
 if __name__ == '__main__':
-    # 主容器
-    s = requests.session()
-    login(s, url1, cilent_id1, cilent_secret1)
-
     # 获取主青龙任务
-    print("=========== 主青龙 信息获取中 =============")
-    print()
 
-    # 获取主青龙的脚本名
-    zscripts = getitem(s, url1, "open")
-    zscripts_list = []
-    for i in zscripts:
-        zscripts_list.append(i["key"])
+    print("============ 获取根目录脚本文件内容 ============\n")
+
+    # script根目录默认存在的文件夹，放入其中的文件夹不再检索
+    or_list_o = ['node_modules', '__pycache__', 'utils', '.pnpm-store', 'function', 'tools', 'backUp', '.git', '.idea',
+                 'fake_keys.txt', 'ec_config.txt']
     try:
-        zscripts.remove("fake_keys.txt")
+        if os.environ["ec_read_dep"] == "true":
+            print("已配置远程加载依赖文件名不查询")
+            or_list = read_ex(or_list_o)
+            if or_list == None:
+                or_list = or_list_o
     except:
-        pass
-    print("主青龙脚本文件数量：{}".format(len(zscripts_list)))
-    print()
-    print()
+        print("未配置远程加载依赖文件名不查询，有需要可添加配置")
+        print("export ec_read_dep=\"true\"")
+        or_list = or_list_o
 
-    print("获取脚本文件内容")
-
+    # 根目录
+    dir_list = list(set(os.listdir("../") + os.listdir("./")) - set(or_list))
     data_script_list = []
-    for i in zscripts_list:
-        content = getscript(s, url1, "open", i)
-        data_script_list.append(content)
+    name_root = []
+    if "db" not in os.listdir("../"):
+        for i in dir_list:
+            if i not in or_list and i[0:9] != "spiritLHL":
+                try:
+                    with open("../" + i, "r", encoding="utf-8") as f:
+                        data_script_list.append(f.read())
+                    name_root.append(i)
+                except:
+                    pass
+    else:
+        for i in dir_list:
+            if i not in or_list and i[0:9] != "spiritLHL":
+                try:
+                    with open(i, "r", encoding="utf-8") as f:
+                        data_script_list.append(f.read())
+                    name_root.append(i)
+                except:
+                    pass
 
     # 筛出网址
+    net_list = {}
+    for i, k in zip(data_script_list, name_root):
+        net_list[k] = []
+
+    for i, k in zip(data_script_list, name_root):
+        temp = re.findall(r"\"https://(.*?)\"", i)
+        for j in temp:
+            net_list[k].append("https://" + j)
+
+    for i, k in zip(data_script_list, name_root):
+        temp = re.findall(r"\"http://(.*?)\"", i)
+        for j in temp:
+            net_list[k].append("https://" + j)
+
+    for i, k in zip(data_script_list, name_root):
+        temp = re.findall(r"\'https://(.*?)\'", i)
+        for j in temp:
+            net_list[k].append("https://" + j)
+
+    for i, k in zip(data_script_list, name_root):
+        temp = re.findall(r"\'http://(.*?)\'", i)
+        for j in temp:
+            net_list[k].append("https://" + j)
+
+    # 去重
+    for i in net_list:
+        net_list[i] = list(set(net_list[i]))
+        for j in net_list[i]:
+            if ".jd.com" in j or "." not in j or j in expect_list:
+                net_list[i].remove(j)
 
     print()
     print("查询脚本，筛选网址中")
     print()
 
-    net_list = []
-    for i in data_script_list:
-        temp = re.findall(r"\"https://(.*?)\"", i)
-        for j in temp:
-            net_list.append(j)
-
-    for i in data_script_list:
-        temp = re.findall(r"\"http://(.*?)\"", i)
-        for j in temp:
-            net_list.append(j)
-
-    for i in data_script_list:
-        temp = re.findall(r"\'https://(.*?)\'", i)
-        for j in temp:
-            net_list.append(j)
-
-    for i in data_script_list:
-        temp = re.findall(r"\'http://(.*?)\'", i)
-        for j in temp:
-            net_list.append(j)
-
-    net_l = list(set(net_list))
-    nets = []
-    for i in net_l:
-        if ".jd.com" not in i and "." in i and i not in expect_list:
-            nets.append(i)
-
     # 输出找到的链接
-    net = list(set(nets))
-    for k in net:
-        print(k)
+    ## 根目录
+    print("根目录文件\n")
+    count_root = 0
+    count_root_key = 0
+    for k in net_list:
+        if net_list[k] == []:
+            print(k)
+            print("无链接\n")
+        else:
+            print(k)
+            for l in net_list[k]:
+                print(l)
+                count_root += 1
+            print()
+            for l in net_list[k]:
+                for j in keys:
+                    if j in l:
+                        count_root_key += 1
 
     print()
-    print("查到链接个数： {}".format(len(net)))
-
-    cct = 0
-    for n in nets:
-        for j in keys:
-            if j in n:
-                cct +=1
+    print("查到链接个数： {}".format(count_root))
 
     print()
-    print("包含屏蔽词链接个数： {}".format(cct))
+    print("包含屏蔽词链接个数： {}".format(count_root_key))
 
+    print("============ 根目录查询完毕 ============")
+
+    ## 仓库文件待开发
+
+    # 仓库文件夹
+    # 获取副青龙仓库目录脚本名字典
+    zpath_list = traversalDir_FirstDir("../")
+    try:
+        zpath_list.remove("spiritLHL_qinglong_auto_tools")
+    except:
+        pass
+    if "config" not in zpath_list and "db" not in zpath_list:
+        zpath_list = list(set(zpath_list) - set(or_list))
+        dict_name = {}
+        for i in zpath_list:
+            dict_name[i] = []
+            for j in list(set(os.listdir("../" + i)) - set(or_list)):
+                if str(i)[0:9] != "spiritLHL":
+                    dict_name[i].append(j)
     print()
     print("查询结束")
 

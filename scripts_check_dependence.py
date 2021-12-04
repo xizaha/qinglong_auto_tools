@@ -69,11 +69,13 @@ def traversalDir_FirstDir(path):
 def check_dependence(file_path):
     try:
         res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+        time.sleep(2)
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
             res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+            time.sleep(1)
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -130,11 +132,13 @@ def check_dependence(file_path):
 
     try:
         res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+        time.sleep(3)
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
             res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+            time.sleep(2)
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -194,11 +198,13 @@ def check_dependence(file_path):
 
     try:
         res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+        time.sleep(4)
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
             res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+            time.sleep(3)
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -256,11 +262,13 @@ def check_dependence(file_path):
 def check_root():
     try:
         res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+        time.sleep(2)
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
             res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+            time.sleep(3)
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -317,11 +325,13 @@ def check_root():
 
     try:
         res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+        time.sleep(2)
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
             res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+            time.sleep(1)
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -381,11 +391,13 @@ def check_root():
 
     try:
         res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+        time.sleep(3)
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
             res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+            time.sleep(1)
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
