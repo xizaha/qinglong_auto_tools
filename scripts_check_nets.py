@@ -7,26 +7,10 @@ cron: 1
 new Env('二叉树查脚本网络链接');
 '''
 
-expect_list = ["http://xxxx.xxxx.xxx/", ""]  # 屏蔽查询的链接
-
 import time
 import json
 import re
 import os
-
-# 屏蔽词
-keys = []
-
-# 屏蔽词也可在fake_keys.txt中按一行一行填写
-try:
-    with open("fake_keys.txt", "r") as fp:
-        t = fp.readlines()
-    for j in t:
-        keys.append(j)
-except:
-    print("fake_keys.txt 未创建，有需要请按照注释进行操作")
-
-keys = list(set(keys))
 
 try:
     import requests
@@ -109,21 +93,40 @@ def read_ex(or_list):
 if __name__ == '__main__':
     # 获取主青龙任务
 
-    print("============ 获取根目录脚本文件内容 ============\n")
-
     # script根目录默认存在的文件夹，放入其中的文件夹不再检索
     or_list_o = ['node_modules', '__pycache__', 'utils', '.pnpm-store', 'function', 'tools', 'backUp', '.git', '.idea',
                  'fake_keys.txt', 'ec_config.txt']
     try:
         if os.environ["ec_read_dep"] == "true":
-            print("已配置远程加载依赖文件名不查询")
+            print("已配置远程加载依赖文件名不查询\n")
             or_list = read_ex(or_list_o)
             if or_list == None:
                 or_list = or_list_o
     except:
-        print("未配置远程加载依赖文件名不查询，有需要可添加配置")
-        print("export ec_read_dep=\"true\"")
+        print("#未配置远程加载依赖文件名不查询，有需要可添加配置")
+        print("export ec_read_dep=\"true\"\n")
         or_list = or_list_o
+
+    # 白名单
+    try:
+        expect_list = os.environ["ec_white_list"].split("@")
+        print("已配置白名单\n")
+    except:
+        print("#未配置白名单，默认查询所有链接，有需要可添加配置")
+        print("export ec_white_list=\"各种白名单关键词，用@分隔\"\n")
+        expect_list = ["http://xxxx.xxxx.xxx/"]
+
+    # 黑名单(屏蔽词)
+    try:
+        keys = os.environ["ec_black_keys"].split("@")
+        print("已配置黑名单(屏蔽词)\n")
+    except:
+        print("#未配置黑名单，默认查询所有链接，有需要可添加配置")
+        print("export ec_black_keys=\"各种黑名单屏蔽词，用@分隔\"\n")
+        keys = ["http://xxxx.xxxx.xxx/"]
+    keys = list(set(keys))
+
+    print("============ 获取根目录脚本文件内容 ============\n")
 
     # 根目录
     dir_list = list(set(os.listdir("../") + os.listdir("./")) - set(or_list))
@@ -161,7 +164,7 @@ if __name__ == '__main__':
     for i, k in zip(data_script_list, name_root):
         temp = re.findall(r"\"http://(.*?)\"", i)
         for j in temp:
-            net_list[k].append("https://" + j)
+            net_list[k].append("http://" + j)
 
     for i, k in zip(data_script_list, name_root):
         temp = re.findall(r"\'https://(.*?)\'", i)
@@ -171,7 +174,7 @@ if __name__ == '__main__':
     for i, k in zip(data_script_list, name_root):
         temp = re.findall(r"\'http://(.*?)\'", i)
         for j in temp:
-            net_list[k].append("https://" + j)
+            net_list[k].append("http://" + j)
 
     # 去重
     for i in net_list:
@@ -210,18 +213,19 @@ if __name__ == '__main__':
     print()
     print("包含屏蔽词链接个数： {}".format(count_root_key))
 
-    print("============ 根目录查询完毕 ============")
+    print("============ 根目录查询完毕 ============\n\n\n")
 
-    ## 仓库文件待开发
+    ###################################################################################################
 
     # 仓库文件夹
     # 获取副青龙仓库目录脚本名字典
-    zpath_list = traversalDir_FirstDir("../")
-    try:
-        zpath_list.remove("spiritLHL_qinglong_auto_tools")
-    except:
-        pass
-    if "config" not in zpath_list and "db" not in zpath_list:
+    tp_list = traversalDir_FirstDir("../")
+    if "config" not in tp_list and "db" not in tp_list:
+        zpath_list = traversalDir_FirstDir("../")
+        try:
+            zpath_list.remove("spiritLHL_qinglong_auto_tools")
+        except:
+            pass
         zpath_list = list(set(zpath_list) - set(or_list))
         dict_name = {}
         for i in zpath_list:
@@ -229,6 +233,107 @@ if __name__ == '__main__':
             for j in list(set(os.listdir("../" + i)) - set(or_list)):
                 if str(i)[0:9] != "spiritLHL":
                     dict_name[i].append(j)
+    else:
+        zpath_list = traversalDir_FirstDir("./")
+        try:
+            zpath_list.remove("spiritLHL_qinglong_auto_tools")
+        except:
+            pass
+        zpath_list = list(set(zpath_list) - set(or_list))
+        dict_name = {}
+        for i in zpath_list:
+            dict_name[i] = []
+            for j in list(set(os.listdir("./" + i)) - set(or_list)):
+                if str(i)[0:9] != "spiritLHL":
+                    dict_name[i].append(j)
+
+    # 查询
+    if "config" not in tp_list and "db" not in tp_list:
+        dict_net_list = {}
+        for i in dict_name:
+            dict_net_list[i] = {}
+            for j in dict_name[i]:
+                dict_net_list[i][j] = []
+                with open("../" + i + "/" + j, "r", encoding="utf-8") as fp:
+                    k = fp.read()
+                    temp = re.findall(r"\"https://(.*?)\"", k)
+                    for l in temp:
+                        dict_net_list[i][j].append("https://" + l)
+
+                    temp = re.findall(r"\"http://(.*?)\"", k)
+                    for l in temp:
+                        dict_net_list[i][j].append("http://" + l)
+
+                    temp = re.findall(r"\'https://(.*?)\'", k)
+                    for l in temp:
+                        dict_net_list[i][j].append("https://" + l)
+
+                    temp = re.findall(r"\'http://(.*?)\'", k)
+                    for l in temp:
+                        dict_net_list[i][j].append("http://" + l)
+
+                    # 去重
+                    dict_net_list[i][j] = list(set(dict_net_list[i][j]))
+                    for m in dict_net_list[i][j]:
+                        if ".jd.com" in m or "." not in m or m in expect_list:
+                            dict_net_list[i][j].remove(m)
+    else:
+        dict_net_list = {}
+        for i in dict_name:
+            dict_net_list[i] = {}
+            for j in dict_name[i]:
+                dict_net_list[i][j] = []
+                with open("./" + i + "/" + j, "r", encoding="utf-8") as fp:
+                    k = fp.read()
+                    temp = re.findall(r"\"https://(.*?)\"", k)
+                    for l in temp:
+                        dict_net_list[i][j].append("https://" + l)
+
+                    temp = re.findall(r"\"http://(.*?)\"", k)
+                    for l in temp:
+                        dict_net_list[i][j].append("http://" + l)
+
+                    temp = re.findall(r"\'https://(.*?)\'", k)
+                    for l in temp:
+                        dict_net_list[i][j].append("https://" + l)
+
+                    temp = re.findall(r"\'http://(.*?)\'", k)
+                    for l in temp:
+                        dict_net_list[i][j].append("http://" + l)
+
+                    # 去重
+                    dict_net_list[i][j] = list(set(dict_net_list[i][j]))
+                    for m in dict_net_list[i][j]:
+                        if ".jd.com" in m or "." not in m or m in expect_list:
+                            dict_net_list[i][j].remove(m)
+
+    # 输出找到的链接
+    count_dict = 0
+    count_dict_key = 0
+    for i in dict_net_list:
+        print("====== 查询 {} 对应文件夹 =========\n".format(i))
+        print("{}文件夹文件\n".format(i))
+        for j in dict_net_list[i]:
+            if dict_net_list[i][j] == []:
+                print(j)
+                print("无链接\n")
+            else:
+                print(j)
+                for k in dict_net_list[i][j]:
+                    print(k)
+                    count_dict += 1
+                print()
+                for k in dict_net_list[i][j]:
+                    for l in keys:
+                        if l in k:
+                            count_dict_key += 1
+
+        print("{}文件夹内查到链接个数： {}\n".format(i, count_dict))
+
+        print("{}文件夹内包含屏蔽词链接个数： {}\n".format(i, count_dict_key))
+
+        print("====== {}对应文件夹查询完毕 =========\n".format(i))
+
     print()
     print("查询结束")
 

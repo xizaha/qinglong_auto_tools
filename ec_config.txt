@@ -69,15 +69,3 @@ tasks_sync_all_url1=""
 tasks_sync_all_client_ids=["",""]
 tasks_sync_all_client_secrets=["",""]
 tasks_sync_all_urllist=["http://xxxxxxx:xxxx/",""]
-
-
-# 二叉树查网络链接
-scripts_check_nets_cilent_id1=""
-scripts_check_nets_cilent_secret1=""
-scripts_check_nets_url1=""
-
-
-# 二叉树清除屏蔽词
-scripts_purge_keys_cilent_id1=""
-scripts_purge_keys_cilent_secret1=""
-scripts_purge_keys_url1=""

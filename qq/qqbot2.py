@@ -152,16 +152,46 @@ def pre_check(userid):
         return 'error'
 
 
-def check(a, msg):
+def check(a, msg, push_type):
     userid = msg[0]
     pin = msg[1:]
     # name = msg.split(',')[2]
-    push_type = 'send_private_msg'
+    
+    msg1 = "还在查询中,请耐心等待,16秒刷新一次状态,运行中不再返回查询状态"
+    push_QQ(userid, msg1, push_type)
 
     ucount = 0
     url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_id[ucount] + '&client_secret=' + client_secret[
         ucount]
     gettoken(a, url_token)
+    ztasks = gettaskitem(a, urllist[ucount], "open")
+    enable_list = []
+    for i in ztasks:
+        if i['isDisabled'] == 0:
+            enable_list.append(i)
+    enable_tlid = []
+    enable_tname = []
+    enable_tcommand = []
+    for j in enable_list:
+        enable_tlid.append(j['_id'])
+        enable_tname.append(j['name'])
+        enable_tcommand.append(j['command'])
+    count = 0
+    for i in enable_tname:
+        if i == "查询":
+            id = enable_tlid[count]
+        count += 1
+    try:
+        res3 = getstatus(a, urllist[ucount], "open", [id])
+        if json.loads(res3)["data"]["status"] == 0 or json.loads(res3)["data"]["status"] == 1:
+            push_QQ(userid, "上一位用户还在查询，本次查询将强制停止上一位用户查询的进程", push_type)
+        # 删除任务
+            deletecron(a, urllist[0], "open", [id])
+            time.sleep(2)
+    except:
+        pass
+    
+    
     weiz = []
     for k in pin:
         cks = getitem(a, urllist[0], "JD_COOKIE", "open")
@@ -171,7 +201,7 @@ def check(a, msg):
 
     wzz = ""
     for kk in weiz:
-        wzz = wzz+" " + str(kk)
+        wzz = wzz + " " + str(kk)
     data = {
         "command": "task ccwav_QLScript_jd_bean_change.js conc JD_COOKIE" + str(wzz),
         "schedule": "1",
@@ -188,32 +218,39 @@ def check(a, msg):
 
     res3 = getstatus(a, urllist[0], "open", [id])
 
-    msg1 = "还在查询中,请耐心等待,16秒刷新一次状态,运行中不再返回查询状态"
-    push_QQ(userid, msg1, push_type)
+    
     while True:
-        if json.loads(res3)["data"]["status"] == 0:
-            time.sleep(16)
-            res3 = getstatus(a, urllist[0], "open", [id])
-        else:
+        try:
+            if json.loads(res3)["data"]["status"] == 0:
+                time.sleep(16)
+                res3 = getstatus(a, urllist[0], "open", [id])
+            else:
+                break
+        except:
             break
 
     time.sleep(1)
-    res4 = getlogcron(a, urllist[0], "open", [id])
+    try:
+        res4 = getlogcron(a, urllist[0], "open", [id])
 
-    # 查询结果
-    result = json.loads(res4)["data"]
+        # 查询结果
+        result = json.loads(res4)["data"]
 
-    # 删除任务
-    deletecron(a, urllist[0], "open", [id])
+        # 删除任务
+        deletecron(a, urllist[0], "open", [id])
 
-    # 发送消息
-    res_text = str(result)[240:-50]
-    res_text = res_text.replace("京东", "狗东")
-    res_text = res_text.replace("红包", "red包")
-    res_text = res_text.replace("京豆", "Jin豆")
-    res_text = res_text.replace("收入", "入")
+        # 发送消息
+        res_text = str(result)[10:-55]
+        res_text = res_text.replace("京东", "狗东")
+        res_text = res_text.replace("红包", "red包")
+        res_text = res_text.replace("京豆", "Jin豆")
+        res_text = res_text.replace("收入", "入")
 
-    push_QQ(userid, res_text, push_type)
+        push_QQ(userid, res_text, push_type)
+    except:
+        push_QQ(userid, "{}查询被后来者中断".format(userid), push_type)
+
+
 
 
 def select_(chat):

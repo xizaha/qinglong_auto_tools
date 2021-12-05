@@ -37,8 +37,8 @@ try:
         fix = 0
 except:
     fix = 0
-    print("默认不修复缺失依赖文件，有需求")
-    print("请在配置文件中配置 export ec_fix_dep=\"true\" 开启脚本依赖文件缺失修复\n")
+    print("#默认不修复缺失依赖文件，有需求")
+    print("#请在配置文件中配置\n export ec_fix_dep=\"true\" \n#开启脚本依赖文件缺失修复\n")
 
 try:
     if os.environ["ec_ref_dep"] == "true":
@@ -48,8 +48,8 @@ try:
         ref = 0
 except:
     ref = 0
-    print("默认不更新老旧依赖文件，有需求")
-    print("请在配置文件中配置 export ec_re_dep=\"true\" 开启脚本依赖文件更新\n")
+    print("#默认不更新老旧依赖文件，有需求")
+    print("#请在配置文件中配置\n export ec_re_dep=\"true\" #开启脚本依赖文件更新\n")
 
 
 def traversalDir_FirstDir(path):
