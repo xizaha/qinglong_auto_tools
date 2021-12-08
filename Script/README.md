@@ -6,7 +6,7 @@ ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git
 
 本文件夹内脚本仅供个人学习，修改大佬脚本存档以及自写自用的脚本。
 
-自用脚本，写的烂勿喷
+自用脚本，写的烂勿喷，不提供使用说明
 
 # 免责声明
 

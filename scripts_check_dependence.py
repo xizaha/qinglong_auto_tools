@@ -38,7 +38,7 @@ try:
 except:
     fix = 0
     print("#默认不修复缺失依赖文件，有需求")
-    print("#请在配置文件中配置\n export ec_fix_dep=\"true\" \n#开启脚本依赖文件缺失修复\n")
+    print("#请在配置文件中配置\nexport ec_fix_dep=\"true\" \n#开启脚本依赖文件缺失修复\n")
 
 try:
     if os.environ["ec_ref_dep"] == "true":
@@ -49,7 +49,7 @@ try:
 except:
     ref = 0
     print("#默认不更新老旧依赖文件，有需求")
-    print("#请在配置文件中配置\n export ec_re_dep=\"true\" #开启脚本依赖文件更新\n")
+    print("#请在配置文件中配置\nexport ec_re_dep=\"true\" #开启脚本依赖文件更新\n")
 
 
 def traversalDir_FirstDir(path):
@@ -583,7 +583,7 @@ if __name__ == '__main__':
         dirs_ls = traversalDir_FirstDir("../")
 
     # script根目录默认存在的文件夹，放入其中的文件夹不再检索其内依赖完整性
-    or_list = ['node_modules', '__pycache__', 'utils', '.pnpm-store', 'function', 'tools', 'backUp', '.git', '.idea']
+    or_list = ['node_modules', '__pycache__', 'utils', '.pnpm-store', 'function', 'tools', 'backUp', '.git', '.idea', '.github']
 
     print()
     for i in dirs_ls:
@@ -604,7 +604,7 @@ if __name__ == '__main__':
         print("修复完毕后脚本无法运行，显示缺依赖文件，大概率库里没有或者依赖文件同名但内容不一样，请另寻他法\n")
         print("修复完毕后缺依赖环境导致的脚本无法运行，这种无法修复，请自行在依赖管理中添加\n")
         print(
-            "前者缺文件(如 Error: Cannot find module './utils/magic')，后者缺依赖(如： Error: Cannot find module 'date-fns' )，本脚本只修复前一种")
+            "前者缺文件(如 Error: Cannot find module './utils/magic')，后者缺依赖(如 Error: Cannot find module 'date-fns' )，本脚本只修复前一种")
 
 # 待开发
 # 修复依赖环境
