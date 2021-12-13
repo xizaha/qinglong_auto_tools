@@ -2,6 +2,14 @@
 # -*- coding: utf-8 -*
 # 频道：https://t.me/qinglong_auto_tools
 # 自用查任务ID
+
+'''
+cron: 1
+new Env('二叉树自查任务ID');
+'''
+
+
+
 client_id1=""
 client_secret1=""
 url1 = "http://xxxx:xxxx/"

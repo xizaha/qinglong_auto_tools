@@ -1,21 +1,25 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*
 # 作者仓库:https://github.com/spiritLHL/qinglong_auto_tools
 # 觉得不错麻烦点个star谢谢
 # 频道：https://t.me/qinglong_auto_tools
-# 轮询车头执行脚本
+
 '''
 cron: 1
-new Env('二叉树轮换运行脚本文件');
+new Env('二叉树轮换车头运行脚本');
 '''
 
 
-client_id1="id"
-client_secret1="secret"
+client_id1 = ""
+client_secret1 = ""
 url1 = "http://xxxxxxxx:xxxx/"
-scname = "xxx.js"
-start = 1
+scname = "脚本名字"
+start = 1           # 开始号
 name = "任务名字"
-sleep_time1 = 120  # 脚本运行时长
-sleep_time2 = 40   # 每次运行间隔
+sleep_time1 = 60    # 任务执行时长
+sleep_time2 = 30    # 完成后间隔
+team_nums = 30      # 一队几人
+
 
 import requests
 import time
@@ -44,6 +48,7 @@ def getitem(self, baseurl, typ, path):
     r = self.get(url)
     item = json.loads(r.text)["data"]
     return item
+
 
 def getenvs(self, baseurl, typ):
     url = baseurl + typ + "/envs"
@@ -90,6 +95,7 @@ def addcron(self, baseurl, typ, data):
     else:
         return r.text
 
+
 def runcron(self, baseurl, typ, data):
     url = baseurl + typ + "/crons/run?t=%s" % gettimestamp()
     self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
@@ -99,6 +105,7 @@ def runcron(self, baseurl, typ, data):
     else:
         return r.text
 
+
 def stopcron(self, baseurl, typ, data):
     url = baseurl + typ + "/crons/stop?t=%s" % gettimestamp()
     self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
@@ -107,6 +114,7 @@ def stopcron(self, baseurl, typ, data):
         return r.text
     else:
         return r.text
+
 
 def deletecron(self, baseurl, typ, data):
     url = baseurl + typ + "/crons?t=%s" % gettimestamp()
@@ -127,8 +135,9 @@ if __name__ == '__main__':
     count = 0
     for i in envs:
         if i["name"] == "JD_COOKIE" and i["status"] == 0:
-            count +=1
+            count += 1
     print("共计有效账号 {}\n".format(count))
+    status = 0
     for i in tasks:
         if scname in i["command"]:
             stopcron(s, url1, "open", [i["_id"]])
@@ -136,7 +145,7 @@ if __name__ == '__main__':
             deletecron(s, url1, "open", [i["_id"]])
             time.sleep(1)
             for j in range(start, count):
-                for k in range(j, j + 21):
+                for k in range(j, j + team_nums + 1):
                     if j + 11 < count - 1 and k == j + 20:
                         wzz = " " + str(j) + "-" + str(k)
                     elif k == j + 20:
@@ -157,29 +166,36 @@ if __name__ == '__main__':
                 deletecron(s, url1, "open", [id])
                 time.sleep(1)
                 time.sleep(sleep_time2)
-        else:
-            for j in range(start, count + 1):
-                for k in range(j, j + 21):
-                    if j + 11 < count - 1 and k == j + 20:
-                        wzz = " " + str(j) + "-" + str(k)
-                    elif k == j + 20:
-                        wzz = " " + str(j) + "-" + str(k - 30)
-                data = {
-                    "command": "task {} desi JD_COOKIE ".format(scname) + str(wzz),
-                    "schedule": "1",
-                    "name": name
-                }
-                res1 = addcron(s, url1, "open", data)
-                time.sleep(1)
-                id = json.loads(res1)["data"]["_id"]
-                runcron(s, url1, "open", [id])
-                print("运行账号 {}".format(j))
-                time.sleep(sleep_time1)
-                stopcron(s, url1, "open", [id])
-                time.sleep(1)
-                deletecron(s, url1, "open", [id])
-                time.sleep(1)
-                time.sleep(sleep_time2)
+                if j == count - 1:
+                    status = 1
+                    break
+    if status == 0:
+        for j in range(start, count + 1):
+            for k in range(j, j + team_nums + 1):
+                if j + 11 < count - 1 and k == j + 20:
+                    wzz = " " + str(j) + "-" + str(k)
+                elif k == j + 20:
+                    wzz = " " + str(j) + "-" + str(k - 30)
+            data = {
+                "command": "task {} desi JD_COOKIE ".format(scname) + str(wzz),
+                "schedule": "1",
+                "name": name
+            }
+            res1 = addcron(s, url1, "open", data)
+            time.sleep(1)
+            id = json.loads(res1)["data"]["_id"]
+            runcron(s, url1, "open", [id])
+            print("运行账号 {}".format(j))
+            time.sleep(sleep_time1)
+            stopcron(s, url1, "open", [id])
+            time.sleep(1)
+            deletecron(s, url1, "open", [id])
+            time.sleep(1)
+            time.sleep(sleep_time2)
+            if j == count - 1:
+                status = 1
+                break
+
 
 
 
