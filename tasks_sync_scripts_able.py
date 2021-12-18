@@ -371,7 +371,7 @@ if __name__ == '__main__':
         ## 根目录
         data_script_list = []
         for i in add_list:
-            content = getscript(s, url1, "open", i)
+            content = getscript(s, url1, "open", i, "")
             data_script = {
                 "filename": i,
                 "content": content,
