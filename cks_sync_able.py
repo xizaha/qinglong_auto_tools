@@ -244,7 +244,7 @@ def disable(self, baseurl, typ, ids):
 
 if __name__ == '__main__':
     # 不需要新增值的环境变量名
-    except_list = ["JD_COOKIE"]
+    except_list = ["JD_COOKIE", "JD_WSCK"]
 
     #主容器
     s = requests.session()
@@ -405,9 +405,12 @@ if __name__ == '__main__':
                 enable_ids.append(item["_id"])
             elif name == "JD_COOKIE" and k in fdisable_values:
                 ptpin = "pt_pin="+k+";"
+                try:
+                    item = getenvstatus(a, urllist[ucount], "open", ptpin)
+                    enable_ids.append(item)
+                except:
+                    pass
                 print("{}启用成功".format(k))
-                item = getenvstatus(a, urllist[ucount], "open", ptpin)
-                enable_ids.append(item)
 
             else:
                 pass
@@ -454,9 +457,12 @@ if __name__ == '__main__':
                 enable_ids.append(item["_id"])
             elif name == "JD_COOKIE" and k in fenable_values:
                 ptpin = "pt_pin="+k+";"
+                try:
+                    item = getenvstatus(a, urllist[ucount], "open", ptpin)
+                    disable_ids.append(item)
+                except:
+                    pass
                 print("{}禁用成功".format(k))
-                item = getenvstatus(a, urllist[ucount], "open", ptpin)
-                disable_ids.append(item)
             else:
                 pass
 

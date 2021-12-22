@@ -1,5 +1,5 @@
-#作者仓库:https://github.com/spiritLHL/qinglong_auto_tools
-#觉得不错麻烦点个star谢谢
+# 作者仓库:https://github.com/spiritLHL/qinglong_auto_tools
+# 觉得不错麻烦点个star谢谢
 # 频道：https://t.me/qinglong_auto_tools
 
 '''
@@ -30,34 +30,34 @@ cks_push_alql_client_ids=["",""]
 cks_push_alql_client_secrets=["",""]
 cks_push_alql_urllist=["http://xxxxxxxxx:xxxx/",""]
 ### 备份容器
-cks_push_alql_cilent_id_che="xxxxxxxx"
-cks_push_alql_cilent_secret_che="xxxxxxxxxx"
-cks_push_alql_che="http://xxxxxxxx:xxxx/"
+cks_push_alql_cilent_id_che=["xxxxxxxx"]
+cks_push_alql_cilent_secret_che=["xxxxxxxxxx"]
+cks_push_alql_che=["http://xxxxxxxx:xxxx/"]
 
 '''
-#client_id1=""
-#client_secret1=""
-#url1 = "http://ip:端口/"
-#client_ids=['','','']
-#client_secrets=['','','']
-#urllist = ["http://xxxx:xxxx/","",""]
-#client_id_che=''
-#client_secret_che=''
-#che = "http://xxxxx:xxx/"
+# client_id1=""
+# client_secret1=""
+# url1 = "http://ip:端口/"
+# client_ids=['','','']
+# client_secrets=['','','']
+# urllist = ["http://xxxx:xxxx/","",""]
+# client_id_che=''
+# client_secret_che=''
+# che = "http://xxxxx:xxx/"
 
-#分容器默认配置，如果在配置ec_config.txt中填写有该配置，则会覆盖下面默认40
-N_c=40
+# 分容器默认配置，如果在配置ec_config.txt中填写有该配置，则会覆盖下面默认40
+N_c = 40
 
 import os
 import time
 import json
 import re
+
 try:
     import requests
 except Exception as e:
     print(e, "\n缺少requests 模块，请执行命令安装：python3 -m pip install requests")
     exit(3)
-
 
 try:
     with open("ec_config.txt", "r", encoding="utf-8") as fp:
@@ -103,12 +103,11 @@ try:
 except:
     print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
 
-
 try:
     try:
         for i in t:
             try:
-                temp = "["+re.findall(r"cks_push_alql_client_ids=\[(.*?)\]", i)[0]+"]"
+                temp = "[" + re.findall(r"cks_push_alql_client_ids=\[(.*?)\]", i)[0] + "]"
                 try:
                     client_ids = json.loads(temp)
                 except:
@@ -124,7 +123,7 @@ try:
     try:
         for i in t:
             try:
-                temp = "["+re.findall(r"cks_push_alql_client_secrets=\[(.*?)\]", i)[0]+"]"
+                temp = "[" + re.findall(r"cks_push_alql_client_secrets=\[(.*?)\]", i)[0] + "]"
                 try:
                     client_secrets = json.loads(temp)
                 except:
@@ -140,7 +139,7 @@ try:
     try:
         for i in t:
             try:
-                temp = "["+re.findall(r"cks_push_alql_urllist=\[(.*?)\]", i)[0]+"]"
+                temp = "[" + re.findall(r"cks_push_alql_urllist=\[(.*?)\]", i)[0] + "]"
                 try:
                     urllist = json.loads(temp)
                 except:
@@ -174,14 +173,12 @@ try:
 except:
     print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
 
-
-
 try:
     try:
         for i in t:
             try:
-                temp = re.findall(r"cks_push_alql_cilent_id_che=\"(.*?)\"", i)[0]
-                client_id_che = temp
+                temp = "[" + re.findall(r"cks_push_alql_cilent_id_che=\[(.*?)\]", i)[0] + "]"
+                client_id_che = json.loads(temp)
                 if client_id_che == "":
                     print("cks_push_alql_cilent_id_che 未填写")
             except:
@@ -193,8 +190,8 @@ try:
     try:
         for i in t:
             try:
-                temp = re.findall(r"cks_push_alql_cilent_secret_che=\"(.*?)\"", i)[0]
-                client_secret_che = temp
+                temp = "[" + re.findall(r"cks_push_alql_cilent_secret_che=\[(.*?)\]", i)[0] + "]"
+                client_secret_che = json.loads(temp)
                 if client_secret_che == "":
                     print("cks_push_alql_cilent_secret_che 未填写")
             except:
@@ -206,8 +203,8 @@ try:
     try:
         for i in t:
             try:
-                temp = re.findall(r"cks_push_alql_che=\"(.*?)\"", i)[0]
-                che = temp
+                temp = "[" + re.findall(r"cks_push_alql_che=\[(.*?)\]", i)[0] + "]"
+                che = json.loads(temp)
                 if che == "":
                     print("cks_push_alql_che 未填写")
             except:
@@ -218,23 +215,25 @@ try:
 except:
     print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
 
-
 requests.packages.urllib3.disable_warnings()
 
 
 def gettimestamp():
     return str(int(time.time() * 1000))
 
-def gettoken(self,url_token):
+
+def gettoken(self, url_token):
     r = requests.get(url_token).text
     res = json.loads(r)["data"]["token"]
-    self.headers.update({"Authorization": "Bearer "+res})
+    self.headers.update({"Authorization": "Bearer " + res})
+
 
 def login(self, baseurl, client_id_temp, client_secret_temp):
-    url_token = baseurl+'open/auth/token?client_id='+client_id_temp+'&client_secret='+client_secret_temp
+    url_token = baseurl + 'open/auth/token?client_id=' + client_id_temp + '&client_secret=' + client_secret_temp
     gettoken(self, url_token)
 
-def getitem(self, baseurl, key , typ):
+
+def getitem(self, baseurl, key, typ):
     url = baseurl + typ + "/envs?searchValue=%s&t=%s" % (key, gettimestamp())
     r = self.get(url)
     item = json.loads(r.text)["data"]
@@ -242,12 +241,13 @@ def getitem(self, baseurl, key , typ):
 
 
 def getckitem(self, baseurl, key, typ):
-    url = baseurl + typ + "/envs?searchValue=JD_COOKIE&t=%s" % gettimestamp() #JD_COOKIE为默认的环境变量名，该变量里的值默认含pt_pin和pt_key，其他类似默认按照下面注释改
+    url = baseurl + typ + "/envs?searchValue=JD_COOKIE&t=%s" % gettimestamp()  # JD_COOKIE为默认的环境变量名，该变量里的值默认含pt_pin和pt_key，其他类似默认按照下面注释改
     r = self.get(url)
     for i in json.loads(r.text)["data"]:
         if key in i["value"]:
             return i
     return []
+
 
 def update(self, baseurl, typ, text, qlid):
     url = baseurl + typ + "/envs?t=%s" % gettimestamp()
@@ -279,42 +279,44 @@ def insert(self, baseurl, typ, text):
     else:
         return False
 
+
 if __name__ == '__main__':
     s = requests.session()
     login(s, url1, client_id1, client_secret1)
-    wskeys = getitem(s, url1, "JD_COOKIE" , "open") #JD_COOKIE为默认转发的主青龙的环境变量名
+    wskeys = getitem(s, url1, "JD_COOKIE", "open")  # JD_COOKIE为默认转发的主青龙的环境变量名
     ck_list = []
     c_list = []
     for i in wskeys:
         tp = i['value']
-        ptpin = re.findall(r"pt_pin=(.*?);", tp)[0] #默认获取的变量里的pt_pin=xxx;里的xxx
-        ptpin = "pt_pin=" + ptpin+';'
-        ptkey = re.findall(r"pt_key=(.*?);", tp)[0] #默认获取的变量里的pt_key=xxxx;里的xxxx
-        ptkey = "pt_key=" + ptkey+';'
-        c=ptkey+ptpin
+        ptpin = re.findall(r"pt_pin=(.*?);", tp)[0]  # 默认获取的变量里的pt_pin=xxx;里的xxx
+        ptpin = "pt_pin=" + ptpin + ';'
+        ptkey = re.findall(r"pt_key=(.*?);", tp)[0]  # 默认获取的变量里的pt_key=xxxx;里的xxxx
+        ptkey = "pt_key=" + ptkey + ';'
+        c = ptkey + ptpin
         c_list.append(c)
-        ck = ptkey+ptpin+'\n'
+        ck = ptkey + ptpin + '\n'
         ck_list.append(ck)
     if os.path.exists("./allck.txt"):
         os.remove("allck.txt")
-    with open("./allck.txt","w") as f:
+    with open("./allck.txt", "w") as f:
         f.writelines(ck_list)
     count = 0
     temp = []
     ucount = 0
     for j in c_list:
-        count +=1
+        count += 1
         temp.append(j)
-        if (count % N_c) == 0:#分配40个
+        if (count % N_c) == 0:  # 分配40个
             a = requests.session()
-            url_token = urllist[ucount]+'open/auth/token?client_id='+client_ids[ucount]+'&client_secret='+client_secrets[ucount]
+            url_token = urllist[ucount] + 'open/auth/token?client_id=' + client_ids[ucount] + '&client_secret=' + \
+                        client_secrets[ucount]
             gettoken(a, url_token)
             co = 0
             for k in temp:
                 co += 1
                 ptpin = re.findall(r"pt_pin=(.*?);", k)[0]
                 ptpin = "pt_pin=" + ptpin
-                item = getckitem(a,urllist[ucount],ptpin,"open")
+                item = getckitem(a, urllist[ucount], ptpin, "open")
                 if item != []:
                     qlid = item["_id"]
                     if update(a, urllist[ucount], "open", k, qlid):
@@ -327,18 +329,19 @@ if __name__ == '__main__':
                     else:
                         print("第%s个JD_COOKIE添加失败" % co)
             temp = []
-            ucount +=1
+            ucount += 1
             print("第%s个容器更新成功" % ucount)
     a = requests.session()
-    url_token = urllist[-1]+'open/auth/token?client_id='+client_ids[-1]+'&client_secret='+client_secrets[-1]
+    url_token = urllist[-1] + 'open/auth/token?client_id=' + client_ids[-1] + '&client_secret=' + client_secrets[-1]
     gettoken(a, url_token)
     co = 0
-    if temp != []:#剩余放到最后一个容器里
+
+    if temp != []:  # 剩余放到最后一个容器里
         for k in temp:
             co += 1
             ptpin = re.findall(r"pt_pin=(.*?);", k)[0]
             ptpin = "pt_pin=" + ptpin
-            item = getckitem(a,urllist[-1],ptpin,"open")
+            item = getckitem(a, urllist[-1], ptpin, "open")
             if item != []:
                 qlid = item["_id"]
                 if update(a, urllist[-1], "open", k, qlid):
@@ -356,24 +359,28 @@ if __name__ == '__main__':
     else:
         print('分发CK完毕')
         print()
-    b = requests.session()
-    url_token = che+'open/auth/token?client_id='+client_id_che+'&client_secret='+client_secret_che
-    gettoken(b, url_token)
-    co = 0
-    for chek in c_list:#备份ck
-        co += 1
-        ptpin = re.findall(r"pt_pin=(.*?);", chek)[0]
-        ptpin = "pt_pin=" + ptpin
-        item = getckitem(b,che,ptpin,"open")
-        if item != []:
-            qlid = item["_id"]
-            if update(b, che, "open", chek, qlid):
-                print("第%s个JD_COOKIE更新成功,pin为%s" % (co, ptpin[7:]))
+
+    for i in range(0, len(che)):
+        b = requests.session()
+        url_token = che[i] + 'open/auth/token?client_id=' + client_id_che[i] + '&client_secret=' + client_secret_che[i]
+        gettoken(b, url_token)
+        co = 0
+        for chek in c_list:  # 备份ck
+            co += 1
+            ptpin = re.findall(r"pt_pin=(.*?);", chek)[0]
+            ptpin = "pt_pin=" + ptpin
+            item = getckitem(b, che[i], ptpin, "open")
+            if item != []:
+                qlid = item["_id"]
+                if update(b, che[i], "open", chek, qlid):
+                    print("第%s个JD_COOKIE更新成功,pin为%s" % (co, ptpin[7:]))
+                else:
+                    print("第%s个JD_COOKIE更新失败,pin为%s" % (co, ptpin[7:]))
             else:
-                print("第%s个JD_COOKIE更新失败,pin为%s" % (co, ptpin[7:]))
-        else:
-            if insert(b, che, "open", chek):
-                print("第%s个JD_COOKIE添加成功" % co)
-            else:
-                print("第%s个JD_COOKIE添加失败" % co)
-    print('check备份容器更新完毕')
+                if insert(b, che[i], "open", chek):
+                    print("第%s个JD_COOKIE添加成功" % co)
+                else:
+                    print("第%s个JD_COOKIE添加失败" % co)
+        print('备份容器{} 更新完毕\n'.format(i + 1))
+
+    print("分发结束")

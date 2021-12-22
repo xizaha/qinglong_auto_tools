@@ -11,9 +11,9 @@ cks_push_alql_client_ids=["",""]
 cks_push_alql_client_secrets=["",""]
 cks_push_alql_urllist=["http://xxxxxxxxx:xxxx/",""]
 ### 备份容器
-cks_push_alql_cilent_id_che="xxxxxxxx"
-cks_push_alql_cilent_secret_che="xxxxxxxxxx"
-cks_push_alql_che="http://xxxxxxxx:xxxx/"
+cks_push_alql_cilent_id_che=["xxxxxxxx",""]
+cks_push_alql_cilent_secret_che=["xxxxxxxxxx",""]
+cks_push_alql_che=["http://xxxxxxxx:xxxx/",""]
 
 
 # 二叉树合并ck

@@ -68,12 +68,12 @@ def traversalDir_FirstDir(path):
 
 def check_dependence(file_path):
     try:
-        res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+        res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/contents.json").json()
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
-            res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+            res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/contents.json").json()
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -148,12 +148,12 @@ def check_dependence(file_path):
     # utils
 
     try:
-        res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+        res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/utils.json").json()
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
-            res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+            res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/utils.json").json()
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -235,12 +235,12 @@ def check_dependence(file_path):
     # function
 
     try:
-        res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+        res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/function.json").json()
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
-            res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+            res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/function.json").json()
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -321,12 +321,12 @@ def check_dependence(file_path):
 
 def check_root():
     try:
-        res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+        res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/contents.json").json()
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
-            res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+            res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/contents.json").json()
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -401,12 +401,12 @@ def check_root():
     # utils
 
     try:
-        res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+        res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/utils.json").json()
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
-            res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+            res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/utils.json").json()
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -488,12 +488,12 @@ def check_root():
     # function
 
     try:
-        res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+        res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/function.json").json()
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
-            res = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+            res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/function.json").json()
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -603,8 +603,7 @@ if __name__ == '__main__':
     if fix == 1:
         print("修复完毕后脚本无法运行，显示缺依赖文件，大概率库里没有或者依赖文件同名但内容不一样，请另寻他法\n")
         print("修复完毕后缺依赖环境导致的脚本无法运行，这种无法修复，请自行在依赖管理中添加\n")
-        print(
-            "前者缺文件(如 Error: Cannot find module './utils/magic')，后者缺依赖(如 Error: Cannot find module 'date-fns' )，本脚本只修复前一种")
+        print("前者缺文件(如 Error: Cannot find module './utils/magic')，后者缺依赖(如 Error: Cannot find module 'date-fns' )，本脚本只修复前一种")
 
 # 待开发
 # 修复依赖环境
