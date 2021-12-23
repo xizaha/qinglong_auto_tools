@@ -4,7 +4,7 @@
 # 频道：https://t.me/qinglong_auto_tools
 '''
 cron: 1
-new Env('二叉树同步任务启用禁用');
+new Env('任务 二叉树同步任务启用禁用');
 '''
 # 同步任务是否启用禁用，不存在于分容器的不会同步新增
 
