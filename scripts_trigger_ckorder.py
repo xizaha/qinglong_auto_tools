@@ -221,9 +221,9 @@ if __name__ == '__main__':
             temp.append(i["value"] + "\n")
         with open("./allck.txt", "w") as ffp:
             ffp.writelines(temp)
-        print("初次运行，自动备份ck到allck.txt文件里，有需要恢复初始状态自取")
+        print("初次运行，自动备份ck到allck.txt文件里，有需要恢复初始状态自取\n")
     else:
-        print("脚本管理根目录下allck.txt文件已存在，有需要恢复初始状态自取")
+        print("脚本管理根目录下allck.txt文件已存在，有需要恢复初始状态自取\n")
         pass
 
     # 是否重新生成模板
@@ -240,7 +240,7 @@ if __name__ == '__main__':
             exc_head += 1
             move(s, ql_url, "api", i["_id"], real_list.index(i) + 1, 1)
 
-    print("ck前存储了{}个非ck变量".format(exc_head))
+    print("ck前存储了{}个非ck变量\n".format(exc_head))
 
     ####################################################################################
 
@@ -279,7 +279,7 @@ if __name__ == '__main__':
             count += 1
         json.dump(save_json_content, json_file, indent=4)
         json_file.close()
-        print("本地持久化存储原始顺序成功")
+        print("本地持久化存储原始顺序成功\n")
 
     # 随机化启用的cookie顺序，保留指定位置不变
     res = random.sample(range(exc_head + head, exc_head + len(cookies)), len(cookies) - head)
