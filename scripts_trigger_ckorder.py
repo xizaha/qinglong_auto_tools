@@ -10,7 +10,7 @@ new Env('单容器 二叉树随机ck顺序');
 # 初次运行生成原始顺序模板文件 trigger_cookies.json，备份原始ck文件 allck.txt
 # 可每次运行重新生成模板，在配置文件中配置 export ec_write_cks="true" 开启该功能
 # 默认保持前6位ck顺序不变，有需要在配置文件中配置 export ec_head_cks="具体几个" 更改数量
-# 随机顺序时会给ck备注标上原始顺序，如果备注已存在，则保留原始备注不更改
+# 可配置随机顺序时给ck备注标上原始顺序，如果备注已存在，则保留原始备注不更改
 # 禁用的ck自动后置，非ck变量全部自动前置
 # 默认任务定时自行修改
 
@@ -54,6 +54,21 @@ except:
         print("已存在原始顺序模板，未配置重新生成")
         print("如果需要每次运行重新生成模板(慎重选择)")
         print("#请在配置文件中配置\nexport ec_write_cks=\"true\" \n#开启该功能\n")
+
+try:
+    if os.environ["ec_cks_remark"] == "true":
+        ec_cks_remark = True
+        print("已配置备注自动填写原始顺序")
+    else:
+        ec_cks_remark = False
+        print("未配置备注自动填写原始顺序")
+        print("配置后可能会覆盖部分环境变量的备注")
+        print("#请在配置文件中配置\nexport ec_cks_remark=\"true\" \n#开启该功能\n")
+except:
+    ec_cks_remark = False
+    print("未配置备注自动填写原始顺序")
+    print("配置后可能会覆盖部分环境变量的备注")
+    print("#请在配置文件中配置\nexport ec_cks_remark=\"true\" \n#开启该功能\n")
 
 try:
     head = int(os.environ["ec_head_cks"])
@@ -275,7 +290,8 @@ if __name__ == '__main__':
                 # "data": i,
                 "index": count}
             save_json_content.append(result_json)
-            update(s, ql_url, "api", i["value"], i["_id"], str(count))
+            if ec_cks_remark == True:
+                update(s, ql_url, "api", i["value"], i["_id"], str(count))
             count += 1
         json.dump(save_json_content, json_file, indent=4)
         json_file.close()
