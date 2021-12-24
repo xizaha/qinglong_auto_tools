@@ -11,7 +11,7 @@ new Env('单容器 二叉树后置黑号');
 # 禁用的ck自动后置，检索任务对应日志标注黑号后自动后置
 # 默认任务定时自行修改
 
-print("谨慎配置！！！自测无问题但实际运行可能有bug！！！可能会打乱原有环境变量顺序！！！")
+print("谨慎配置！！！自测无问题但实际运行可能有bug！！！可能会打乱原有环境变量顺序！！！\n")
 
 import os
 import time
@@ -19,7 +19,7 @@ import json
 import re
 import random
 
-print("查询的模板，黑号上方显示pin那一行的需要给出来\n(xx_XXXXX是pin)\n】xx_XXXXXXXX*********\nxxx_XXXXXX是黑号！\n上面这个是检索到黑号的日志，下面是你需要在配置中填写的re模板\n】(.*?)\*\*\*\*\*\*\*\*\*\n")
+print("查询的模板，黑号上方显示pin那一行的需要给出来\n(下面jd_xxxxxxxx是pin)\n------------------------------------------------------\n******开始【京东账号11】jd_xxxxxxxx*********\n\n黑号!\n等待6000毫秒！\n------------------------------------------------------\n上面这个是检索到黑号的日志，下面是你需要在配置中填写的re模板\n------------------------------------------------------\n】(.*?)\*\*\*\*\*\*\*\*\*\n------------------------------------------------------\n对应这个模板的re关键词是\"黑号\”\n")
 
 try:
     os.environ["ec_check_task_name"]
@@ -32,7 +32,7 @@ try:
         print("已配置开启日志检索标注黑号，检索日志任务名字为:\n{}\n".format(check_task_name))
     else:
         check_task_name = ""
-        print("未配置日志检索标注黑号")
+        print("未配置日志检索标注黑号\n")
         pass
 except:
     print("默认不开启日志检索标注黑号")
@@ -49,18 +49,37 @@ except:
 try:
     if os.environ["ec_remode"] != "】(.*?)\*\*\*\*\*\*\*\*\*" and os.environ["ec_check_task_name"] != "":
         remode = os.environ["ec_remode"]
-        print("已配置自定义re模板\n")
+        print("已配置自定义re模板:  \n{}\n".format(os.environ["ec_remode"]))
     else:
-        print("未配置自定义re模板")
+        print("未配置检索任务名称或未配置自定义re模板\n")
         pass
 except:
-    if os.environ["ec_check_task_name"] != "":
+    if remode == r"】(.*?)\*\*\*\*\*\*\*\*\*":
         print("使用默认模板")
-        print("有需要请在配置文件中配置\n export ec_remode=\"re模板\" 自定义模板")
+        print("有需要请在配置文件中配置\n export ec_remode=\"re模板\" 自定义模板\n")
+
+try:
+    os.environ["ec_re_key"]
+except:
+    re_key = "黑号"
+    pass
+
+try:
+    if os.environ["ec_re_key"] != "黑号" and os.environ["ec_check_task_name"] != "":
+        re_key = os.environ["ec_re_key"]
+        print("已配置自定义re关键词: {}\n".format(re_key))
+    else:
+        print("未配置检索任务名称或未配置自定义re关键词\n")
+        pass
+except:
+    if re_key == "黑号":
+        print("使用默认re关键词:  \n{}\n".format(re_key))
+        print("有需要请在配置文件中配置\n export ec_re_key=\"re关键词\" 自定义关键词\n")
+
 
 try:
     head = int(os.environ["ec_head_cks"])
-    print("已配置保留前{}位ck不检索是否黑号".format(head))
+    print("已配置保留前{}位ck不检索是否黑号\n".format(head))
 except:
     head = 6
     print("#默认只保留前6位不检索是否黑号，有需求")
@@ -81,7 +100,7 @@ except:
 try:
     import requests
 except Exception as e:
-    print(e, "\n缺少requests 模块，请执行命令安装：python3 -m pip install requests")
+    print(e, "\n缺少requests 模块，请执行命令安装：python3 -m pip install requests\n")
     exit(3)
 
 requests.packages.urllib3.disable_warnings()
@@ -205,6 +224,7 @@ def move(self, baseurl, typ, id, fromIndex, toIndex):
 
 
 if __name__ == '__main__':
+    print("==============================================")
     s = requests.session()
     login(s)
     try:
@@ -227,7 +247,7 @@ if __name__ == '__main__':
     count = 0
     interval = [0]
     for i in data:
-        if "黑号" in i:
+        if re_key in i:
             interval.append(count)
         count += 1
 
