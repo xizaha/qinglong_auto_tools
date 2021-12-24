@@ -19,7 +19,7 @@ import json
 import re
 import random
 
-print("查询的模板，黑号上方显示pin那一行的需要给出来\n下方模板(xx_XXXXX是pin)\n】xx_XXXXXXXX*********\n写成\n】(.*?)\*\*\*\*\*\*\*\*\*\n")
+print("查询的模板，黑号上方显示pin那一行的需要给出来\n(xx_XXXXX是pin)\n】xx_XXXXXXXX*********\nxxx_XXXXXX是黑号！\n上面这个是检索到黑号的日志，下面是你需要在配置中填写的re模板\n】(.*?)\*\*\*\*\*\*\*\*\*\n")
 
 try:
     os.environ["ec_check_task_name"]
