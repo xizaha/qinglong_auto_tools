@@ -25,6 +25,7 @@
 | scripts_check_dependence.py | 单容器依赖文件修复脚本，使用方法详见注释 |
 | scripts_check_error.py  | 单容器监控脚本运行状态脚本，使用方法详见注释 |
 | scripts_trigger_ckorder.py | 单容器随机ck顺序脚本，可指定头几个顺序不变，使用方法详见注释 |
+| scripts_rearblack.py | 单容器检索任务日志标注黑号自动后置脚本，使用方法详见注释 |
 | ec_config.txt | 多容器脚本和单容器脚本的配置文件，请按照脚本提示填写 |
 
 
@@ -69,6 +70,7 @@ ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git
 | scripts_check_dependence.py | 单容器依赖文件修复脚本，使用方法详见注释 |
 | scripts_check_error.py  | 单容器监控脚本运行状态脚本，使用方法详见注释 |
 | scripts_trigger_ckorder.py | 单容器随机ck顺序脚本，可指定可指定头几个顺序不变，使用方法详见注释 |
+| scripts_rearblack.py | 单容器检索任务日志标注黑号自动后置脚本，使用方法详见注释 |
 | ~~b_script_purge_keys.py~~ | ~~单容器清除屏蔽词脚本，屏蔽容器脚本中含有的屏蔽词，使用方法详见注释~~ 有bug待修复 |
 
 青龙拉取命令：
@@ -188,9 +190,8 @@ scripts_check_dependence.py，也就是二叉树修复依赖文件脚本，拉�
 2021.12.23
 
 ```
-12.23更新日志：
-    1.更新单容器随机ck顺序脚本，可指定可指定头几个顺序不变。
-    2.监控脚本运行脚本增加白名单选项，增加详情模式选项。
+12.25更新日志：
+    更新单容器检索任务日志标注黑号自动后置脚本，使用方法详见注释
 ```
 
 转载起码保留作者名谢谢

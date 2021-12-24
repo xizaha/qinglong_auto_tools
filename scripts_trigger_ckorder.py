@@ -34,6 +34,7 @@ ql_auth_path = '/ql/config/auth.json'
 try:
     if os.environ["ec_write_cks"] == "true":
         ec_write_cks = True
+        print("已配置每次运行重新生成模板")
     else:
         ec_write_cks = False
         if os.path.exists("./trigger_cookies.json") == False:
