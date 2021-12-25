@@ -8,12 +8,6 @@ cron: 1
 new Env('二叉树自查任务ID');
 '''
 
-
-
-client_id1=""
-client_secret1=""
-url1 = "http://xxxx:xxxx/"
-
 import re
 import time
 import json
@@ -26,21 +20,25 @@ except Exception as e:
 
 
 requests.packages.urllib3.disable_warnings()
-
+ql_auth_path = '/ql/config/auth.json'
 
 def gettimestamp():
     return str(int(time.time() * 1500))
 
 
-def gettoken(self, url_token):
-    r = requests.get(url_token).text
-    res = json.loads(r)["data"]["token"]
+def __get_token() -> str or None:
+    with open(ql_auth_path, 'r', encoding='utf-8') as f:
+        j_data = json.load(f)
+    return j_data.get('token')
+
+
+def gettoken(self):
+    res = __get_token()
     self.headers.update({"Authorization": "Bearer " + res})
 
 
-def login(self, baseurl, client_id_temp, client_secret_temp):
-    url_token = baseurl + 'open/auth/token?client_id=' + client_id_temp + '&client_secret=' + client_secret_temp
-    gettoken(self, url_token)
+def login(self):
+    gettoken(self)
 
 
 def getitem(self, baseurl, typ):
@@ -88,12 +86,16 @@ def addcron(self, baseurl, typ, data):
 if __name__ == '__main__':
     # 主容器
     s = requests.session()
-    login(s, url1, client_id1, client_secret1)
+    login(s)
+    try:
+        ql_url = 'http://localhost:5700/'
+    except:
+        ql_url = 'http://localhost:5600/'
 
     # 获取主青龙任务
     print("=========== 主青龙 信息获取中 =============")
     print()
-    ztasks = getcrons(s, url1, "open")
+    ztasks = getcrons(s, ql_url, "api")
     for i in ztasks: #根据青龙任务的名字查询对应ID
         if i["name"] == "通用开卡[普通]":
             print("通用开卡[普通]ID")
