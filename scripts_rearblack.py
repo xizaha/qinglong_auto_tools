@@ -55,8 +55,8 @@ try:
         pass
 except:
     if remode == r"】(.*?)\*\*\*\*\*\*\*\*\*":
-        print("使用默认模板")
-        print("有需要请在配置文件中配置\n export ec_remode=\"re模板\" 自定义模板\n")
+        print("使用默认re模板")
+        print("\n有需要请在配置文件中配置\nexport ec_remode=\"re模板\" 自定义模板\n")
 
 try:
     os.environ["ec_re_key"]
@@ -74,7 +74,7 @@ try:
 except:
     if re_key == "黑号":
         print("使用默认re关键词:  \n{}\n".format(re_key))
-        print("有需要请在配置文件中配置\n export ec_re_key=\"re关键词\" 自定义关键词\n")
+        print("\n有需要请在配置文件中配置\nexport ec_re_key=\"re关键词\"自定义关键词\n")
 
 
 try:
@@ -83,14 +83,14 @@ try:
 except:
     head = 6
     print("#默认只保留前6位不检索是否黑号，有需求")
-    print("#请在配置文件中配置\nexport ec_head_cks=\"具体几个\" \n#更改不检索是否黑号的个数\n")
+    print("\n#请在配置文件中配置\nexport ec_head_cks=\"具体几个\" \n#更改不检索是否黑号的个数\n")
 
 try:
     if os.environ["ec_rear_back_ck"] == "true" and os.environ["ec_check_task_name"] != "":
         ec_rear_back_ck = True
         print("已配置自动后置标注的黑号\n")
     else:
-        print("未配置自动后置标注的黑号")
+        print("未配置自动后置标注的黑号\n")
 except:
     print("默认不后置标注的黑号")
     print("有需要请在配置文件中配置\n export ec_rear_back_ck=\"true\" 开启自动后置")
