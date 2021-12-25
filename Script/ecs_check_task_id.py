@@ -89,13 +89,14 @@ if __name__ == '__main__':
     login(s)
     try:
         ql_url = 'http://localhost:5700/'
+        ztasks = getcrons(s, ql_url, "api")
     except:
         ql_url = 'http://localhost:5600/'
+        ztasks = getcrons(s, ql_url, "api")
 
     # 获取主青龙任务
     print("=========== 主青龙 信息获取中 =============")
     print()
-    ztasks = getcrons(s, ql_url, "api")
     for i in ztasks: #根据青龙任务的名字查询对应ID
         if i["name"] == "通用开卡[普通]":
             print("通用开卡[普通]ID")
