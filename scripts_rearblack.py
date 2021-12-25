@@ -11,7 +11,7 @@ new Env('单容器 二叉树后置黑号');
 # 禁用的ck自动后置，检索任务对应日志标注黑号后自动后置
 # 默认任务定时自行修改
 
-print("谨慎配置！！！自测无问题但实际运行可能有bug！！！可能会打乱原有环境变量顺序！！！\n")
+print("谨慎配置！！！自测无问题但实际运行可能有bug！！！可能会打乱原有环境变量顺序！！！")
 
 import os
 import time
@@ -19,7 +19,8 @@ import json
 import re
 import random
 
-print("查询的模板，黑号上方显示pin那一行的需要给出来\n(下面jd_xxxxxxxx是pin)\n------------------------------------------------------\n******开始【京东账号11】jd_xxxxxxxx*********\n\n黑号!\n等待6000毫秒！\n------------------------------------------------------\n上面这个是检索到黑号的日志，下面是你需要在配置中填写的re模板\n------------------------------------------------------\n】(.*?)\*\*\*\*\*\*\*\*\*\n------------------------------------------------------\n对应这个模板的re关键词是\"黑号\”\n")
+print(
+    "查询的模板，黑号上方显示pin那一行的需要给出来\n(xx_XXXXX是pin)\n】xx_XXXXXXXX*********\nxxx_XXXXXX是黑号！\n上面这个是检索到黑号的日志，下面是你需要在配置中填写的re模板\n】(.*?)\*\*\*\*\*\*\*\*\*\n")
 
 try:
     os.environ["ec_check_task_name"]
@@ -32,7 +33,7 @@ try:
         print("已配置开启日志检索标注黑号，检索日志任务名字为:\n{}\n".format(check_task_name))
     else:
         check_task_name = ""
-        print("未配置日志检索标注黑号\n")
+        print("未配置日志检索标注黑号")
         pass
 except:
     print("默认不开启日志检索标注黑号")
@@ -49,48 +50,29 @@ except:
 try:
     if os.environ["ec_remode"] != "】(.*?)\*\*\*\*\*\*\*\*\*" and os.environ["ec_check_task_name"] != "":
         remode = os.environ["ec_remode"]
-        print("已配置自定义re模板:  \n{}\n".format(os.environ["ec_remode"]))
+        print("已配置自定义re模板\n")
     else:
-        print("未配置检索任务名称或未配置自定义re模板\n")
+        print("未配置自定义re模板")
         pass
 except:
-    if remode == r"】(.*?)\*\*\*\*\*\*\*\*\*":
-        print("使用默认re模板")
-        print("\n有需要请在配置文件中配置\nexport ec_remode=\"re模板\" 自定义模板\n")
-
-try:
-    os.environ["ec_re_key"]
-except:
-    re_key = "黑号"
-    pass
-
-try:
-    if os.environ["ec_re_key"] != "黑号" and os.environ["ec_check_task_name"] != "":
-        re_key = os.environ["ec_re_key"]
-        print("已配置自定义re关键词: {}\n".format(re_key))
-    else:
-        print("未配置检索任务名称或未配置自定义re关键词\n")
-        pass
-except:
-    if re_key == "黑号":
-        print("使用默认re关键词:  \n{}\n".format(re_key))
-        print("\n有需要请在配置文件中配置\nexport ec_re_key=\"re关键词\"自定义关键词\n")
-
+    if os.environ["ec_check_task_name"] != "":
+        print("使用默认模板")
+        print("有需要请在配置文件中配置\n export ec_remode=\"re模板\" 自定义模板")
 
 try:
     head = int(os.environ["ec_head_cks"])
-    print("已配置保留前{}位ck不检索是否黑号\n".format(head))
+    print("已配置保留前{}位ck不检索是否黑号".format(head))
 except:
     head = 6
     print("#默认只保留前6位不检索是否黑号，有需求")
-    print("\n#请在配置文件中配置\nexport ec_head_cks=\"具体几个\" \n#更改不检索是否黑号的个数\n")
+    print("#请在配置文件中配置\nexport ec_head_cks=\"具体几个\" \n#更改不检索是否黑号的个数\n")
 
 try:
     if os.environ["ec_rear_back_ck"] == "true" and os.environ["ec_check_task_name"] != "":
         ec_rear_back_ck = True
         print("已配置自动后置标注的黑号\n")
     else:
-        print("未配置自动后置标注的黑号\n")
+        print("未配置自动后置标注的黑号")
 except:
     print("默认不后置标注的黑号")
     print("有需要请在配置文件中配置\n export ec_rear_back_ck=\"true\" 开启自动后置")
@@ -100,7 +82,7 @@ except:
 try:
     import requests
 except Exception as e:
-    print(e, "\n缺少requests 模块，请执行命令安装：python3 -m pip install requests\n")
+    print(e, "\n缺少requests 模块，请执行命令安装：python3 -m pip install requests")
     exit(3)
 
 requests.packages.urllib3.disable_warnings()
@@ -224,7 +206,6 @@ def move(self, baseurl, typ, id, fromIndex, toIndex):
 
 
 if __name__ == '__main__':
-    print("==============================================")
     s = requests.session()
     login(s)
     try:
@@ -242,12 +223,22 @@ if __name__ == '__main__':
         elif check_task_name == "":
             exit(3)
 
+    allenv = getallenv(s, ql_url, "api")
+    for i in allenv:
+        try:
+            i["remarks"]
+            if i["remarks"] == "黑号" and ec_rear_back_ck == True:
+                c = update(s, ql_url, "api", i["value"], i["id"], "")
+                print(c)
+        except:
+            pass
+
     log = json.loads(getlogcron(s, ql_url, "api", [log_id]))["data"]
     data = log.split("\n")
     count = 0
     interval = [0]
     for i in data:
-        if re_key in i:
+        if "黑号" in i:
             interval.append(count)
         count += 1
 
@@ -313,18 +304,35 @@ if __name__ == '__main__':
                 move(s, ql_url, "api", black_dict[i]["id"], count + 1, len(allenv) - len(disable_list) - 1)
             count += 1
         if ec_rear_back_ck == True:
-            move(s, ql_url, "api", black_dict[i]["id"], black_dict[i]["index"], len(allenv) - len(disable_list) - 1)
+            move(s, ql_url, "api", black_dict[i]["id"], black_dict[i]["index"], len(allenv) - len(disable_list))
 
     count = 0
     allenv = getallenv(s, ql_url, "api")
     for i in allenv:
+        allenv = getallenv(s, ql_url, "api")
         try:
             i["remarks"]
-            if i["remarks"] == "黑号" and ec_rear_back_ck == True:
-                move(s, ql_url, "api", i["id"], count + 1, len(allenv) - len(disable_list) - 1)
+            if i["remarks"] == "黑号 " or i["remarks"] == "黑号":
+                status = 1
+            else:
+                status = 0
         except:
+            status = 0
             pass
         count += 1
+        if status == 1:
+            move(s, ql_url, "api", i["_id"], count + 1, len(allenv) - len(disable_list))
+
+    time.sleep(1)
+    count = 0
+    allenv = getallenv(s, ql_url, "api")
+    for i in allenv:
+        allenv = getallenv(s, ql_url, "api")
+        if i["status"] == 1:
+            move(s, ql_url, "api", i["_id"], count + 1, len(allenv) - 2)
+        count += 1
+
+    print("最后3~5位位置可能时有对调，小bug懒得调了")
 
     if ec_rear_back_ck == True:
         print("\n已后置黑号共{}个".format(len(black_dict)))
