@@ -17,7 +17,7 @@ import os
 # 自动禁用只会自动禁用含 结束的活动 的关键词的任务日志对应的任务
 # 有别的类别的自动禁用需求，自行更改本脚本223行
 
-errr_text = [
+erro_text = [
     "Response code",
     "Error: Cannot find module",
     "操作太频繁",
@@ -198,7 +198,7 @@ if __name__ == '__main__':
             res = getlogcron(s, ql_url, "api", [i["_id"]])
             status = 0
 
-            for j in errr_text:
+            for j in erro_text:
                 if j in res:
                     status = 1
             if status == 1:
@@ -361,6 +361,11 @@ if __name__ == '__main__':
         print("白名单开启后将不禁用白名单内的任务，但会禁用其他异常任务，执行有异常但可以执行的也不会禁用")
 
     print("===================================")
+
+
+
+
+
 
 
 
