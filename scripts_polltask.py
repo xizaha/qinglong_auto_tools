@@ -29,14 +29,26 @@ except:
 try:
     if os.environ["ec_poll_start_time"] != "":
         start_time = int(os.environ["ec_poll_start_time"])
-        print("已配置不检索列表，不检索的禁用任务表为：\n{}\n".format(expect_list))
+        print("已配置初始化时间为：\n{}\n".format(start_time))
     else:
         start_time = 6
         pass
 except:
-    print("使用默认初始时间6秒，尝试运行时长少于6秒已经结束的任务不检索，每个禁用执行1分钟后自动停止，然后检索日志")
+    print("使用默认初始时间6秒，尝试运行时长少于6秒已经结束的任务不检索，每个禁用执行配置时长后自动停止，然后检索日志")
     print("有需要请在配置文件中配置\nexport ec_poll_start_time=\"初始秒数\" \n自定义时长\n")
     start_time = 6
+
+try:
+    if os.environ["ec_poll_end_time"] != "":
+        end_time = int(os.environ["ec_poll_end_time"])
+        print("已配置每个任务检索时间：\n{}\n".format(end_time))
+    else:
+        end_time = 60
+        pass
+except:
+    print("使用默认每个任务检索时间60秒，尝试运行时长多于60秒已经结束的任务自动停止，然后检索日志")
+    print("有需要请在配置文件中配置\nexport ec_poll_end_time=\"检索时长秒数\" \n自定义时长\n")
+    end_time = 60
 
 print("\n=================说明===================")
 print("分为7类异常，如果异常存在于运行日志中，则不启用\n"
@@ -252,9 +264,9 @@ if __name__ == '__main__':
                         break
                 if err_status == 1:
                     stopcron(s, ql_url, "api", [id])
-            time.sleep(2)
+            time.sleep(1)
             ct += 1
-            if ct >= 30:
+            if ct >= end_time:
                 stopcron(s, ql_url, "api", [id])
                 break
 

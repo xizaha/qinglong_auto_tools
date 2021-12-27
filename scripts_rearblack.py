@@ -215,6 +215,58 @@ if __name__ == '__main__':
         ql_url = 'http://localhost:5600/'
         cookies = getitem(s, ql_url, "JD_COOKIE", "api")
 
+    print("============================================")
+
+    # 无配置时执行
+    if os.environ["ec_check_task_name"] == "" and ec_rear_back_ck == True:
+        allenv = getallenv(s, ql_url, "api")
+        disable_list = []
+        for i in allenv:
+            if i["status"] != 0:
+                disable_list.append(i)
+
+        print("未配置检索任务名称，自动检索已有备注自动后置黑号和禁用ck\n")
+
+        print("不检索日志只自动后置备注为“黑号”的环境变量\n")
+
+        count = 0
+        allenv = getallenv(s, ql_url, "api")
+        for i in allenv:
+            allenv = getallenv(s, ql_url, "api")
+            try:
+                i["remarks"]
+                if i["remarks"] == "黑号 " or i["remarks"] == "黑号":
+                    status = 1
+                else:
+                    status = 0
+            except:
+                status = 0
+                pass
+            count += 1
+            if status == 1:
+                move(s, ql_url, "api", i["_id"], count + 1, len(allenv) - len(disable_list))
+
+        time.sleep(1)
+        count = 0
+        allenv = getallenv(s, ql_url, "api")
+        for i in allenv:
+            allenv = getallenv(s, ql_url, "api")
+            if i["status"] == 1:
+                move(s, ql_url, "api", i["_id"], count + 1, len(allenv) - 2)
+            count += 1
+
+        print("自动禁用已有备注黑号共{}个，禁用ck共{}个\n".format(count, len(disable_list)))
+
+        print("最后3~5位位置可能时有对调，小bug懒得调了\n")
+        exit(3)
+    else:
+        print("默认不后置标注的黑号，不进行任何操作")
+        print("有需要请在配置文件中配置\n export ec_rear_back_ck=\"true\" 开启自动后置")
+        print("开启后将自动后置标注的黑号\n")
+        pass
+
+    # 有配置时执行
+
     tasks = gettaskitem(s, ql_url, "api")
     for i in tasks:
         if i["name"] == check_task_name:
