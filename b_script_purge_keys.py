@@ -7,23 +7,6 @@ cron: 1
 new Env('二叉树屏蔽关键词');
 '''
 
-
-# 主青龙，需要屏蔽关键词的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
-'''
-# ec_config.txt中填写如下设置
-
-# 二叉树清除屏蔽词
-scripts_purge_keys_cilent_id1="xxxxxxx"
-scripts_purge_keys_cilent_secret1="xxxxx"
-scripts_purge_keys_url1="http://xxxxxx:xxxx/"
-
-'''
-
-# 主青龙，需要查找网络链接的容器，事先需要在容器里创建应用，给所有权限，然后重启容器，应用设置才会生效，
-#cilent_id1 = ""
-#cilent_secret1 = ""
-#url1 = ""
-
 # 屏蔽词
 keys = []
 
@@ -37,50 +20,6 @@ except:
     print("fake_keys.txt 未创建，有需要请按照注释进行操作")
 
 import re
-
-try:
-    with open("ec_config.txt", "r") as fp:
-        t = fp.readlines()
-    try:
-        for i in t:
-            try:
-                temp = re.findall(r"scripts_purge_keys_cilent_id1=\"(.*?)\"", i)[0]
-                cilent_id1 = temp
-                if cilent_id1 == "":
-                    print("scripts_purge_keys_cilent_id1 未填写")
-            except:
-                pass
-    except:
-        print("scripts_purge_keys_cilent_id1 未创建")
-        exit(3)
-
-    try:
-        for i in t:
-            try:
-                temp = re.findall(r"scripts_purge_keys_cilent_secret1=\"(.*?)\"", i)[0]
-                cilent_secret1 = temp
-                if cilent_secret1 == "":
-                    print("scripts_purge_keys_cilent_secret1 未填写")
-            except:
-                pass
-    except:
-        print("scripts_purge_keys_cilent_secret1 未创建")
-        exit(3)
-
-    try:
-        for i in t:
-            try:
-                temp = re.findall(r"scripts_purge_keys_url1=\"(.*?)\"", i)[0]
-                url1 = temp
-                if url1 == "":
-                    print("scripts_purge_keys_url1 未填写")
-            except:
-                pass
-    except:
-        print("scripts_purge_keys_url1 未创建")
-        exit(3)
-except:
-    print("找不到配置文件或配置文件有错误, 请填写ec_config.txt")
 
 for i in t:
     keys.append(i)
@@ -96,23 +35,37 @@ except Exception as e:
     print(e, "\n缺少requests 模块，请执行命令安装：pip3 install requests")
 import time
 import json
+import os
+
 
 requests.packages.urllib3.disable_warnings()
 
+ql_auth_path = '/ql/config/auth.json'
+
+def __get_token() -> str or None:
+    with open(ql_auth_path, 'r', encoding='utf-8') as f:
+        j_data = json.load(f)
+    return j_data.get('token')
+
+
+def __get__headers() -> dict:
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': 'Bearer ' + __get_token()
+    }
+    return headers
 
 def gettimestamp():
-    return str(int(time.time() * 1500))
+    return str(int(time.time() * 1000))
 
 
-def gettoken(self, url_token):
-    r = requests.get(url_token).text
-    res = json.loads(r)["data"]["token"]
-    self.headers.update({"Authorization": "Bearer " + res})
+def gettoken(self):
+    self.headers.update({"Authorization": "Bearer " + __get_token()})
 
 
-def login(self, baseurl, cilent_id_temp, cilent_secret_temp):
-    url_token = baseurl + 'open/auth/token?client_id=' + cilent_id_temp + '&client_secret=' + cilent_secret_temp
-    gettoken(self, url_token)
+def login(self):
+    gettoken(self)
 
 
 def getitem(self, baseurl, typ):
@@ -153,18 +106,76 @@ def addcron(self, baseurl, typ, data):
     else:
         return r.text
 
+def traversalDir_FirstDir(path):
+    list = []
+    if (os.path.exists(path)):
+        files = os.listdir(path)
+        for file in files:
+            m = os.path.join(path, file)
+            if (os.path.isdir(m)):
+                h = os.path.split(m)
+                list.append(h[1])
+        return list
 
-if __name__ == '__main__':
-    # 主容器
-    s = requests.session()
-    login(s, url1, cilent_id1, cilent_secret1)
 
-    # 获取主青龙任务
-    print("=========== 主青龙 信息获取中 =============")
-    print()
+def read_ex(or_list):
+    # 加载远程依赖剔除依赖文件的检索
+    try:
+        res1 = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+        time.sleep(5)
+        res2 = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+        time.sleep(4)
+        res3 = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+        try:
+            res1["documentation_url"]
+            return
+        except:
+            try:
+                res2["documentation_url"]
+                return
+            except:
+                try:
+                    res3["documentation_url"]
+                    return
+                except:
+                    pass
 
-    # 获取主青龙的脚本名
-    zscripts = getitem(s, url1, "open")
+
+    except:
+        print("网络波动，稍后尝试")
+        time.sleep(5)
+        try:
+            res1 = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents").json()
+            time.sleep(5)
+            res2 = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/utils").json()
+            time.sleep(4)
+            res3 = requests.get("https://api.github.com/repos/spiritLHL/dependence_scripts/contents/function").json()
+            try:
+                res1["documentation_url"]
+                return
+            except:
+                try:
+                    res2["documentation_url"]
+                    return
+                except:
+                    try:
+                        res3["documentation_url"]
+                        return
+                    except:
+                        pass
+        except:
+            print("网络问题无法获取仓库文件列表，停止加载远程文件剔除依赖文件，直接本地检索")
+
+    for i in res1:
+        or_list.append(i["name"])
+    for i in res2:
+        or_list.append(i["name"])
+    for i in res3:
+        or_list.append(i["name"])
+    or_list = list(set(or_list))
+    return or_list
+
+def check_root():
     zscripts_list = []
     for i in zscripts:
         zscripts_list.append(i["key"])
@@ -176,18 +187,19 @@ if __name__ == '__main__':
     print()
     print()
 
-
     print("查询结束，正在修改中")
     print()
 
     # 查询需要更改的脚本内容
     change_script_list = []
     change_content = []
+    # 查询根目录
     for i in zscripts_list:
-        content = getscript(s, url1, "open", i)
+        content = getscript(s, ql_url, "api", i)
         data_script = {
             "filename": i,
             "content": content,
+            "path": ""
         }
         change_content.append(content)
         change_script_list.append(data_script)
@@ -198,13 +210,19 @@ if __name__ == '__main__':
     # 替换关键词
     tp = []
     for i in origin_content:
-        tpp = i
+        tpp = i.split("\n")
+        tp_list = []
         for j in keys:
-            if j in tpp:
-                tpp = tpp.replace(j, real_key, 30)
-        tp.append(tpp)
+            for k in tpp:
+                if j in k:
+                    c = k.replace(j, "", 5) + "\n"
+                    tp_list.append(c)
+        temp = tp_list[0]
+        for l in tp_list[1:]:
+            temp += l
+        tp.append(temp)
 
-    # 构造请求内容
+    # 构造请求内容，进行正式修改
     count = 0
     change_k = []
     for k in tp:
@@ -212,6 +230,7 @@ if __name__ == '__main__':
             data_script = {
                 "filename": change_script_list[count]["filename"],
                 "content": k,
+                "path": ""
             }
             change_k.append(data_script)
         else:
@@ -224,7 +243,7 @@ if __name__ == '__main__':
     while True:
         if count <= (len(change_script_list) - 1):
             if change_k[count] != origin_script_list[count]:
-                pushscript(s, url1, "open", change_k[count])
+                pushscript(s, ql_url, "api", change_k[count])
                 print("屏蔽关键字的脚本文件 {}".format(change_k[count]["filename"]))
             else:
                 ct += 1
@@ -232,6 +251,33 @@ if __name__ == '__main__':
         else:
             break
     print()
+
+def check_dir():
+    return
+
+
+if __name__ == '__main__':
+    # 主容器
+    s = requests.session()
+    login(s)
+
+    # 获取主青龙任务
+    print("=========== 主青龙 信息获取中 =============")
+    print()
+
+    # 获取主青龙的脚本名
+    try:
+        ql_url = 'http://localhost:5700/'
+        zscripts = getitem(s, ql_url, "api")
+    except:
+        ql_url = 'http://localhost:5600/'
+        zscripts = getitem(s, ql_url, "api")
+
+    # 查询根目录
+    check_root()
+
+    # 查询分文件夹
+    check_dir()
 
     print("屏蔽脚本文件关键词完毕")
 

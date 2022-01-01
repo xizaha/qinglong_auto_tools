@@ -1,4 +1,4 @@
-青龙拉取命令：
+部分脚本的青龙拉取命令：
 
 ```bash
 ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git "ecs_"

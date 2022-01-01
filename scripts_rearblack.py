@@ -68,11 +68,12 @@ except:
     print("#请在配置文件中配置\nexport ec_head_cks=\"具体几个\" \n#更改不检索是否黑号的个数\n")
 
 try:
-    if os.environ["ec_rear_back_ck"] == "true" and os.environ["ec_check_task_name"] != "":
+    if os.environ["ec_rear_back_ck"] == "true":
         ec_rear_back_ck = True
         print("已配置自动后置标注的黑号\n")
     else:
-        print("未配置自动后置标注的黑号")
+        ec_rear_back_ck = False
+        print("未配置自动后置标注的黑号，默认自动后置")
 except:
     print("默认不后置标注的黑号")
     print("有需要请在配置文件中配置\n export ec_rear_back_ck=\"true\" 开启自动后置")
@@ -217,7 +218,7 @@ if __name__ == '__main__':
 
     print("============================================")
 
-    # 无配置时执行
+        # 无配置时执行
     if os.environ["ec_check_task_name"] == "" and ec_rear_back_ck == True:
         allenv = getallenv(s, ql_url, "api")
         disable_list = []
@@ -229,6 +230,8 @@ if __name__ == '__main__':
 
         print("不检索日志只自动后置备注为“黑号”的环境变量\n")
 
+
+        black_count = 0
         count = 0
         allenv = getallenv(s, ql_url, "api")
         for i in allenv:
@@ -244,7 +247,8 @@ if __name__ == '__main__':
                 pass
             count += 1
             if status == 1:
-                move(s, ql_url, "api", i["_id"], count + 1, len(allenv) - len(disable_list))
+                move(s, ql_url, "api", i["_id"], count + 1, len(allenv) - 2)
+                black_count += 1
 
         time.sleep(1)
         count = 0
@@ -255,7 +259,7 @@ if __name__ == '__main__':
                 move(s, ql_url, "api", i["_id"], count + 1, len(allenv) - 2)
             count += 1
 
-        print("自动禁用已有备注黑号共{}个，禁用ck共{}个\n".format(count, len(disable_list)))
+        print("自动后置已有备注黑号共{}个，禁用ck共{}个\n".format(black_count, len(disable_list)))
 
         print("最后3~5位位置可能时有对调，小bug懒得调了\n")
         exit(3)
@@ -313,13 +317,16 @@ if __name__ == '__main__':
 
     black_dict = {}
     allenv = getallenv(s, ql_url, "api")
-    count = 0
-    jdcount = 0
-    disable_list = []
-    disable_list_count = []
+    count = 0 # 检索到第几个环境变量
+    jdcount = 0 # 从头往后数第几个是jd_cookie
+    disable_list = [] # 保存禁用的变量信息
+    disable_list_count = [] # 保存位置信息
+    head_env = [] # 保存头环境变量
     for i in allenv:
         if "JD_COOKIE" == i["name"] and jdcount == 0:
             jdcount = count
+        if jdcount == 0 or count <= (jdcount + head):
+            head_env.append(i)
         if i["status"] != 0:
             disable_list.append(i)
             disable_list_count.append(count + 1)
@@ -332,6 +339,7 @@ if __name__ == '__main__':
                     "value": i["value"]
                 }
         count += 1
+
 
     count = 0
     for i, j in zip(disable_list, disable_list_count):
@@ -353,7 +361,7 @@ if __name__ == '__main__':
         count = 0
         for j in allenv:
             if black_dict[i]["value"] == j["value"] and ec_rear_back_ck == True:
-                move(s, ql_url, "api", black_dict[i]["id"], count + 1, len(allenv) - len(disable_list) - 1)
+                move(s, ql_url, "api", black_dict[i]["id"], count + 1, len(allenv) - len(disable_list) - 2)
             count += 1
         if ec_rear_back_ck == True:
             move(s, ql_url, "api", black_dict[i]["id"], black_dict[i]["index"], len(allenv) - len(disable_list))
@@ -374,8 +382,7 @@ if __name__ == '__main__':
         count += 1
         if status == 1:
             move(s, ql_url, "api", i["_id"], count + 1, len(allenv) - len(disable_list))
-
-    time.sleep(1)
+    # 再检索防止出错
     count = 0
     allenv = getallenv(s, ql_url, "api")
     for i in allenv:
@@ -383,6 +390,16 @@ if __name__ == '__main__':
         if i["status"] == 1:
             move(s, ql_url, "api", i["_id"], count + 1, len(allenv) - 2)
         count += 1
+
+    # 前几个环境变量校对
+    count = 0
+    allenv = getallenv(s, ql_url, "api")
+    for i in allenv[:(jdcount+head)]:
+        if head_env[count] != i:
+            move(s, ql_url, "api", i["_id"], count, jdcount+head+1)
+        count += 1
+        allenv = getallenv(s, ql_url, "api")
+
 
     print("最后3~5位位置可能时有对调，小bug懒得调了")
 
