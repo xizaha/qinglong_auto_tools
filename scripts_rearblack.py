@@ -20,7 +20,15 @@ import re
 import random
 
 print(
-    "查询的模板，黑号上方显示pin那一行的需要给出来\n(xx_XXXXX是pin)\n】xx_XXXXXXXX*********\nxxx_XXXXXX是黑号！\n上面这个是检索到黑号的日志，下面是你需要在配置中填写的re模板\n】(.*?)\*\*\*\*\*\*\*\*\*\n")
+    "查询的模板，黑号上方显示pin那一行的需要给出来，下方是日志以及对应需要填写的东西(xx_XXXXX是pin)\n\n\n==========检索的模板任务日志👇=========\n*********【账号 10】jd_EMgmYJMyrMHn*********\n黑号！\n*********【账号 11】jd_LjfgropqstnG*********\n黑号！\n==============模板日志👆=============\n\n此时需要的配置如下\n")
+
+print("export ec_remode=\"】(.*?)\*\*\*\*\*\*\*\*\*)\"\nexport ec_blackkey=\"黑号！\"\nexport ec_check_task_name=\"青龙中任务的中文名字\"export ec_rear_back_ck=\"true\"\n")
+
+print("配置中填完后就能运行脚本自动检索对应任务名字下的日志查询黑号标注黑号后置黑号了")
+
+print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+print("=================正式开始运行脚本，上述文字只是说明=========================")
 
 try:
     os.environ["ec_check_task_name"]
@@ -58,6 +66,30 @@ except:
     if os.environ["ec_check_task_name"] != "":
         print("使用默认模板")
         print("有需要请在配置文件中配置\n export ec_remode=\"re模板\" 自定义模板")
+
+
+try:
+    os.environ["ec_blackkey"]
+except:
+    ec_blackkey = "黑号"
+    pass
+
+try:
+    if os.environ["ec_blackkey"] != "黑号" and os.environ["ec_blackkey"] != "":
+        ec_blackkey = os.environ["ec_blackkey"]
+        print("已配置自定义黑号关键词\n")
+    else:
+        print("未配置自定义黑号关键词，使用默认关键词：黑号")
+        pass
+except:
+    try:
+        os.environ["ec_blackkey"]
+    except:
+        ec_blackkey = "黑号"
+        print("使用默认黑号关键词：黑号")
+        print("有需要请在配置文件中配置\n export ec_blackkey=\"黑号关键词\" 自定义黑号关键词")
+
+
 
 try:
     head = int(os.environ["ec_head_cks"])
@@ -294,7 +326,7 @@ if __name__ == '__main__':
     count = 0
     interval = [0]
     for i in data:
-        if "黑号" in i:
+        if ec_blackkey in i:
             interval.append(count)
         count += 1
 
