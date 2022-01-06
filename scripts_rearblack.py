@@ -20,9 +20,9 @@ import re
 import random
 
 print(
-    "查询的模板，黑号上方显示pin那一行的需要给出来，下方是日志以及对应需要填写的东西(xx_XXXXX是pin)\n\n\n==========检索的模板任务日志👇=========\n*********【账号 10】jd_EMgmYJMyrMHn*********\n黑号！\n*********【账号 11】jd_LjfgropqstnG*********\n黑号！\n==============模板日志👆=============\n\n此时需要的配置如下\n")
+    "查询的模板，黑号上方显示pin那一行的需要给出来，下方是日志以及对应需要填写的东西(jd_XXXXX是pin)\n\n\n==========检索的模板任务日志👇=========\n*********【账号 10】jd_EMgmYJMyrMHn*********\n黑号！\n*********【账号 11】jd_LjfgropqstnG*********\n黑号！\n==============模板日志👆=============\n\n此时需要的配置如下\n")
 
-print("export ec_remode=\"】(.*?)\*\*\*\*\*\*\*\*\*)\"\nexport ec_blackkey=\"黑号！\"\nexport ec_check_task_name=\"青龙中任务的中文名字\"export ec_rear_back_ck=\"true\"\n")
+print("export ec_remode=\"】(.*?)\*\*\*\*\*\*\*\*\*)\"\nexport ec_blackkey=\"黑号！\"\nexport ec_check_task_name=\"青龙中任务的中文名字\"\nexport ec_rear_back_ck=\"true\"\n")
 
 print("配置中填完后就能运行脚本自动检索对应任务名字下的日志查询黑号标注黑号后置黑号了")
 
