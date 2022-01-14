@@ -356,6 +356,16 @@ if __name__ == '__main__':
     result_list.extend(he_list)
     result_list.extend(head_list)
     result_list.extend(white_list)
+
+    # 去重
+    tp1 = []
+    value_tp = []
+    for i in black_list:
+        if i['value'] not in value_tp:
+            tp1.append(i)
+            value_tp.append(i['value'])
+    black_list = tp1
+
     result_list.extend(black_list)
     result_list.extend(disable_list)
     for i in allenv:

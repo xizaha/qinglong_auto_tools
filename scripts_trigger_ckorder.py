@@ -293,6 +293,15 @@ if __name__ == '__main__':
     except:
         pass
 
+    # 去重
+    tp1 = []
+    value_tp = []
+    for i in random_list:
+        if i['value'] not in value_tp:
+            tp1.append(i)
+            value_tp.append(i['value'])
+    random_list = tp1
+
     result_list.extend(random_list)
     result_list.extend(disable_list)
     for i in allenv:
