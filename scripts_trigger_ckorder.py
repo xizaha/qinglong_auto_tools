@@ -327,7 +327,7 @@ if __name__ == '__main__':
                     disable(s, ql_url, 'api', [c[0]['_id']])
                 except:
                     disable(s, ql_url, 'api', [c[0]['id']])
-    print("已前置非ck变量共{}个，车头ck共{}个，随机顺序ck共{}个，后置禁用ck共{}个".format(len(head_list), len(he_list), len(random_list),
+    print("已前置非ck变量共{}个，车头ck共{}个，随机顺序ck共{}个，后置禁用ck共{}个".format(len(he_list), len(head_list), len(random_list),
                                                                len(disable_list)))
     print("============================================")
     print("脚本执行完毕")
