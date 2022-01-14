@@ -257,7 +257,7 @@ if __name__ == '__main__':
     ct = 1
     for i in res:
         random_list.append(cookies[i - 1])
-        c = re.findall(r"pt_pin=(.*?);", allenv[i - 1]["value"])[0][-16:].ljust(16)
+        c = re.findall(r"pt_pin=(.*?);", cookies[i - 1]["value"])[0][-16:].ljust(16)
         print("{}\t\t{}\t\t{}".format(c, i, ct + head))
         ct += 1
     result_list.extend(he_list)
