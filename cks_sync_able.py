@@ -198,6 +198,14 @@ def update(self, baseurl, typ, text, qlid, name):
     if json.loads(r.text)["code"] == 200:
         return True
     else:
+        data = {
+            "name": name,
+            "value": text,
+            "id": qlid
+        }
+        r = self.put(url, data=json.dumps(data))
+        if json.loads(r.text)["code"] == 200:
+            return True
         return False
 
 
@@ -353,19 +361,32 @@ if __name__ == '__main__':
             if name not in except_list:
                 item = getenvitem(a, urllist[ucount], name, "open", name, "name")
                 if item != []:
-                    qlid = item["_id"]
+                    try:
+                        qlid = item["_id"]
+                        status_id_ = 0
+                    except:
+                        status_id_ = 1
+                        qlid = item["id"]
                     if update(a, urllist[ucount], "open", k, qlid, name):
 
                         # 更新备注
                         if name in remarks_pin_or_name:
                             for k in remarks_list:
                                 if name == k["name"]:
-                                    data = {
-                                        "value": k["value"],
-                                        "name": k["name"],
-                                        "remarks": k["remarks"],
-                                        "_id": qlid
-                                    }
+                                    if status_id_ == 0:
+                                        data = {
+                                            "value": k["value"],
+                                            "name": k["name"],
+                                            "remarks": k["remarks"],
+                                            "_id": qlid
+                                        }
+                                    else:
+                                        data = {
+                                            "value": k["value"],
+                                            "name": k["name"],
+                                            "remarks": k["remarks"],
+                                            "id": qlid
+                                        }
                                     print("更新备注 {}".format(k["remarks"]))
                                     remark(a, urllist[ucount], "open", data)
 
@@ -402,7 +423,10 @@ if __name__ == '__main__':
             co += 1
             if name not in except_list and k in fenv_values:
                 item = getenvitem(a, urllist[ucount], k, "open", name, "value")
-                enable_ids.append(item["_id"])
+                try:
+                    enable_ids.append(item["_id"])
+                except:
+                    enable_ids.append(item["id"])
             elif name == "JD_COOKIE" and k in fdisable_values:
                 ptpin = "pt_pin="+k+";"
                 try:
@@ -424,12 +448,22 @@ if __name__ == '__main__':
                         try:
                             if re.findall(r"pt_pin=(.*?);", c["value"])[0] == k:
                                 try:
-                                    data = {
-                                        "value": getsingleenv(a, urllist[ucount], ptpin, "open")["data"][0]["value"],
-                                        "name": c["name"],
-                                        "remarks": c["remarks"],
-                                        "_id": item
-                                    }
+                                    if status_id_ == 0:
+                                        data = {
+                                            "value": getsingleenv(a, urllist[ucount], ptpin, "open")["data"][0][
+                                                "value"],
+                                            "name": c["name"],
+                                            "remarks": c["remarks"],
+                                            "_id": item
+                                        }
+                                    else:
+                                        data = {
+                                            "value": getsingleenv(a, urllist[ucount], ptpin, "open")["data"][0][
+                                                "value"],
+                                            "name": c["name"],
+                                            "remarks": c["remarks"],
+                                            "id": item
+                                        }
                                     print("更新备注 {}".format(c["remarks"]))
                                     remark(a, urllist[ucount], "open", data)
                                 except:
@@ -454,7 +488,10 @@ if __name__ == '__main__':
             co += 1
             if name not in except_list and k in fenv_values:
                 item = getenvitem(a, urllist[ucount], k, "open", name, "value")
-                enable_ids.append(item["_id"])
+                try:
+                    enable_ids.append(item["_id"])
+                except:
+                    enable_ids.append(item["id"])
             elif name == "JD_COOKIE" and k in fenable_values:
                 ptpin = "pt_pin="+k+";"
                 try:
@@ -476,12 +513,20 @@ if __name__ == '__main__':
                         try:
                             if re.findall(r"pt_pin=(.*?);", c["value"])[0] == k:
                                 try:
-                                    data = {
-                                        "value": getsingleenv(a, urllist[ucount], k, "open")["data"][0]["value"],
-                                        "name": c["name"],
-                                        "remarks": c["remarks"],
-                                        "_id": item
-                                    }
+                                    if status_id_ == 0:
+                                        data = {
+                                            "value": getsingleenv(a, urllist[ucount], k, "open")["data"][0]["value"],
+                                            "name": c["name"],
+                                            "remarks": c["remarks"],
+                                            "_id": item
+                                        }
+                                    else:
+                                        data = {
+                                            "value": getsingleenv(a, urllist[ucount], k, "open")["data"][0]["value"],
+                                            "name": c["name"],
+                                            "remarks": c["remarks"],
+                                            "id": item
+                                        }
                                     print("更新备注 {}".format(c["remarks"]))
                                     remark(a, urllist[ucount], "open", data)
                                 except:

@@ -318,7 +318,10 @@ if __name__ == '__main__':
                 ptpin = "pt_pin=" + ptpin
                 item = getckitem(a, urllist[ucount], ptpin, "open")
                 if item != []:
-                    qlid = item["_id"]
+                    try:
+                        qlid = item["_id"]
+                    except:
+                        qlid = item["id"]
                     if update(a, urllist[ucount], "open", k, qlid):
                         print("第%s个JD_COOKIE更新成功,pin为%s" % (co, ptpin[7:]))
                     else:
@@ -343,7 +346,10 @@ if __name__ == '__main__':
             ptpin = "pt_pin=" + ptpin
             item = getckitem(a, urllist[-1], ptpin, "open")
             if item != []:
-                qlid = item["_id"]
+                try:
+                    qlid = item["_id"]
+                except:
+                    qlid = item["id"]
                 if update(a, urllist[-1], "open", k, qlid):
                     print("第%s个JD_COOKIE更新成功,pin为%s" % (co, ptpin[7:]))
                 else:
@@ -371,7 +377,10 @@ if __name__ == '__main__':
             ptpin = "pt_pin=" + ptpin
             item = getckitem(b, che[i], ptpin, "open")
             if item != []:
-                qlid = item["_id"]
+                try:
+                    qlid = item["_id"]
+                except:
+                    qlid = item["id"]
                 if update(b, che[i], "open", chek, qlid):
                     print("第%s个JD_COOKIE更新成功,pin为%s" % (co, ptpin[7:]))
                 else:

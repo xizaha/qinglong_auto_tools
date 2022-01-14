@@ -233,7 +233,10 @@ if __name__ == '__main__':
         ptpin = "pt_pin=" + ptpin
         item = getckitem(s, merge_url, ptpin, "open")
         if item != []:
-            qlid = item["_id"]
+            try:
+                qlid = item["_id"]
+            except:
+                qlid = item["id"]
             if update(s, merge_url, "open", k, qlid):
                 print("第%s个JD_COOKIE更新成功,pin为%s" % (co, ptpin[7:]))
             else:

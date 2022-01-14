@@ -195,7 +195,10 @@ if __name__ == '__main__':
     for i in enable_list:
         # script_name = i["command"].replace("task ", "").split("/")[0]
         try:
-            res = getlogcron(s, ql_url, "api", [i["_id"]])
+            try:
+                res = getlogcron(s, ql_url, "api", [i["_id"]])
+            except:
+                res = getlogcron(s, ql_url, "api", [i["id"]])
             status = 0
 
             for j in erro_text:
@@ -303,7 +306,10 @@ if __name__ == '__main__':
                 tp.append(j)
         disable_list_log = []
         for k in tp:
-            disable_list_log.append(k["_id"])
+            try:
+                disable_list_log.append(k["_id"])
+            except:
+                disable_list_log.append(k["id"])
             print("自动禁用任务： {}".format(k["name"]))
         synchronous_tasks_disable(s, ql_url, "api", disable_list_log)
     else:
@@ -328,7 +334,10 @@ if __name__ == '__main__':
                 tp.append(j)
         disable_list_log = []
         for k in tp:
-            disable_list_log.append(k["_id"])
+            try:
+                disable_list_log.append(k["_id"])
+            except:
+                disable_list_log.append(k["id"])
             pt = 0
             for m in whitelist:
                 if k["name"] in m or m in k["name"]:
@@ -350,10 +359,16 @@ if __name__ == '__main__':
                         break
         enable_list_log = []
         for k in tp:
-            enable_list_log.append(k["_id"])
+            try:
+                enable_list_log.append(k["_id"])
+            except:
+                enable_list_log.append(k["id"])
             print("白名单任务不禁用但有报错： {}".format(k["name"]))
         for k in zx2:
-            enable_list_log.append(k["_id"])
+            try:
+                enable_list_log.append(k["_id"])
+            except:
+                enable_list_log.append(k["id"])
         synchronous_tasks_enable(s, ql_url, "api", enable_list_log)
     else:
         print("未配置白名单")

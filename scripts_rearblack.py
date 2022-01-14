@@ -22,7 +22,8 @@ import random
 print(
     "查询的模板，黑号上方显示pin那一行的需要给出来，下方是日志以及对应需要填写的东西(jd_XXXXX是pin)\n\n\n==========检索的模板任务日志👇=========\n*********【账号 10】jd_EMgmYJMyrMHn*********\n黑号！\n*********【账号 11】jd_LjfgropqstnG*********\n黑号！\n==============模板日志👆=============\n\n此时需要的配置如下\n")
 
-print("export ec_remode=\"】(.*?)\*\*\*\*\*\*\*\*\*)\"\nexport ec_blackkey=\"黑号！\"\nexport ec_check_task_name=\"青龙中任务的中文名字\"\nexport ec_rear_back_ck=\"true\"\n")
+print(
+    "export ec_remode=\"】(.*?)\*\*\*\*\*\*\*\*\*)\"\nexport ec_blackkey=\"黑号！\"\nexport ec_check_task_name=\"青龙中任务的中文名字\"\nexport ec_rear_back_ck=\"true\"\n")
 
 print("配置中填完后就能运行脚本自动检索对应任务名字下的日志查询黑号标注黑号后置黑号了")
 
@@ -60,13 +61,13 @@ try:
         remode = os.environ["ec_remode"]
         print("已配置自定义re模板\n")
     else:
+        remode = r"】(.*?)\*\*\*\*\*\*\*\*\*"
         print("未配置自定义re模板")
         pass
 except:
     if os.environ["ec_check_task_name"] != "":
         print("使用默认模板")
         print("有需要请在配置文件中配置\n export ec_remode=\"re模板\" 自定义模板")
-
 
 try:
     os.environ["ec_blackkey"]
@@ -88,8 +89,6 @@ except:
         ec_blackkey = "黑号"
         print("使用默认黑号关键词：黑号")
         print("有需要请在配置文件中配置\n export ec_blackkey=\"黑号关键词\" 自定义黑号关键词")
-
-
 
 try:
     head = int(os.environ["ec_head_cks"])
@@ -204,38 +203,47 @@ def getlogcron(self, baseurl, typ, data):
         return r.text
 
 
-def update(self, baseurl, typ, value, qlid, remarks):
+def delete(self, baseurl, typ, data):
     url = baseurl + typ + "/envs?t=%s" % gettimestamp()
     self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
-    data = {
-        "name": "JD_COOKIE",
-        "value": value,
-        "_id": qlid,
-        "remarks": remarks
-    }
-    r = self.put(url, data=json.dumps(data))
+    r = self.delete(url, data=json.dumps(data))
     if json.loads(r.text)["code"] == 200:
-        return True
+        return r.text
+    else:
+        return r.text
+
+
+def insert(self, baseurl, typ, name, value, remarks):
+    url = baseurl + typ + "/envs?t=%s" % gettimestamp()
+    self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
+    data = []
+    if remarks == None:
+        data_json = {
+            "value": value,
+            "name": name
+        }
+    else:
+        data_json = {
+            "value": value,
+            "name": name,
+            'remarks': remarks
+        }
+    data.append(data_json)
+    r = self.post(url, json.dumps(data))
+    if json.loads(r.text)["code"] == 200:
+        return r.json()['data']
     else:
         return False
 
 
-def move(self, baseurl, typ, id, fromIndex, toIndex):
-    url = baseurl + typ + "/envs/{}/move".format(str(id))
+def disable(self, baseurl, typ, ids):
+    url = baseurl + typ + "/envs/disable?t=%s" % gettimestamp()
     self.headers.update({"Content-Type": "application/json;charset=UTF-8", 'Connection': 'close'})
-    data_json = {
-        "fromIndex": fromIndex,
-        "toIndex": toIndex
-    }
-    params = {
-        "t": int(time.time() * 1000),
-        "id": str(id)
-    }
-    r = self.put(url, json.dumps(data_json), params=params)
+    r = self.put(url, data=json.dumps(ids))
     if json.loads(r.text)["code"] == 200:
-        return r.json()
+        return True
     else:
-        return r.text
+        return False
 
 
 if __name__ == '__main__':
@@ -250,76 +258,21 @@ if __name__ == '__main__':
 
     print("============================================")
 
-        # 无配置时执行
+    # 无配置时执行
     if os.environ["ec_check_task_name"] == "" and ec_rear_back_ck == True:
-        allenv = getallenv(s, ql_url, "api")
-        disable_list = []
-        for i in allenv:
-            if i["status"] != 0:
-                disable_list.append(i)
-
-        print("未配置检索任务名称，自动检索已有备注自动后置黑号和禁用ck\n")
-
-        print("不检索日志只自动后置备注为“黑号”的环境变量\n")
-
-
-        black_count = 0
-        count = 0
-        allenv = getallenv(s, ql_url, "api")
-        for i in allenv:
-            allenv = getallenv(s, ql_url, "api")
-            try:
-                i["remarks"]
-                if i["remarks"] == "黑号 " or i["remarks"] == "黑号":
-                    status = 1
-                else:
-                    status = 0
-            except:
-                status = 0
-                pass
-            count += 1
-            if status == 1:
-                move(s, ql_url, "api", i["_id"], count + 1, len(allenv) - 2)
-                black_count += 1
-
-        time.sleep(1)
-        count = 0
-        allenv = getallenv(s, ql_url, "api")
-        for i in allenv:
-            allenv = getallenv(s, ql_url, "api")
-            if i["status"] == 1:
-                move(s, ql_url, "api", i["_id"], count + 1, len(allenv) - 2)
-            count += 1
-
-        print("自动后置已有备注黑号共{}个，禁用ck共{}个\n".format(black_count, len(disable_list)))
-
-        print("最后3~5位位置可能时有对调，小bug懒得调了\n")
         exit(3)
-    else:
-        print("默认不后置标注的黑号，不进行任何操作")
-        print("有需要请在配置文件中配置\n export ec_rear_back_ck=\"true\" 开启自动后置")
-        print("开启后将自动后置标注的黑号\n")
-        pass
 
     # 有配置时执行
-
     tasks = gettaskitem(s, ql_url, "api")
     for i in tasks:
         if i["name"] == check_task_name:
             log_path = i["log_path"]
-            log_id = i["_id"]
+            try:
+                log_id = i["_id"]
+            except:
+                log_id = i["id"]
         elif check_task_name == "":
             exit(3)
-
-    allenv = getallenv(s, ql_url, "api")
-    for i in allenv:
-        try:
-            i["remarks"]
-            if i["remarks"] == "黑号" and ec_rear_back_ck == True:
-                c = update(s, ql_url, "api", i["value"], i["id"], "")
-                print(c)
-        except:
-            pass
 
     log = json.loads(getlogcron(s, ql_url, "api", [log_id]))["data"]
     data = log.split("\n")
@@ -340,104 +293,95 @@ if __name__ == '__main__':
             if count >= x1 and count <= x2:
                 data1.append(j)
             count += 1
-        temp = []
+        data2 = ""
         for j in data1:
-            if re.findall(remode, j) != []:
-                temp.append(j)
-        pin = re.findall(remode, temp[-1])[0]
-        black_pin.append(pin)
+            data2 = data2 + j
+        temp = []
+        if re.findall(remode, data2) != []:
+            temp.extend(re.findall(remode, data2))
+        black_pin.extend(temp)
 
-    black_dict = {}
+    for i in black_pin:
+        print("{} {}".format(ec_blackkey, i))
+
     allenv = getallenv(s, ql_url, "api")
-    count = 0 # 检索到第几个环境变量
-    jdcount = 0 # 从头往后数第几个是jd_cookie
-    disable_list = [] # 保存禁用的变量信息
-    disable_list_count = [] # 保存位置信息
-    head_env = [] # 保存头环境变量
+
+    # 备份
+    tt = "备份.json"
+    try:
+        os.environ['ec_backup_ck']
+        ec_backup_ck = os.environ['ec_backup_ck']
+    except:
+        ec_backup_ck = 'true'
+    if ec_backup_ck == 'true' and os.path.exists('./' + tt) != True:
+        with open(tt, "w", encoding="utf-8") as fp:
+            json.dump(allenv, fp)
+        print("已备份原有环境变量至{},有需要还原请使用二叉树还原环境变量脚本还原".format(tt))
+        print("如果不需要备份，请设置export ec_backup_ck=\"false\"")
+    else:
+        print("上次备份文件{}还存在或已配置无需备份，本次运行不进行备份")
+
+    allenv = getallenv(s, ql_url, "api")
+    jdcount = 0
+    result_list = []
+    disable_list = []
+    black_list = []
+    head_list = []
+    he_list = []
+    white_list = []
+    status_black = 0
     for i in allenv:
-        if "JD_COOKIE" == i["name"] and jdcount == 0:
-            jdcount = count
-        if jdcount == 0 or count <= (jdcount + head):
-            head_env.append(i)
+        if "JD_COOKIE" == i["name"]:
+            jdcount += 1
+        else:
+            he_list.append(i)
+            continue
+        if jdcount <= head:
+            head_list.append(i)
+            continue
         if i["status"] != 0:
             disable_list.append(i)
-            disable_list_count.append(count + 1)
+            continue
         for j in black_pin:
             black = "pt_pin=" + j + ";"
-            if black in i["value"] and count > (jdcount + head):
-                black_dict[black] = {
-                    "id": i["_id"],
-                    "index": count + 1,
-                    "value": i["value"]
-                }
-        count += 1
-
-
-    count = 0
-    for i, j in zip(disable_list, disable_list_count):
-        allenv = getallenv(s, ql_url, "api")
-        if count == 0 and ec_rear_back_ck == True:
-            move(s, ql_url, "api", i["_id"], j, len(allenv) - 2)
-        allenv = getallenv(s, ql_url, "api")
-        count = 0
-        for k in allenv:
-            if i["value"] == k["value"] and ec_rear_back_ck == True:
-                move(s, ql_url, "api", i["_id"], count + 1, len(allenv) - 2)
-            count += 1
-
-    for i in black_dict:
-        if check_task_name != "":
-            update(s, ql_url, "api", black_dict[i]["value"], black_dict[i]["id"], "黑号")
-            print("黑号：  {}".format(i))
-        allenv = getallenv(s, ql_url, "api")
-        count = 0
-        for j in allenv:
-            if black_dict[i]["value"] == j["value"] and ec_rear_back_ck == True:
-                move(s, ql_url, "api", black_dict[i]["id"], count + 1, len(allenv) - len(disable_list) - 2)
-            count += 1
-        if ec_rear_back_ck == True:
-            move(s, ql_url, "api", black_dict[i]["id"], black_dict[i]["index"], len(allenv) - len(disable_list))
-
-    count = 0
-    allenv = getallenv(s, ql_url, "api")
+            if black in i["value"]:
+                i['remarks'] = ec_blackkey
+                black_list.append(i)
+                status_black = 1
+                continue
+        if status_black == 0:
+            white_list.append(i)
+        else:
+            status_black = 0
+    result_list.extend(he_list)
+    result_list.extend(head_list)
+    result_list.extend(white_list)
+    result_list.extend(black_list)
+    result_list.extend(disable_list)
     for i in allenv:
-        allenv = getallenv(s, ql_url, "api")
+       try:
+           c = delete(s, ql_url, "api", [i['_id']])
+       except:
+           c = delete(s, ql_url, "api", [i['id']])
+    time.sleep(2)
+    print(len(result_list))
+    for i in result_list:
         try:
-            i["remarks"]
-            if i["remarks"] == "黑号 " or i["remarks"] == "黑号":
-                status = 1
-            else:
-                status = 0
+            i['remarks']
+            c = insert(s, ql_url, "api", i['name'], i['value'], i['remarks'])
+            if i["status"] != 0:
+                try:
+                    disable(s, ql_url, 'api', [c[0]['_id']])
+                except:
+                    disable(s, ql_url, 'api', [c[0]['id']])
         except:
-            status = 0
-            pass
-        count += 1
-        if status == 1:
-            move(s, ql_url, "api", i["_id"], count + 1, len(allenv) - len(disable_list))
-    # 再检索防止出错
-    count = 0
-    allenv = getallenv(s, ql_url, "api")
-    for i in allenv:
-        allenv = getallenv(s, ql_url, "api")
-        if i["status"] == 1:
-            move(s, ql_url, "api", i["_id"], count + 1, len(allenv) - 2)
-        count += 1
-
-    # 前几个环境变量校对
-    count = 0
-    allenv = getallenv(s, ql_url, "api")
-    for i in allenv[:(jdcount+head)]:
-        if head_env[count] != i:
-            move(s, ql_url, "api", i["_id"], count, jdcount+head+1)
-        count += 1
-        allenv = getallenv(s, ql_url, "api")
-
-
-    print("最后3~5位位置可能时有对调，小bug懒得调了")
-
-    if ec_rear_back_ck == True:
-        print("\n已后置黑号共{}个".format(len(black_dict)))
-
-
-
-
+            c = insert(s, ql_url, "api", i['name'], i['value'], None)
+            if i["status"] != 0:
+                try:
+                    disable(s, ql_url, 'api', [c[0]['_id']])
+                except:
+                    disable(s, ql_url, 'api', [c[0]['id']])
+    print("已前置非ck变量共{}个，车头ck共{}个，后置含关键词ck共{}个，后置禁用ck共{}个".format(len(head_list), len(he_list), len(black_list),
+                                                                 len(disable_list)))
+    print("============================================")
+    print("脚本执行完毕")

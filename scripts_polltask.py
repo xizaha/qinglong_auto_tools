@@ -222,7 +222,10 @@ if __name__ == '__main__':
     for i in disable_list:
         print("-------------------------------------------\n")
         print("检索禁用的任务： {}".format(i["name"]))
-        id = i["_id"]
+        try:
+            id = i["_id"]
+        except:
+            id = i["id"]
 
         # 状态码       status
         # 运行            0

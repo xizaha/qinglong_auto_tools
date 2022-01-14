@@ -198,14 +198,20 @@ if __name__ == '__main__':
     enable_tname = []
     enable_tcommand = []
     for j in enable_list:
-        enable_tlid.append(j['_id'])
+        try:
+            enable_tlid.append(j['_id'])
+        except:
+            enable_tlid.append(j['id'])
         enable_tname.append(j['name'])
         enable_tcommand.append(j['command'])
     disable_tlid = []
     disable_tname = []
     disable_tcommand = []
     for j in disable_list:
-        disable_tlid.append(j['_id'])
+        try:
+            disable_tlid.append(j['_id'])
+        except:
+            disable_tlid.append(j['id'])
         disable_tname.append(j['name'])
         disable_tcommand.append(j['command'])
     print("=======主容器任务数量：{}，启用任务{}，禁用任务{}===========".format(len(ztasks), len(enable_tname), len(disable_tname)))
@@ -224,7 +230,10 @@ if __name__ == '__main__':
         tcommand = []
         ct = 0
         for i in ftasks:
-            tlid.append(i['_id'])
+            try:
+                tlid.append(i['_id'])
+            except:
+                tlid.append(i['id'])
             tname.append(i['name'])
             tcommand.append(i['command'])
 
