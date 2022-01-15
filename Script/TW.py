@@ -164,6 +164,7 @@ def appjmp(wskey, tokenKey):
     except:
         logger.info("JD接口转换失败, 默认WsKey失效\n")
         wskey = "pt_" + str(wskey.split(";")[0])
+        print(wskey)
         return False, wskey
 
 

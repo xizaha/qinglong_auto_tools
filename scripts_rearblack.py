@@ -353,7 +353,7 @@ if __name__ == '__main__':
             white_list.append(i)
         else:
             status_black = 0
-
+    he_count = len(he_list)
     result_list.extend(head_list)
     result_list.extend(white_list)
 
@@ -403,7 +403,7 @@ if __name__ == '__main__':
                     disable(s, ql_url, 'api', [c[0]['_id']])
                 except:
                     disable(s, ql_url, 'api', [c[0]['id']])
-    print("已前置非ck变量共{}个，车头ck共{}个，后置含关键词ck共{}个，后置禁用ck共{}个".format(len(he_list), len(head_list), len(black_list),
+    print("已前置非ck变量共{}个，车头ck共{}个，后置含关键词ck共{}个，后置禁用ck共{}个".format(he_count, len(head_list), len(black_list),
                                                                  len(disable_list)))
     print("============================================")
     print("脚本执行完毕")
