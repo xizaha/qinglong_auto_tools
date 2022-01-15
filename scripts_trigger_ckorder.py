@@ -260,8 +260,9 @@ if __name__ == '__main__':
         c = re.findall(r"pt_pin=(.*?);", cookies[i - 1]["value"])[0][-16:].ljust(16)
         print("{}\t\t{}\t\t{}".format(c, i, ct + head))
         ct += 1
-    result_list.extend(he_list)
+
     result_list.extend(head_list)
+
     # 与后置黑号脚本匹配
     tp1 = []
     tp2 = []
@@ -304,6 +305,19 @@ if __name__ == '__main__':
 
     result_list.extend(random_list)
     result_list.extend(disable_list)
+
+    # 去重
+    tp1 = []
+    value_tp = []
+    for i in result_list:
+        if i['value'] not in value_tp:
+            tp1.append(i)
+            value_tp.append(i['value'])
+    result_list = tp1
+
+    he_list.extend(result_list)
+    result_list = he_list
+
     for i in allenv:
         try:
             c = delete(s, ql_url, "api", [i['_id']])

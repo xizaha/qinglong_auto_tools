@@ -353,7 +353,7 @@ if __name__ == '__main__':
             white_list.append(i)
         else:
             status_black = 0
-    result_list.extend(he_list)
+
     result_list.extend(head_list)
     result_list.extend(white_list)
 
@@ -368,11 +368,23 @@ if __name__ == '__main__':
 
     result_list.extend(black_list)
     result_list.extend(disable_list)
+
+    # 去重
+    tp1 = []
+    value_tp = []
+    for i in result_list:
+        if i['value'] not in value_tp:
+            tp1.append(i)
+            value_tp.append(i['value'])
+    result_list = tp1
+
+    he_list.extend(result_list)
+    result_list = he_list
     for i in allenv:
-       try:
-           c = delete(s, ql_url, "api", [i['_id']])
-       except:
-           c = delete(s, ql_url, "api", [i['id']])
+        try:
+            c = delete(s, ql_url, "api", [i['_id']])
+        except:
+            c = delete(s, ql_url, "api", [i['id']])
     time.sleep(2)
     print(len(result_list))
     for i in result_list:
