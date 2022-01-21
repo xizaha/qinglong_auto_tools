@@ -68,12 +68,12 @@ def traversalDir_FirstDir(path):
 
 def check_dependence(file_path):
     try:
-        res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/contents.json").json()
+        res = requests.get("https://gitee.com/spiritlhl/dependence_scripts/raw/master/contents.json").json()
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
-            res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/contents.json").json()
+            res = requests.get("https://gitee.com/spiritlhl/dependence_scripts/raw/master/contents.json").json()
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -96,7 +96,7 @@ def check_dependence(file_path):
                 if fix == 1:
                     print("增加文件 {}{}".format(file_path, i))
                     r = requests.get(
-                        "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/" + i).text
+                        "https://gitee.com/spiritlhl/dependence_scripts/raw/master/" + i).text
                     if "db" in os.listdir("../"):
                         with open(file_path + i, "w", encoding="utf-8") as fe:
                             fe.write(r)
@@ -120,7 +120,7 @@ def check_dependence(file_path):
                     if "db" in os.listdir("../"):
                         with open(i, "r", encoding="utf-8") as f:
                             r = requests.get(
-                                "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/" + i).text
+                                "https://gitee.com/spiritlhl/dependence_scripts/raw/master/" + i).text
                             d = f.read()
                             if r == d:
                                 print("无需修改 {}".format(i))
@@ -131,7 +131,7 @@ def check_dependence(file_path):
                     else:
                         with open(i, "r", encoding="utf-8") as f:
                             r = requests.get(
-                                "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/" + i).text
+                                "https://gitee.com/spiritlhl/dependence_scripts/raw/master/" + i).text
                             d = f.read()
                             if r == d:
                                 print("无需修改 {}".format(i))
@@ -148,12 +148,12 @@ def check_dependence(file_path):
     # utils
 
     try:
-        res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/utils.json").json()
+        res = requests.get("https://gitee.com/spiritlhl/dependence_scripts/raw/master/utils.json").json()
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
-            res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/utils.json").json()
+            res = requests.get("https://gitee.com/spiritlhl/dependence_scripts/raw/master/utils.json").json()
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -184,7 +184,7 @@ def check_dependence(file_path):
                 if fix == 1:
                     print("增加文件 {}utils/{}".format(file_path, i))
                     r = requests.get(
-                        "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/utils/" + i).text
+                        "https://gitee.com/spiritlhl/dependence_scripts/raw/master/utils/" + i).text
                     if "db" in os.listdir("../"):
                         with open(file_path + "utils/" + i, "w", encoding="utf-8") as fe:
                             fe.write(r)
@@ -208,7 +208,7 @@ def check_dependence(file_path):
                     if "db" in os.listdir("../"):
                         with open(file_path + "utils/" + i, "r", encoding="utf-8") as f:
                             r = requests.get(
-                                "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/utils/" + i).text
+                                "https://gitee.com/spiritlhl/dependence_scripts/raw/master/utils/" + i).text
                             d = f.read()
                             if r == d:
                                 print("已存在文件 {}utils/{}".format(file_path, i))
@@ -219,7 +219,7 @@ def check_dependence(file_path):
                     else:
                         with open("." + file_path + "utils/" + i, "r", encoding="utf-8") as f:
                             r = requests.get(
-                                "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/utils/" + i).text
+                                "https://gitee.com/spiritlhl/dependence_scripts/raw/master/utils/" + i).text
                             d = f.read()
                             if r == d:
                                 print("已存在文件 {}utils/{}".format(file_path, i))
@@ -235,12 +235,12 @@ def check_dependence(file_path):
     # function
 
     try:
-        res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/function.json").json()
+        res = requests.get("https://gitee.com/spiritlhl/dependence_scripts/raw/master/function.json").json()
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
-            res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/function.json").json()
+            res = requests.get("https://gitee.com/spiritlhl/dependence_scripts/raw/master/function.json").json()
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -271,7 +271,7 @@ def check_dependence(file_path):
                 if fix == 1:
                     print("增加文件 {}function/{}".format(file_path, i))
                     r = requests.get(
-                        "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/function/" + i).text
+                        "https://gitee.com/spiritlhl/dependence_scripts/raw/master/function/" + i).text
                     if "db" in os.listdir("../"):
                         with open(file_path + "function/" + i, "w", encoding="utf-8") as fe:
                             fe.write(r)
@@ -295,7 +295,7 @@ def check_dependence(file_path):
                     if "db" in os.listdir("../"):
                         with open(file_path + "function/" + i, "r", encoding="utf-8") as f:
                             r = requests.get(
-                                "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/function/" + i).text
+                                "https://gitee.com/spiritlhl/dependence_scripts/raw/master/function/" + i).text
                             d = f.read()
                             if r == d:
                                 print("已存在文件 {}function/{}".format(file_path, i))
@@ -306,7 +306,7 @@ def check_dependence(file_path):
                     else:
                         with open("." + file_path + "function/" + i, "r", encoding="utf-8") as f:
                             r = requests.get(
-                                "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/function/" + i).text
+                                "https://gitee.com/spiritlhl/dependence_scripts/raw/master/function/" + i).text
                             d = f.read()
                             if r == d:
                                 print("已存在文件 {}function/{}".format(file_path, i))
@@ -321,12 +321,12 @@ def check_dependence(file_path):
 
 def check_root():
     try:
-        res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/contents.json").json()
+        res = requests.get("https://gitee.com/spiritlhl/dependence_scripts/raw/master/contents.json").json()
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
-            res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/contents.json").json()
+            res = requests.get("https://gitee.com/spiritlhl/dependence_scripts/raw/master/contents.json").json()
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -349,7 +349,7 @@ def check_root():
                 if fix == 1:
                     print("增加文件 {}".format(i))
                     r = requests.get(
-                        "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/" + i).text
+                        "https://gitee.com/spiritlhl/dependence_scripts/raw/master/" + i).text
                     if "db" in os.listdir("../"):
                         with open(i, "w", encoding="utf-8") as fe:
                             fe.write(r)
@@ -373,7 +373,7 @@ def check_root():
                     if "db" in os.listdir("../"):
                         with open(i, "r", encoding="utf-8") as f:
                             r = requests.get(
-                                "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/" + i).text
+                                "https://gitee.com/spiritlhl/dependence_scripts/raw/master/" + i).text
                             d = f.read()
                             if r == d:
                                 print("无需修改 {}".format(i))
@@ -384,7 +384,7 @@ def check_root():
                     else:
                         with open("../" + i, "r", encoding="utf-8") as f:
                             r = requests.get(
-                                "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/" + i).text
+                                "https://gitee.com/spiritlhl/dependence_scripts/raw/master/" + i).text
                             d = f.read()
                             if r == d:
                                 print("无需修改 {}".format(i))
@@ -401,12 +401,12 @@ def check_root():
     # utils
 
     try:
-        res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/utils.json").json()
+        res = requests.get("https://gitee.com/spiritlhl/dependence_scripts/raw/master/utils.json").json()
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
-            res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/utils.json").json()
+            res = requests.get("https://gitee.com/spiritlhl/dependence_scripts/raw/master/utils.json").json()
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -437,7 +437,7 @@ def check_root():
                 if fix == 1:
                     print("增加文件 utils/{}".format(i))
                     r = requests.get(
-                        "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/utils/" + i).text
+                        "https://gitee.com/spiritlhl/dependence_scripts/raw/master/utils/" + i).text
                     if "db" in os.listdir("../"):
                         with open("./utils/" + i, "w", encoding="utf-8") as fe:
                             fe.write(r)
@@ -461,7 +461,7 @@ def check_root():
                     if "db" in os.listdir("../"):
                         with open("./utils/" + i, "r", encoding="utf-8") as f:
                             r = requests.get(
-                                "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/utils/" + i).text
+                                "https://gitee.com/spiritlhl/dependence_scripts/raw/master/utils/" + i).text
                             d = f.read()
                             if r == d:
                                 print("已存在文件 utils/{}".format(i))
@@ -472,7 +472,7 @@ def check_root():
                     else:
                         with open("../utils/" + i, "r", encoding="utf-8") as f:
                             r = requests.get(
-                                "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/utils/" + i).text
+                                "https://gitee.com/spiritlhl/dependence_scripts/raw/master/utils/" + i).text
                             d = f.read()
                             if r == d:
                                 print("已存在文件 utils/{}".format(i))
@@ -488,12 +488,12 @@ def check_root():
     # function
 
     try:
-        res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/function.json").json()
+        res = requests.get("https://gitee.com/spiritlhl/dependence_scripts/raw/master/function.json").json()
     except:
         print("网络波动，稍后尝试")
         time.sleep(5)
         try:
-            res = requests.get("https://cdn.jsdelivr.net/gh/spiritLHL/dependence_scripts@master/function.json").json()
+            res = requests.get("https://gitee.com/spiritlhl/dependence_scripts/raw/master/function.json").json()
         except:
             print("网络问题无法获取仓库文件列表，终止检索")
             return
@@ -524,7 +524,7 @@ def check_root():
                 if fix == 1:
                     print("增加文件 function/{}".format(i))
                     r = requests.get(
-                        "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/function/" + i).text
+                        "https://gitee.com/spiritlhl/dependence_scripts/raw/master/function/" + i).text
                     if "db" in os.listdir("../"):
                         with open("./function/" + i, "w", encoding="utf-8") as fe:
                             fe.write(r)
@@ -548,7 +548,7 @@ def check_root():
                     if "db" in os.listdir("../"):
                         with open("./function/" + i, "r", encoding="utf-8") as f:
                             r = requests.get(
-                                "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/function/" + i).text
+                                "https://gitee.com/spiritlhl/dependence_scripts/raw/master/function/" + i).text
                             d = f.read()
                             if r == d:
                                 print("已存在文件 function/{}".format(i))
@@ -559,7 +559,7 @@ def check_root():
                     else:
                         with open("../function/" + i, "r", encoding="utf-8") as f:
                             r = requests.get(
-                                "https://cdn.jsdelivr.net/gh/spiritlhl/dependence_scripts@master/function/" + i).text
+                                "https://gitee.com/spiritlhl/dependence_scripts/raw/master/function/" + i).text
                             d = f.read()
                             if r == d:
                                 print("已存在文件 function/{}".format(i))

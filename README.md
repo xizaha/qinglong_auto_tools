@@ -50,13 +50,13 @@
 环境变量相关：
 
 ```bash
-ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git "cks_"
+ql repo https://github.com/spiritLHL/qinglong_auto_tools.git "cks_"
 ```
 
 任务相关：
 
 ```bash
-ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git "tasks_"
+ql repo https://github.com/spiritLHL/qinglong_auto_tools.git "tasks_"
 ```
 
 ### 单容器相关脚本
@@ -77,7 +77,7 @@ ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git
 青龙拉取命令：
 
 ```bash
-ql repo https://ghproxy.com/https://github.com/spiritLHL/qinglong_auto_tools.git "scripts_"
+ql repo https://github.com/spiritLHL/qinglong_auto_tools.git "scripts_"
 ```
 
 ### 容器相关脚本使用说明(小白必看)
@@ -200,6 +200,8 @@ scripts_check_dependence.py，也就是二叉树修复依赖文件脚本，拉�
     适配最新版本2.11.0，虽然我做适配了，但不推荐升级，建议观望
     2022.1.15
     更新单容器脚本去重不干净的问题
+    2022.1.21
+    更新环境依赖修复脚本的cdn链接失效问题，改用gitee镜像
 ```
 
 转载起码保留作者名谢谢
